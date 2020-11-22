@@ -1,2 +1,2 @@
 # My_Thesis
-Repo for my University project
+Repo for my University Thesis
