@@ -1,0 +1,125 @@
+﻿@page "/welcome"
+@inject IJSRuntime JSRuntime
+@inject HttpClient Http
+@using System.Text.Json
+@using System.Text.Json.Serialization;
+@using DTOs.Data;
+@using static DTOs.Common.Helpers;
+@using DTOs.API.Responses;
+
+<PageTitle>Announcements Manager</PageTitle>
+
+<MudText Typo="Typo.h4">Welcome to Ceid Announcements Manager, please login to enjoy the full experience</MudText>
+
+<MudGrid>
+    @if (_myDTO != null)
+    {
+        @foreach (var myVar in _myDTO)
+        {
+            <MudItem xs="12">
+                <MudCard>
+                    <MudCardHeader>
+                        <CardHeaderContent>
+                            <MudText Typo="Typo.h6">@myVar.Title</MudText>
+                        </CardHeaderContent>
+                    </MudCardHeader>
+                    <MudCardContent>
+                        <MudText>@myVar.Author</MudText>
+                        <MudText Typo="Typo.body2">@myVar.Abstract</MudText>
+                    </MudCardContent>
+                    <MudCardActions>
+                        <MudButton Href="showannouncement" Variant="Variant.Text" Color="Color.Primary">Read More</MudButton>
+                    </MudCardActions>
+                </MudCard>
+            </MudItem>
+        }
+    }
+</MudGrid>
+
+
+
+@code {
+
+    public async Task<IEnumerable<AnnouncementDTO>> PrintWebApiResponse()
+    {
+        var response = await Http.GetStringAsync("https://localhost:5001/api/Announcement/GetAnnouncementBy");
+        //string serializedString = System.Text.Json.JsonSerializer.Serialize(response);
+
+        Console.WriteLine(response);
+
+        var annResponse = response.DeserializeMethod<GetAnnouncementsByResponse>();
+
+        return annResponse.Announcements;
+
+    }
+
+    protected override async Task OnInitializedAsync()
+    {
+
+        _myDTO = await PrintWebApiResponse();
+    }
+
+    private IEnumerable<AnnouncementDTO>? _myDTO;
+
+}
+
+@*
+<div class="container mt-5 mb-5">
+    <div class="d-flex justify-content-center row">
+        <div class="col-md-10">
+            <div class="row p-2 bg-white border rounded">
+                <div class="col-md-6 mt-1">
+                    <h5>Τιτλος 1</h5>
+                    <div class="d-flex flex-row">
+                        <div class="mt-1 mb-1 spec-1"><span>Καγηγορίες</span></div>
+                    </div>
+                    <div class="mt-1 mb-1 spec-1"><span>Μαθήματα</span></div>
+                    <div class="mt-1 mb-1 spec-1"><span>Σγγραφέας</span></div>
+                    <p class="text-justify text-truncate para mb-0">Περίληψη<br><br></p>
+                </div>
+                <div class="align-items-center align-content-center col-md-3 border-left mt-1">
+                </div>
+            </div>
+            <div class="row p-2 bg-white border rounded">
+                <div class="col-md-6 mt-1">
+                    <h5>Τιτλος 2</h5>
+                    <div class="d-flex flex-row">
+                        <div class="mt-1 mb-1 spec-1"><span>Καγηγορίες</span></div>
+                    </div>
+                    <div class="mt-1 mb-1 spec-1"><span>Μαθήματα</span></div>
+                    <div class="mt-1 mb-1 spec-1"><span>Σγγραφέας</span></div>
+                    <p class="text-justify text-truncate para mb-0">Περίληψη<br><br></p>
+                </div>
+                <div class="align-items-center align-content-center col-md-3 border-left mt-1">
+                </div>
+            </div>
+            <div class="row p-2 bg-white border rounded">
+                <div class="col-md-6 mt-1">
+                    <h5>Τιτλος 3</h5>
+                    <div class="d-flex flex-row">
+                        <div class="mt-1 mb-1 spec-1"><span>Καγηγορίες</span></div>
+                    </div>
+                    <div class="mt-1 mb-1 spec-1"><span>Μαθήματα</span></div>
+                    <div class="mt-1 mb-1 spec-1"><span>Σγγραφέας</span></div>
+                    <p class="text-justify text-truncate para mb-0">Περίληψη<br><br></p>
+                </div>
+                <div class="align-items-center align-content-center col-md-3 border-left mt-1">
+                </div>
+            </div>
+            <div class="row p-2 bg-white border rounded">
+                <div class="col-md-6 mt-1">
+                    <h5>Τιτλος 4</h5>
+                    <div class="d-flex flex-row">
+                        <div class="mt-1 mb-1 spec-1"><span>Καγηγορίες</span></div>
+                    </div>
+                    <div class="mt-1 mb-1 spec-1"><span>Μαθήματα</span></div>
+                    <div class="mt-1 mb-1 spec-1"><span>Σγγραφέας</span></div>
+                    <p class="text-justify text-truncate para mb-0">Περίληψη<br><br></p>
+                </div>
+                <div class="align-items-center align-content-center col-md-3 border-left mt-1">
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+*@

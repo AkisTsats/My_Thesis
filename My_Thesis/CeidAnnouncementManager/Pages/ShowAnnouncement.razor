@@ -1,0 +1,49 @@
+﻿@page "/showannouncement/{id:int}"
+@using DTOs.Data;
+@inject HttpClient Http
+@using static DTOs.Common.Helpers;
+
+
+<MudText Typo="Typo.h3">Show Announcement</MudText>
+<MudGrid>
+    <MudItem xs="12">
+        <MudCard>
+            <MudCardHeader>
+                <CardHeaderContent>
+                    <MudText Typo="Typo.h6">@_myDTO.Title</MudText>
+                </CardHeaderContent>
+            </MudCardHeader>
+            <MudCardContent>
+                <MudText>@_myDTO.Body</MudText>
+            </MudCardContent>
+        </MudCard>
+    </MudItem>
+</MudGrid>
+
+
+@code {
+
+    [Parameter]
+    public int id { get; set; }
+
+
+    public async Task<AnnouncementDTO> PrintWebApiResponse()
+    {
+        var response = await Http.GetStringAsync($"https://localhost:5001/api/Announcement/GetAnnouncementByObj?id={id}");
+        //string serializedString = System.Text.Json.JsonSerializer.Serialize(response);
+
+        Console.WriteLine(response);
+
+        var annResponse = response.DeserializeMethod<AnnouncementDTO>();
+
+        return annResponse;
+
+    }
+
+    private AnnouncementDTO? _myDTO;
+    protected override async Task OnInitializedAsync()
+    {
+
+        _myDTO = await PrintWebApiResponse();
+    }
+}
