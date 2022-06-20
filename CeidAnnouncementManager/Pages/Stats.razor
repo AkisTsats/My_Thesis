@@ -1,0 +1,131 @@
+﻿@page "/statistics"
+@inject IJSRuntime JSRuntime
+@inject HttpClient Http
+@using System.Text.Json
+@using System.Text.Json.Serialization;
+@using DTOs.Data;
+@using static DTOs.Common.Helpers;
+@using DTOs.API.Responses;
+@inject HttpClient Http
+
+<MudText Typo="Typo.h3">Statistics</MudText>
+
+
+@using System.Net.Http.Json
+@inject HttpClient httpClient
+
+
+<MudPaper Height="400px" Width="100%">
+    <MudContainer MaxWidth="MaxWidth.Small">
+        <MudSimpleTable Dense="true" Hover="true" Outlined="true" Bordered="true" Striped="false" Style="overflow-x: auto;">
+            <thead>
+                <tr>
+                    <th>Category</th>
+                    <th>Current Number</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    Total Announcements
+                    <td>@_myDTO.TotalAnnouncements</td>
+                </tr>
+                <tr>
+                    Total Users
+                    <td>@_myDTO.TotalUsers</td>
+                </tr>
+                <tr>
+                    Today Announcements
+                    <td>@_myDTO.TodayAnnouncements</td>
+                </tr>
+                <tr>
+                    Today Peak Users
+                    <td>@_myDTO.TodayPeakUsers</td>
+                </tr>
+            </tbody>
+        </MudSimpleTable>
+    </MudContainer>
+</MudPaper>
+
+@code {
+    public async Task<StatisticsDTO> PrintWebApiResponse()
+    {
+        var response = await Http.GetStringAsync("https://localhost:5001/api/Announcement/GetStats");
+        //string serializedString = System.Text.Json.JsonSerializer.Serialize(response);
+
+        Console.WriteLine(response);
+
+        var annResponse = response.DeserializeMethod<StatisticsDTO>();
+
+        return annResponse;
+
+    }
+
+    protected override async Task OnInitializedAsync()
+    {
+
+        _myDTO = await PrintWebApiResponse();
+    }
+
+    private StatisticsDTO _myDTO;
+
+}
+
+
+@*
+
+<MudTable Items="@Elements" Dense="@dense" Hover="@hover" Bordered="@bordered" Striped="@striped" Filter="new Func<Element,bool>(FilterFunc1)" @bind-SelectedItem="selectedItem1">
+    <ToolBarContent>
+        <MudText Typo="Typo.h6">General Stats</MudText>
+        <MudSpacer />
+        <MudTextField @bind-Value="searchString1" Placeholder="Search" Adornment="Adornment.Start" AdornmentIcon="@Icons.Material.Filled.Search" IconSize="Size.Medium" Class="mt-0"></MudTextField>
+    </ToolBarContent>
+    <HeaderContent>
+        <MudTh>Categorie</MudTh>
+        <MudTh>Number</MudTh>
+    </HeaderContent>
+    <RowTemplate>
+        <MudTd DataLabel="Nr">@_myDTO.TodayAnnouncements</MudTd>
+        <MudTd DataLabel="Sign">@_myDTO.TodayPeakUsers</MudTd>
+    </RowTemplate>
+    <PagerContent>
+        <MudTablePager />
+    </PagerContent>
+</MudTable>
+
+
+
+
+@code {
+    private bool dense = false;
+    private bool hover = true;
+    private bool striped = false;
+    private bool bordered = true;
+    private string searchString1 = "";
+
+
+    private Element selectedItem1 = null;
+
+    private HashSet<Element> selectedItems = new HashSet<Element>();
+
+    private IEnumerable<Element> Elements = new List<Element>();
+
+    protected override async Task OnInitializedAsync()
+    {
+        Elements = await httpClient.GetFromJsonAsync<List<Element>>("webapi/periodictable");
+    }
+
+    private bool FilterFunc1(Element element) => FilterFunc(element, searchString1);
+
+    private bool FilterFunc(Element element, string searchString)
+    {
+        if (string.IsNullOrWhiteSpace(searchString))
+            return true;
+        if (element.Sign.Contains(searchString, StringComparison.OrdinalIgnoreCase))
+            return true;
+        if (element.Name.Contains(searchString, StringComparison.OrdinalIgnoreCase))
+            return true;
+        if ($"{element.Number} {element.Position} {element.Molar}".Contains(searchString))
+            return true;
+        return false;
+    }
+}*@

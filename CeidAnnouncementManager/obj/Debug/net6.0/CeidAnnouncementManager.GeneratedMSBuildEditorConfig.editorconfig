@@ -1,0 +1,99 @@
+is_global = true
+build_property.TargetFramework = net6.0
+build_property.TargetPlatformMinVersion = 
+build_property.UsingMicrosoftNETSdkWeb = 
+build_property.ProjectTypeGuids = 
+build_property.InvariantGlobalization = false
+build_property.PlatformNeutralAssembly = 
+build_property._SupportedPlatformList = browser
+build_property.EnableSingleFileAnalyzer = 
+build_property.EnableTrimAnalyzer = true
+build_property.IncludeAllContentForSelfExtract = 
+build_property.RootNamespace = CeidAnnouncementManager
+build_property.RootNamespace = CeidAnnouncementManager
+build_property.ProjectDir = C:\Users\AKIS\Desktop\My_Thesis\CeidAnnouncementManager\
+build_property.RazorLangVersion = 6.0
+build_property.SupportLocalizedComponentNames = 
+build_property.GenerateRazorMetadataSourceChecksumAttributes = 
+build_property.MSBuildProjectDirectory = C:\Users\AKIS\Desktop\My_Thesis\CeidAnnouncementManager
+build_property._RazorSourceGeneratorDebug = 
+
+[C:/Users/AKIS/Desktop/My_Thesis/CeidAnnouncementManager/App.razor]
+build_metadata.AdditionalFiles.TargetPath = QXBwLnJhem9y
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/AKIS/Desktop/My_Thesis/CeidAnnouncementManager/Pages/AnnouncementsForModeration.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcQW5ub3VuY2VtZW50c0Zvck1vZGVyYXRpb24ucmF6b3I=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/AKIS/Desktop/My_Thesis/CeidAnnouncementManager/Pages/CreateAnnouncement.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcQ3JlYXRlQW5ub3VuY2VtZW50LnJhem9y
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/AKIS/Desktop/My_Thesis/CeidAnnouncementManager/Pages/Index.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcSW5kZXgucmF6b3I=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/AKIS/Desktop/My_Thesis/CeidAnnouncementManager/Pages/MyAnnouncements.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcTXlBbm5vdW5jZW1lbnRzLnJhem9y
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/AKIS/Desktop/My_Thesis/CeidAnnouncementManager/Pages/ShowAnnouncement.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcU2hvd0Fubm91bmNlbWVudC5yYXpvcg==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/AKIS/Desktop/My_Thesis/CeidAnnouncementManager/Pages/Stats.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcU3RhdHMucmF6b3I=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/AKIS/Desktop/My_Thesis/CeidAnnouncementManager/Pages/UserSettings.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcVXNlclNldHRpbmdzLnJhem9y
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/AKIS/Desktop/My_Thesis/CeidAnnouncementManager/Pages/Welcome.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcV2VsY29tZS5yYXpvcg==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/AKIS/Desktop/My_Thesis/CeidAnnouncementManager/Shared/AddAnnouncement.razor]
+build_metadata.AdditionalFiles.TargetPath = U2hhcmVkXEFkZEFubm91bmNlbWVudC5yYXpvcg==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/AKIS/Desktop/My_Thesis/CeidAnnouncementManager/Shared/AddRemoveCategories.razor]
+build_metadata.AdditionalFiles.TargetPath = U2hhcmVkXEFkZFJlbW92ZUNhdGVnb3JpZXMucmF6b3I=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/AKIS/Desktop/My_Thesis/CeidAnnouncementManager/Shared/AddRemoveSubjects.razor]
+build_metadata.AdditionalFiles.TargetPath = U2hhcmVkXEFkZFJlbW92ZVN1YmplY3RzLnJhem9y
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/AKIS/Desktop/My_Thesis/CeidAnnouncementManager/Shared/Dropdown.razor]
+build_metadata.AdditionalFiles.TargetPath = U2hhcmVkXERyb3Bkb3duLnJhem9y
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/AKIS/Desktop/My_Thesis/CeidAnnouncementManager/Shared/Moderation.razor]
+build_metadata.AdditionalFiles.TargetPath = U2hhcmVkXE1vZGVyYXRpb24ucmF6b3I=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/AKIS/Desktop/My_Thesis/CeidAnnouncementManager/Shared/SelectCategories.razor]
+build_metadata.AdditionalFiles.TargetPath = U2hhcmVkXFNlbGVjdENhdGVnb3JpZXMucmF6b3I=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/AKIS/Desktop/My_Thesis/CeidAnnouncementManager/Shared/SelectSubjects.razor]
+build_metadata.AdditionalFiles.TargetPath = U2hhcmVkXFNlbGVjdFN1YmplY3RzLnJhem9y
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/AKIS/Desktop/My_Thesis/CeidAnnouncementManager/Shared/TestAPI.razor]
+build_metadata.AdditionalFiles.TargetPath = U2hhcmVkXFRlc3RBUEkucmF6b3I=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/AKIS/Desktop/My_Thesis/CeidAnnouncementManager/_Imports.razor]
+build_metadata.AdditionalFiles.TargetPath = X0ltcG9ydHMucmF6b3I=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/AKIS/Desktop/My_Thesis/CeidAnnouncementManager/Shared/MainLayout.razor]
+build_metadata.AdditionalFiles.TargetPath = U2hhcmVkXE1haW5MYXlvdXQucmF6b3I=
+build_metadata.AdditionalFiles.CssScope = b-90s1fydag2
+
+[C:/Users/AKIS/Desktop/My_Thesis/CeidAnnouncementManager/Shared/NavMenu.razor]
+build_metadata.AdditionalFiles.TargetPath = U2hhcmVkXE5hdk1lbnUucmF6b3I=
+build_metadata.AdditionalFiles.CssScope = b-q2tfef539y
