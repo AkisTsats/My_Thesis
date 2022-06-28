@@ -28,7 +28,7 @@ namespace AnnouncementAPI.Controllers
         public async Task<ActionResult<UserDTO>> GetUserController()
         {
             return await _context.Users
-                .Where(u => u.UserId == 7)
+                .Where(u => u.UserID == 7)
                 .Select(u => new UserDTO
                 {
                     Name = u.Name
@@ -40,7 +40,7 @@ namespace AnnouncementAPI.Controllers
         public async Task<ActionResult<UserDTO>> GetAllUsersController()
         {
             return await _context.Users
-                .Where(u => u.UserId == 7)
+                .Where(u => u.UserID == 7)
                 .Select(u => new UserDTO
                 {
                     Name = u.Name
@@ -54,7 +54,7 @@ namespace AnnouncementAPI.Controllers
         {
 
             return _context.Users
-                .Where(u => u.UserId == 7)
+                .Where(u => u.UserID == 7)
                 .Select(u => new UserDTO
                 {
                     Name = u.Name

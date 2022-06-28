@@ -197,15 +197,15 @@
       "mscorlib.dll": "sha256-zNVxhWqav+Wvwc8mjOqsl40bhVLw78MhgITrphqoROc=",
       "netstandard.dll": "sha256-yQ7oiuGXRX47V21EibXbfTPXOkJGOgCJhW9YF6e4hw0=",
       "System.Private.CoreLib.dll": "sha256-Ug2\/rd8Ck7Dls6uaZNmrqc7EvE8f41iX96qdX57LStQ=",
-      "DTOs.dll": "sha256-qCey76G7EqJ4savaXeHYOf7P5CXmYCp9OMuoe2AfdNM=",
-      "CeidAnnouncementManager.dll": "sha256-ZpUftmDne225Fdm50EjP5W84UeQydhhEhGR5yteFCHE="
+      "DTOs.dll": "sha256-gYLtchvQ5wlrNq5vioaDuop4TF5kodBgOAbbQrtuqwo=",
+      "CeidAnnouncementManager.dll": "sha256-\/xIowWh0nUaigdZD+3N4odC9pU\/V\/T9GmEMdvb5vL6w="
     },
     "extensions": null,
     "lazyAssembly": null,
     "libraryInitializers": null,
     "pdb": {
-      "DTOs.pdb": "sha256-eBZDDKB5xjatf9K\/5mESEWpw+2mUprgIt+JFSWAz+TA=",
-      "CeidAnnouncementManager.pdb": "sha256-OhjG3Ufrdo79XHK1gPTyW2l2XrHMwZeJBnK7u5hh6Fg="
+      "DTOs.pdb": "sha256-HIDSGp10cRkvsV+j9ulLlMII6FSLPv\/y5iAKjlquGIw=",
+      "CeidAnnouncementManager.pdb": "sha256-Gq0fiuJX0OMZ6ye7guAAlLkbydQWfP4jC5knoRCnNYU="
     },
     "runtime": {
       "dotnet.6.0.6.ky10gglz9i.js": "sha256-zJXgw\/tAzTVOXksPhtpZVT12vxHC7S9mQyBRM36dwD0=",

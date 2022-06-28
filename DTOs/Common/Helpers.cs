@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Text.Json;
 using System.Threading.Tasks;
 
 namespace DTOs.Common
@@ -12,7 +13,8 @@ namespace DTOs.Common
         {
             var config = new System.Text.Json.JsonSerializerOptions
             {
-                PropertyNameCaseInsensitive = true
+                PropertyNameCaseInsensitive = false,
+                PropertyNamingPolicy = JsonNamingPolicy.CamelCase
             };
 
             string serializedData = System.Text.Json.JsonSerializer.Serialize(obj, config);

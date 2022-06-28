@@ -25,10 +25,7 @@ namespace EFDataAccessLibrary.Data
         }
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            modelBuilder.Entity<User>()
-                .HasOne(a => a.Preferences)
-                .WithOne(b => b.User)
-                .HasForeignKey<Preference>(c => c.PreferenceId);
+            
 
             modelBuilder.Entity<Announcement>()
                 .HasOne(a => a.User)
@@ -41,7 +38,7 @@ namespace EFDataAccessLibrary.Data
 
         public DbSet<User> Users { get; set; }
         public DbSet<Announcement> Announcements { get; set; }
-        public DbSet<Preference> Preferences { get; set; }
+       //public DbSet<Preference> Preferences { get; set; }
        // public DbSet<Permissions> Permissions { get; set; }
        // public DbSet<Revision> Revisions { get; set; }
        // public DbSet<Subjects> Subjects { get; set; }
