@@ -17,7 +17,7 @@ namespace EFDataAccessLibrary.Data
         : base(options)
         { }
 
-        private const string connectionString = "Server=localhost;User Id=root;Password='r00t;';Database=announcementapi";
+        public const string connectionString = "Server=localhost;User Id=root;Password='r00t;';Database=announcementapi";
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {

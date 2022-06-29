@@ -20,9 +20,11 @@ namespace EFDataAccessLibrary.Data
         public int EnrollmentYear { get; set; }
         public int CurrentYear { get; set; }
         public Preference Preferences { get; set; }
-        public List<Announcement> Announcements { get; set; }
-        //public virtual ICollection<Year> Years { get; set; }
-        //public virtual ICollection<Subjects> Subjects { get; set; }
+        public Permission Permissions { get; set; }
+        public ICollection<Announcement> Announcements { get; set; }
+        public ICollection<Year> Years { get; set; }
+        public ICollection<Subject> Subjects { get; set; }
+        public ICollection<Category> Categories{ get; set; }
 
     }
 }

@@ -1,3 +1,9 @@
+C:\Users\AKIS\Desktop\My_Thesis\CeidAnnouncementManager\obj\Debug\net6.0\CeidAnnouncementManager.csproj.AssemblyReference.cache
+C:\Users\AKIS\Desktop\My_Thesis\CeidAnnouncementManager\obj\Debug\net6.0\CeidAnnouncementManager.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\AKIS\Desktop\My_Thesis\CeidAnnouncementManager\obj\Debug\net6.0\CeidAnnouncementManager.AssemblyInfoInputs.cache
+C:\Users\AKIS\Desktop\My_Thesis\CeidAnnouncementManager\obj\Debug\net6.0\CeidAnnouncementManager.AssemblyInfo.cs
+C:\Users\AKIS\Desktop\My_Thesis\CeidAnnouncementManager\obj\Debug\net6.0\CeidAnnouncementManager.csproj.CoreCompileInputs.cache
+C:\Users\AKIS\Desktop\My_Thesis\CeidAnnouncementManager\obj\Debug\net6.0\CeidAnnouncementManager.MvcApplicationPartsAssemblyInfo.cache
 C:\Users\AKIS\Desktop\My_Thesis\CeidAnnouncementManager\bin\Debug\net6.0\wwwroot\_framework\blazor.boot.json
 C:\Users\AKIS\Desktop\My_Thesis\CeidAnnouncementManager\bin\Debug\net6.0\wwwroot\_framework\blazor.webassembly.js
 C:\Users\AKIS\Desktop\My_Thesis\CeidAnnouncementManager\bin\Debug\net6.0\wwwroot\_framework\CeidAnnouncementManager.dll
@@ -605,12 +611,6 @@ C:\Users\AKIS\Desktop\My_Thesis\CeidAnnouncementManager\bin\Debug\net6.0\icudt_E
 C:\Users\AKIS\Desktop\My_Thesis\CeidAnnouncementManager\bin\Debug\net6.0\icudt_no_CJK.dat
 C:\Users\AKIS\Desktop\My_Thesis\CeidAnnouncementManager\bin\Debug\net6.0\DTOs.dll
 C:\Users\AKIS\Desktop\My_Thesis\CeidAnnouncementManager\bin\Debug\net6.0\DTOs.pdb
-C:\Users\AKIS\Desktop\My_Thesis\CeidAnnouncementManager\obj\Debug\net6.0\CeidAnnouncementManager.csproj.AssemblyReference.cache
-C:\Users\AKIS\Desktop\My_Thesis\CeidAnnouncementManager\obj\Debug\net6.0\CeidAnnouncementManager.GeneratedMSBuildEditorConfig.editorconfig
-C:\Users\AKIS\Desktop\My_Thesis\CeidAnnouncementManager\obj\Debug\net6.0\CeidAnnouncementManager.AssemblyInfoInputs.cache
-C:\Users\AKIS\Desktop\My_Thesis\CeidAnnouncementManager\obj\Debug\net6.0\CeidAnnouncementManager.AssemblyInfo.cs
-C:\Users\AKIS\Desktop\My_Thesis\CeidAnnouncementManager\obj\Debug\net6.0\CeidAnnouncementManager.csproj.CoreCompileInputs.cache
-C:\Users\AKIS\Desktop\My_Thesis\CeidAnnouncementManager\obj\Debug\net6.0\CeidAnnouncementManager.MvcApplicationPartsAssemblyInfo.cache
 C:\Users\AKIS\Desktop\My_Thesis\CeidAnnouncementManager\obj\Debug\net6.0\build-gz\PAJlhk7d.gz
 C:\Users\AKIS\Desktop\My_Thesis\CeidAnnouncementManager\obj\Debug\net6.0\build-gz\EnlVOPuV.gz
 C:\Users\AKIS\Desktop\My_Thesis\CeidAnnouncementManager\obj\Debug\net6.0\build-gz\FwKoZbcu.gz
