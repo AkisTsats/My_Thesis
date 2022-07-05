@@ -12,5 +12,7 @@ namespace EFDataAccessLibrary.Data
         [Key]
         public int SubjectID { get; set; }
         public string SubjectName { get; set; }
+
+        public List<User> Users { get; set; }
     }
 }

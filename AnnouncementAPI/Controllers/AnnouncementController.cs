@@ -192,11 +192,14 @@ namespace AnnouncementAPI.Controllers
         {
             Announcement ann = new Announcement();
 
+            ann.AnnID = 0;
+            ann.AnnID = new();
             ann.Abstract = body.Abstract;
-            ann.Title = body.Title;;
-            ann.Body = body.Body;;
-            ann.Alert = false;
-            ann.Date = DateTime.Now;
+            ann.Title = body.Title;
+            ann.Body = body.Body;
+            ann.Alert = body.Alert;
+            ann.Date = body.Date;
+            ann.Author = body.Author;  
             await _context.Announcements.AddAsync(ann);
             await _context.SaveChangesAsync();
 
@@ -230,6 +233,7 @@ namespace AnnouncementAPI.Controllers
             //TODO validation
 
             AnnouncementDTO toReturn;
+
             var announcementsList = announcements.AsEnumerable();
 
             if (id is not null)

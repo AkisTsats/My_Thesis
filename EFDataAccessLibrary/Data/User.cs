@@ -22,9 +22,9 @@ namespace EFDataAccessLibrary.Data
         public Preference Preferences { get; set; }
         public Permission Permissions { get; set; }
         public ICollection<Announcement> Announcements { get; set; }
-        public ICollection<Year> Years { get; set; }
-        public ICollection<Subject> Subjects { get; set; }
-        public ICollection<Category> Categories{ get; set; }
+        public List<YearsList> YearsList { get; set; }
+        public List<SubjectsList> SubjectsList { get; set; }
+        public List<CategoriesList> CategoriesList { get; set; }
 
     }
 }

@@ -12,5 +12,7 @@ namespace EFDataAccessLibrary.Data
         [Key]
         public int CategoryID { get; set; }
         public string CategoryName { get; set; }
+
+        public List<User> Users { get; set; }
     }
 }

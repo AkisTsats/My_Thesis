@@ -56,6 +56,92 @@ namespace EFDataAccessLibrary.Migrations
                     b.ToTable("Announcements");
                 });
 
+            modelBuilder.Entity("EFDataAccessLibrary.Data.CategoriesList", b =>
+                {
+                    b.Property<int>("CategoryID")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    b.Property<string>("CategoryName")
+                        .HasColumnType("longtext");
+
+                    b.Property<int?>("UserID")
+                        .HasColumnType("int");
+
+                    b.HasKey("CategoryID");
+
+                    b.HasIndex("UserID");
+
+                    b.ToTable("CategoriesList");
+                });
+
+            modelBuilder.Entity("EFDataAccessLibrary.Data.Permission", b =>
+                {
+                    b.Property<int>("UserID")
+                        .HasColumnType("int");
+
+                    b.Property<bool>("SOS")
+                        .HasColumnType("tinyint(1)");
+
+                    b.Property<bool>("canAcceptAnn")
+                        .HasColumnType("tinyint(1)");
+
+                    b.Property<bool>("canAddCategories")
+                        .HasColumnType("tinyint(1)");
+
+                    b.Property<bool>("canAddSubjects")
+                        .HasColumnType("tinyint(1)");
+
+                    b.Property<bool>("canDeleteAllAnn")
+                        .HasColumnType("tinyint(1)");
+
+                    b.Property<bool>("canDeleteMyAnn")
+                        .HasColumnType("tinyint(1)");
+
+                    b.Property<bool>("canEditAllAnn")
+                        .HasColumnType("tinyint(1)");
+
+                    b.Property<bool>("canEditMyAnn")
+                        .HasColumnType("tinyint(1)");
+
+                    b.Property<bool>("canEditMySubjects")
+                        .HasColumnType("tinyint(1)");
+
+                    b.Property<bool>("canEditMyYears")
+                        .HasColumnType("tinyint(1)");
+
+                    b.Property<bool>("canEditNotifications")
+                        .HasColumnType("tinyint(1)");
+
+                    b.Property<bool>("canPostAnn")
+                        .HasColumnType("tinyint(1)");
+
+                    b.Property<bool>("canPostInfo")
+                        .HasColumnType("tinyint(1)");
+
+                    b.Property<bool>("canSeeAllAnn")
+                        .HasColumnType("tinyint(1)");
+
+                    b.Property<bool>("canSeeMyAnn")
+                        .HasColumnType("tinyint(1)");
+
+                    b.Property<bool>("canSeePubAnn")
+                        .HasColumnType("tinyint(1)");
+
+                    b.Property<bool>("canSeeStats")
+                        .HasColumnType("tinyint(1)");
+
+                    b.Property<bool>("selectCategory")
+                        .HasColumnType("tinyint(1)");
+
+                    b.Property<bool>("selectSubject")
+                        .HasColumnType("tinyint(1)");
+
+                    b.HasKey("UserID");
+
+                    b.ToTable("Permissions");
+                });
+
             modelBuilder.Entity("EFDataAccessLibrary.Data.Preference", b =>
                 {
                     b.Property<int>("UserID")
@@ -81,7 +167,43 @@ namespace EFDataAccessLibrary.Migrations
 
                     b.HasKey("UserID");
 
-                    b.ToTable("Preference");
+                    b.ToTable("Preferences");
+                });
+
+            modelBuilder.Entity("EFDataAccessLibrary.Data.Statistics", b =>
+                {
+                    b.Property<int>("TodayAnnouncements")
+                        .HasColumnType("int");
+
+                    b.Property<int>("TodayPeakUsers")
+                        .HasColumnType("int");
+
+                    b.Property<int>("TotalAnnouncements")
+                        .HasColumnType("int");
+
+                    b.Property<int>("TotalUsers")
+                        .HasColumnType("int");
+
+                    b.ToTable("Stats");
+                });
+
+            modelBuilder.Entity("EFDataAccessLibrary.Data.SubjectsList", b =>
+                {
+                    b.Property<int>("SubjectID")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    b.Property<string>("SubjectName")
+                        .HasColumnType("longtext");
+
+                    b.Property<int?>("UserID")
+                        .HasColumnType("int");
+
+                    b.HasKey("SubjectID");
+
+                    b.HasIndex("UserID");
+
+                    b.ToTable("SubjectsList");
                 });
 
             modelBuilder.Entity("EFDataAccessLibrary.Data.User", b =>
@@ -119,6 +241,35 @@ namespace EFDataAccessLibrary.Migrations
                     b.ToTable("Users");
                 });
 
+            modelBuilder.Entity("EFDataAccessLibrary.Data.YearsList", b =>
+                {
+                    b.Property<int>("YearsID")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    b.Property<int>("Year")
+                        .HasColumnType("int");
+
+                    b.HasKey("YearsID");
+
+                    b.ToTable("YList");
+                });
+
+            modelBuilder.Entity("UserYearsList", b =>
+                {
+                    b.Property<int>("UsersUserID")
+                        .HasColumnType("int");
+
+                    b.Property<int>("YearsListYearsID")
+                        .HasColumnType("int");
+
+                    b.HasKey("UsersUserID", "YearsListYearsID");
+
+                    b.HasIndex("YearsListYearsID");
+
+                    b.ToTable("UserYearsList");
+                });
+
             modelBuilder.Entity("EFDataAccessLibrary.Data.Announcement", b =>
                 {
                     b.HasOne("EFDataAccessLibrary.Data.User", "User")
@@ -128,11 +279,53 @@ namespace EFDataAccessLibrary.Migrations
                     b.Navigation("User");
                 });
 
-            modelBuilder.Entity("EFDataAccessLibrary.Data.Preference", b =>
+            modelBuilder.Entity("EFDataAccessLibrary.Data.CategoriesList", b =>
                 {
                     b.HasOne("EFDataAccessLibrary.Data.User", null)
+                        .WithMany("CategoriesList")
+                        .HasForeignKey("UserID");
+                });
+
+            modelBuilder.Entity("EFDataAccessLibrary.Data.Permission", b =>
+                {
+                    b.HasOne("EFDataAccessLibrary.Data.User", "User")
+                        .WithOne("Permissions")
+                        .HasForeignKey("EFDataAccessLibrary.Data.Permission", "UserID")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("User");
+                });
+
+            modelBuilder.Entity("EFDataAccessLibrary.Data.Preference", b =>
+                {
+                    b.HasOne("EFDataAccessLibrary.Data.User", "User")
                         .WithOne("Preferences")
                         .HasForeignKey("EFDataAccessLibrary.Data.Preference", "UserID")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("User");
+                });
+
+            modelBuilder.Entity("EFDataAccessLibrary.Data.SubjectsList", b =>
+                {
+                    b.HasOne("EFDataAccessLibrary.Data.User", null)
+                        .WithMany("SubjectsList")
+                        .HasForeignKey("UserID");
+                });
+
+            modelBuilder.Entity("UserYearsList", b =>
+                {
+                    b.HasOne("EFDataAccessLibrary.Data.User", null)
+                        .WithMany()
+                        .HasForeignKey("UsersUserID")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("EFDataAccessLibrary.Data.YearsList", null)
+                        .WithMany()
+                        .HasForeignKey("YearsListYearsID")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });
@@ -141,7 +334,13 @@ namespace EFDataAccessLibrary.Migrations
                 {
                     b.Navigation("Announcements");
 
+                    b.Navigation("CategoriesList");
+
+                    b.Navigation("Permissions");
+
                     b.Navigation("Preferences");
+
+                    b.Navigation("SubjectsList");
                 });
 #pragma warning restore 612, 618
         }

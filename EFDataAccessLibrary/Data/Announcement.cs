@@ -18,6 +18,7 @@ namespace EFDataAccessLibrary.Data
         public bool Alert { get; set; }
         public string Author { get; set; }        
         public User User { get; set; }
+        //public CategoriesList Categories { get; set; }
     }
 
 }

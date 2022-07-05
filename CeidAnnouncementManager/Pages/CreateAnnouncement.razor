@@ -58,13 +58,14 @@
     public async Task PostOnAPI()
     {
         postBody.Author = "akis";
-
+        postBody.AnnID = 0;
+        postBody.Date = DateTime.Now;
 
         var post = postBody.SerializeMethod<AnnouncementDTO>();
 
         Console.WriteLine(post);
 
-        await Http.PostAsJsonAsync("https://localhost:5001/api/Announcement/CreateAnnouncement", post);
+        await Http.PostAsJsonAsync("https://localhost:5001/api/Announcement/CreateAnnouncement", postBody);
 
     }
 

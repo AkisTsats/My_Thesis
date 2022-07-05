@@ -9,8 +9,8 @@ namespace EFDataAccessLibrary.Data
 {
     public class MyDbContext : DbContext
     {
-        public MyDbContext() 
-        { 
+        public MyDbContext()
+        {
         }
 
         public MyDbContext(DbContextOptions<MyDbContext> options)
@@ -25,7 +25,7 @@ namespace EFDataAccessLibrary.Data
         }
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            
+
 
             modelBuilder.Entity<Announcement>()
                 .HasOne(a => a.User)
@@ -33,15 +33,44 @@ namespace EFDataAccessLibrary.Data
 
             modelBuilder.Entity<Announcement>()
                 .HasAlternateKey(c => c.Title);
-           
+
+            modelBuilder.Entity<User>()
+                .HasOne(a => a.Preferences)
+                .WithOne(b => b.User);
+
+            modelBuilder.Entity<User>()
+                .HasOne(a => a.Permissions)
+                .WithOne(b => b.User);
+
+            modelBuilder.Entity<Statistics>()
+                .HasNoKey();
+
+            modelBuilder.Entity<YearsList>()
+                .HasMany(a => a.Users)
+                .WithMany(b => b.YearsList);
+
+            modelBuilder.Entity<SubjectsList>()
+                .HasMany(a => a.Users)
+                .WithMany(b => b.SubjectsList);
+
+            modelBuilder.Entity<CategoriesList>()
+                .HasMany(a => a.Users)
+                .WithMany(b => b.CategoriesList);
+
         }
+
+
 
         public DbSet<User> Users { get; set; }
         public DbSet<Announcement> Announcements { get; set; }
-       //public DbSet<Preference> Preferences { get; set; }
-       // public DbSet<Permissions> Permissions { get; set; }
-       // public DbSet<Revision> Revisions { get; set; }
-       // public DbSet<Subjects> Subjects { get; set; }
-       // public DbSet<Year> Years { get; set; }
+        public DbSet<Preference> Preferences { get; set; }
+        public DbSet<Permission> Permissions { get; set; }
+        public DbSet<Statistics> Stats { get; set; }
+        //public DbSet<Category> Categories { get; set; }
+        //public DbSet<Subject> Subjects { get; set; }
+        public DbSet<YearsList> YList { get; set; }
+        public DbSet<CategoriesList> CList { get; set; }
+        public DbSet<SubjectsList> SList { get; set; }
+
     }
 }

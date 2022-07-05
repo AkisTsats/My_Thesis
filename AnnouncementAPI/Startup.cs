@@ -40,6 +40,7 @@ namespace AnnouncementAPI
             options.UseMySql(new MySqlServerVersion(new Version(8, 0, 21))));
 
 
+
             services.AddCors(setup => setup.AddPolicy("default", (options) =>
             options.AllowAnyMethod().AllowAnyHeader().AllowAnyOrigin()));
         }

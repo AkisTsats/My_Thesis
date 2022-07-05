@@ -17,6 +17,7 @@ namespace EFDataAccessLibrary.Data
         public bool PauseOneHour { get; set; }
         public bool PauseOneDay { get; set; }
         public bool PauseAlert { get; set; }
+        public User User { get; set; }
 
     }
 }

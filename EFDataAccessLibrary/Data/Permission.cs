@@ -38,5 +38,9 @@ namespace EFDataAccessLibrary.Data
         public bool canDeleteAllAnn { get; set; }
         public bool canAddCategories { get; set; }
         public bool canAddSubjects { get; set; }
+
+
+
+        public User User { get; set; }
     }
 }
