@@ -25,17 +25,20 @@ namespace AnnouncementAPI.Controllers
             {5, "algorithmoi"}
         };
 
+        private readonly MyDbContext _context;
 
-        // GET: api/ | get announcement by parameter
+        public CategoriesController(MyDbContext context)
+        {
+            _context = context;
+        }
+
+
+        //  GET: api/ | get announcement by parameter
         //[HttpGet("GetCategories")]
         //public async Task<ActionResult<List<string>>> GetCategories(int id)
         //{
-        //    var row = array.GetValue(id);
-        //    foreach (var user in array)
-        //    {
-        //        if 
-                
-        //    }
+        //    var clist = _context.CList.ToListAsync();
+            
         //}
     }
 }

@@ -19,7 +19,6 @@ namespace AnnouncementAPI.Controllers
         {
             new()
             {
-                AnnID = 1,
                 Title = "Security issues and their solution",
                 Abstract = "In the modern world of Reading practice to help you understand simple texts and find specific information in everyday material. Texts include emails, invitations, personal messages, tips, notices and signs.Reading practice to help you understand simple texts and find specific information",
                 Body = "troll",
@@ -29,7 +28,6 @@ namespace AnnouncementAPI.Controllers
             },
             new()
             {
-                AnnID = 2,
                 Title = "Social hour",
                 Abstract = "Reading practice to help you understand texts with everyday or job-related language. Texts include articles, travel guides, emails, adverts and reviews.Reading practice to help you understand texts with everyday or job-related language. Texts include articles, travel guides, emails, adverts and reviews.",
                 Body = "test",
@@ -39,7 +37,6 @@ namespace AnnouncementAPI.Controllers
             },
             new()
             {
-                AnnID = 3,
                 Title = "Παρουσίαση Διπλωματικής",
                 Abstract = "Reading practice to help you understand long, complex texts about a wide variety of topics, some of which may be unfamiliar. Texts include specialised articles, biographies and summaries.Reading practice to help you understand long, complex texts about a wide variety of topics, some of which may be unfamiliar. Texts include specialised articles, biographies and summaries.",
                 Author = "Akis",
@@ -49,7 +46,6 @@ namespace AnnouncementAPI.Controllers
             },
             new()
             {
-                AnnID = 4,
                 Title = "Test",
                 Abstract = "Reading practice to help you understand simple information, words and sentences about known topics. Texts include posters, messages, forms and timetables.Reading practice to help you understand simple information, words and sentences about known topics. Texts include posters, messages, forms and timetables.",
                 Body = "Test",
@@ -57,7 +53,6 @@ namespace AnnouncementAPI.Controllers
                 Alert = false
             },
             new(){
-                AnnID = 5,
                 Title = "Security issues and their solution",
                 Abstract = "Reading practice to help you understand simple information, words and sentences about known topics. Texts include posters, messages, forms and timetables.Reading practice to help you understand simple information, words and sentences about known topics. Texts include posters, messages, forms and timetables.Reading practice to help you understand simple information, words and sentences about known topics. Texts include posters, messages, forms and timetables.",
                 Body = "troll",
@@ -67,7 +62,6 @@ namespace AnnouncementAPI.Controllers
             },
             new()
             {
-                AnnID = 6,
                 Title = "Social hour",
                 Abstract = "Friday 4 o'clock at B3...",
                 Body = "test",
@@ -77,7 +71,6 @@ namespace AnnouncementAPI.Controllers
             },
             new()
             {
-                AnnID = 7,
                 Title = "Παρουσίαση Διπλωματικής",
                 Abstract = "Πέμπτη 5.30 θα πραγματοποιηθεί...",
                 Author = "Akis",
@@ -103,17 +96,8 @@ namespace AnnouncementAPI.Controllers
         {
             _context = context;
         }
+
         /*
-        // POST: api/Announcement | post announcement
-        [HttpPost("CreateAnnouncement")]
-        public async Task<ActionResult<List<AnnouncementDTO>>> CreateAnnouncement([FromBody] AnnouncementDTO announcement)
-        {
-            //_context.Create(announcement);
-            announcements.Add(announcement);
-            //return Ok(announcements);
-            return CreatedAtAction(nameof(announcements), new { id = announcement.AnnID }, announcement.AnnID);
-        }
-        
         [HttpPut]
         public async Task<ActionResult> Edit(int id, AnnouncementDTO ann)
         {
@@ -151,15 +135,6 @@ namespace AnnouncementAPI.Controllers
 
             return Result.Success;
         }
-        */
-
-        // GET: api/ | get all announcements
-        [HttpGet("GetAllAnnouncements")]
-        public async Task<ActionResult<List<Announcement>>> Get()
-        {
-            return Ok(await _context.Announcements.ToListAsync());
-
-        }
 
         // GET: api/ | get announcement by parameter
         [HttpGet("GetAnnouncementBy")]
@@ -172,6 +147,18 @@ namespace AnnouncementAPI.Controllers
 
             };
         }
+
+
+        */
+
+        // GET: api/ | get all announcements
+        [HttpGet("GetAllAnnouncements")]
+        public async Task<ActionResult<List<Announcement>>> Get()
+        {
+            return Ok(await _context.Announcements.ToListAsync());
+
+        }
+
 
         // GET: api/ | get announcement by parameter
         [HttpGet("GetStats")]
@@ -199,7 +186,7 @@ namespace AnnouncementAPI.Controllers
             ann.Body = body.Body;
             ann.Alert = body.Alert;
             ann.Date = body.Date;
-            ann.Author = body.Author;  
+            ann.Author = body.Author;
             await _context.Announcements.AddAsync(ann);
             await _context.SaveChangesAsync();
 
@@ -217,6 +204,7 @@ namespace AnnouncementAPI.Controllers
         [HttpPut("{id}")]
         public void updateAnnouncement(int id, [FromBody] string value)
         {
+            
         }
 
 
@@ -224,14 +212,13 @@ namespace AnnouncementAPI.Controllers
 
 
 
-
+        
 
         //GET api/{object} get announcement by any type
         [HttpGet("GetAnnouncementByObj/")]
         public async Task<ActionResult<AnnouncementDTO>> GetAnnouncementByObj(int? id, string? title, DateTime? date)
         {
             //TODO validation
-
             AnnouncementDTO toReturn;
 
             var announcementsList = announcements.AsEnumerable();
@@ -265,35 +252,29 @@ namespace AnnouncementAPI.Controllers
         }
 
 
+        // DELETE api/<controller>/5
+        [HttpDelete("{id}")]
+        public async Task<ActionResult<List<AnnouncementDTO>>> DeleteAnnouncement(int id)
+        {
+            if (id == null)
+            {
+                return BadRequest("Announcement not selected");
+            }
+            var announcement = await _context.Announcements.SingleOrDefaultAsync(a => a.AnnID == id);
+
+            if (announcement == null)
+            {
+                return BadRequest("Announcement not found");
+            }
+
+            _context.Announcements.Remove(announcement);
+
+            await _context.SaveChangesAsync();
+            
+            return Ok(_context.Announcements);
 
 
-
-
-
-        //// DELETE api/<controller>/5
-        //[HttpDelete("{id}")]
-        //public async Task<ActionResult<List<AnnouncementDTO>>> deleteAnnouncement(int id)
-        //{
-        //    var announcement = announcements.Find(a => a.AnnID == id);
-        //    if (announcement == null)
-        //    {
-        //        return BadRequest("Announcement not found");
-        //    }
-        //    announcements.Remove(announcement);
-        //    return Ok(announcements);
-        //}        //// DELETE api/<controller>/5
-        //[HttpDelete("{id}")]
-        //public async Task<ActionResult<List<AnnouncementDTO>>> deleteAnnouncement(int id)
-        //{
-        //    var announcement = announcements.Find(a => a.AnnID == id);
-        //    if (announcement == null)
-        //    {
-        //        return BadRequest("Announcement not found");
-        //    }
-        //    announcements.Remove(announcement);
-        //    return Ok(announcements);
-        //}
-
+        }
     }
 }
 

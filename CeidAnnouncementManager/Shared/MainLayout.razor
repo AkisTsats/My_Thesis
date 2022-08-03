@@ -1,4 +1,7 @@
 ﻿@inherits LayoutComponentBase
+@*@using Microsoft.AspNetCore.Components.WebAssembly.Authentication
+@inject SignOutSessionStateManager SignOutManager
+@inject NavigationManager nav*@
 
 <MudThemeProvider />
 <MudDialogProvider />
@@ -6,9 +9,23 @@
 
 <MudLayout>
     <MudAppBar>
+
+        @*<Microsoft.AspNetCore.Components.Authorization.AuthorizeView>
+        <Authorized>
+        <h3>@context.User.Identity.Name</h3>
+        <button class="btn btn-danger" @onclick="Logout"></button>
+        </Authorized>
+        <NotAuthorized>
+        <a href="authentication/login">Login</a>
+        </NotAuthorized>
+        </Microsoft.AspNetCore.Components.Authorization.AuthorizeView>
+
+
+        <MudButton Variant="Variant.Filled" Color="Color.Secondary" >Logout</MudButton>*@
+
         <MudIconButton Icon="@Icons.Material.Filled.Menu" Color="Color.Inherit" Edge="Edge.Start" OnClick="@((e) => DrawerToggle())" />
+
         <MudText Typo="Typo.h5">Ceid Announcement Manager</MudText>
-        @*<MudButton Variant="Variant.Filled" Color="Color.Secondary" >Logout</MudButton>*@
 
     </MudAppBar>
     <MudDrawer @bind-Open="@_drawerOpen">
@@ -25,4 +42,10 @@
     {
         _drawerOpen = !_drawerOpen;
     }
+
+    //public async Task Logout()
+    //{
+    //    await SignOutManager.SetSignOutState();
+    //    nav.NavigateTo("authentication/logout");
+    //}
 }

@@ -1,10 +1,16 @@
 ﻿@page "/usersettings"
 
+
+@inject HttpClient Http
+@*@using Microsoft.AspNetCore.Authorization
+@attribute [Authorize]*@
+
 @using DTOs.Data;
 
 <PageTitle>User Settings</PageTitle>
 
 <MudText Typo="Typo.h3">User Settings</MudText>
+
 
 <MudGrid>
     <MudItem xs="6">
@@ -55,10 +61,10 @@
 </MudGrid>
 
 
+
 @code {
     DTOs.Data.UserDTO User = new()
         {
-            UserID = 1,
             Name = "Makis",
             Surname = "Kotsabsis",
             PrimaryEmail = "gatoula@gmail.com",
