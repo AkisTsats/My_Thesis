@@ -9,7 +9,7 @@ namespace AnnouncementAPI.Mail
 {
     public class MailSender
     {
-        public async Task Sender(string receiverName, string mailBody, string type, string receiverMail)
+        public async Task Sender(string receiverName, string subject ,string mailBody, string type, string receiverMail)
         {
             var mailSender = new SmtpSender(() => new SmtpClient(host: "localhost")
             {
@@ -26,12 +26,11 @@ namespace AnnouncementAPI.Mail
             template.AppendLine(value: "Dear" + receiverName);
 
 
-
-
             var email = await Email
                 .From(emailAddress:"test@test.com")
                 .To(emailAddress: receiverMail)
-                .Subject(subject:"something")
+                .Subject(subject: subject)
+                .Body(mailBody)
                 .UsingTemplate(template.ToString(), new { })
                 .SendAsync();
         }
