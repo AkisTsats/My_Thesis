@@ -33,12 +33,21 @@ namespace AnnouncementAPI.Controllers
         }
 
 
-        //  GET: api/ | get announcement by parameter
-        //[HttpGet("GetCategories")]
-        //public async Task<ActionResult<List<string>>> GetCategories(int id)
-        //{
-        //    var clist = _context.CList.ToListAsync();
+        //GET: api/ | get announcement by parameter
+        [HttpGet("GetCategories")]
+        public async Task<ActionResult<List<CategoriesDTO>>> GetCategories()
+        {
+
+            var toReturn =  await _context.CList.Select(a => new CategoriesDTO
+            {
+                CategoryID= a.CategoryID,
+                CategoryName= a.CategoryName,
+            }).ToListAsync();
+
             
-        //}
+
+            return  Ok(toReturn);
+
+        }
     }
 }

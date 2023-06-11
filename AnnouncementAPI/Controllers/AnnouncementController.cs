@@ -8,6 +8,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using DTOs.Data;
+using Microsoft.AspNetCore.Authorization;
 
 namespace AnnouncementAPI.Controllers
 {
@@ -135,7 +136,7 @@ namespace AnnouncementAPI.Controllers
 
             return Result.Success;
         }
-
+        */
         // GET: api/ | get announcement by parameter
         [HttpGet("GetAnnouncementBy")]
         public async Task<ActionResult<GetAnnouncementsByResponse>> getAnouncementBy()
@@ -149,7 +150,7 @@ namespace AnnouncementAPI.Controllers
         }
 
 
-        */
+        
 
         // GET: api/ | get all announcements
         [HttpGet("GetAllAnnouncements")]
@@ -212,8 +213,8 @@ namespace AnnouncementAPI.Controllers
 
 
 
-        
 
+        //[Authorize]
         //GET api/{object} get announcement by any type
         [HttpGet("GetAnnouncementByObj/")]
         public async Task<ActionResult<AnnouncementDTO>> GetAnnouncementByObj(int? id, string? title, DateTime? date)

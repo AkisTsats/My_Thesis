@@ -1,6 +1,11 @@
 {
   "ExpandedNodes": [
-    ""
+    "",
+    "\\AnnouncementAPI",
+    "\\CeidAnnouncementManager",
+    "\\DTOs",
+    "\\DTOs\\Data"
   ],
+  "SelectedNode": "\\AnnouncementAPI\\Startup.cs",
   "PreviewInSolutionExplorer": false
 }

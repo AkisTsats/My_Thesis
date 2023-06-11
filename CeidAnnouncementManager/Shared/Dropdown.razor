@@ -1,15 +1,18 @@
 ﻿@page "/drop"
+@inject CategoriesRepository _categoriesRepository;
 
 @using System;
 @using System.Collections.Generic;
+@using CeidAnnouncementManager.Services;
 @using DTOs.Data;
+
 
 <MudPaper Height="400px" Width="100%">
     <MudContainer MaxWidth="MaxWidth.Small">
         <MudSelect T="string" Label="Subjects" MultiSelection="true" @bind-Value="value" @bind-SelectedValues="options">
-            @foreach (var state in states)
+            @foreach (var state in result)
             {
-                <MudSelectItem T="string" Value="@state">@state</MudSelectItem>
+                <MudSelectItem T="string" Value="@state.CategoryName">@state.CategoryName</MudSelectItem>
             }
         </MudSelect>
     </MudContainer>
@@ -34,11 +37,16 @@
 
     private string value { get; set; } = "Nothing selected";
     private IEnumerable<string> options { get; set; } = new HashSet<string>();
-
+    private IEnumerable<CategoriesDTO> result;
     private string[] states =
     {
         "Μαθηματικά 1", "Μαθηματικά 2", "Γραμμική Άλγεβρα", "Φυσική",
     };
+
+    protected override async Task OnInitializedAsync()
+    {
+        result = await _categoriesRepository.FetchCategories();
+    }
 
 }
 
