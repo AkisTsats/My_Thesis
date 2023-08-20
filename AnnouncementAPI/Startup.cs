@@ -65,7 +65,7 @@ namespace AnnouncementAPI
             {
                 HttpClientInitializer = credentials
             });
-            */
+            
 
 
             services.AddAuthentication(options =>
@@ -85,6 +85,7 @@ namespace AnnouncementAPI
             services.AddAuthentication();
 
             services.AddAuthorization();
+            */
 
             services.AddControllers();
             services.AddSwaggerGen(c =>
@@ -92,9 +93,10 @@ namespace AnnouncementAPI
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "AnnouncementAPI", Version = "v1" });
             });
 
-            services.AddDbContext<EFDataAccessLibrary.Data.MyDbContext>(options =>
-            options.UseMySql(new MySqlServerVersion(new Version(8, 0, 21))));
-
+            services.AddDbContext<EFDataAccessLibrary.Data.MyDbContext>(options => {
+                options.UseMySql(new MySqlServerVersion(new Version(8, 0, 21)));
+                //options.UseQueryTrackingBehavior(QueryTrackingBehavior.NoTracking);
+            });
 
 
             services.AddCors(setup => setup.AddPolicy("default", (options) =>
@@ -119,9 +121,9 @@ namespace AnnouncementAPI
 
             app.UseRouting();
 
-            app.UseAuthentication();
+            //app.UseAuthentication();
 
-            app.UseAuthorization();
+            //app.UseAuthorization();
 
             app.UseEndpoints(endpoints =>
             {

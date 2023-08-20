@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -25,6 +26,13 @@ namespace EFDataAccessLibrary.Data
         public List<YearsList> YearsList { get; set; }
         public List<SubjectsList> SubjectsList { get; set; }
         public List<CategoriesList> CategoriesList { get; set; }
+
+        [InverseProperty(nameof(CategoriesListUser.User))]
+        public ICollection<CategoriesListUser> CategoriesListUsers { get; set; }
+
+
+
+
 
     }
 }

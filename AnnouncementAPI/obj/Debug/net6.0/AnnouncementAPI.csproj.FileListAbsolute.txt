@@ -658,8 +658,14 @@ C:\Users\akist\source\repos\My_Thesis\AnnouncementAPI\bin\Debug\net6.0\refs\Wind
 C:\Users\akist\source\repos\My_Thesis\AnnouncementAPI\bin\Debug\net6.0\FluentEmail.Core.dll
 C:\Users\akist\source\repos\My_Thesis\AnnouncementAPI\bin\Debug\net6.0\FluentEmail.Razor.dll
 C:\Users\akist\source\repos\My_Thesis\AnnouncementAPI\bin\Debug\net6.0\FluentEmail.Smtp.dll
+C:\Users\akist\source\repos\My_Thesis\AnnouncementAPI\bin\Debug\net6.0\Google.Apis.dll
+C:\Users\akist\source\repos\My_Thesis\AnnouncementAPI\bin\Debug\net6.0\Google.Apis.Auth.PlatformServices.dll
+C:\Users\akist\source\repos\My_Thesis\AnnouncementAPI\bin\Debug\net6.0\Google.Apis.Auth.dll
+C:\Users\akist\source\repos\My_Thesis\AnnouncementAPI\bin\Debug\net6.0\Google.Apis.Core.dll
+C:\Users\akist\source\repos\My_Thesis\AnnouncementAPI\bin\Debug\net6.0\Google.Apis.Gmail.v1.dll
 C:\Users\akist\source\repos\My_Thesis\AnnouncementAPI\bin\Debug\net6.0\Humanizer.dll
 C:\Users\akist\source\repos\My_Thesis\AnnouncementAPI\bin\Debug\net6.0\MailKit.dll
+C:\Users\akist\source\repos\My_Thesis\AnnouncementAPI\bin\Debug\net6.0\Microsoft.AspNetCore.Authentication.Google.dll
 C:\Users\akist\source\repos\My_Thesis\AnnouncementAPI\bin\Debug\net6.0\Microsoft.AspNetCore.Mvc.Razor.Extensions.dll
 C:\Users\akist\source\repos\My_Thesis\AnnouncementAPI\bin\Debug\net6.0\Microsoft.AspNetCore.Razor.Language.dll
 C:\Users\akist\source\repos\My_Thesis\AnnouncementAPI\bin\Debug\net6.0\Microsoft.CodeAnalysis.dll
@@ -738,9 +744,3 @@ C:\Users\akist\source\repos\My_Thesis\AnnouncementAPI\obj\Debug\net6.0\refint\An
 C:\Users\akist\source\repos\My_Thesis\AnnouncementAPI\obj\Debug\net6.0\AnnouncementAPI.pdb
 C:\Users\akist\source\repos\My_Thesis\AnnouncementAPI\obj\Debug\net6.0\AnnouncementAPI.genruntimeconfig.cache
 C:\Users\akist\source\repos\My_Thesis\AnnouncementAPI\obj\Debug\net6.0\ref\AnnouncementAPI.dll
-C:\Users\akist\source\repos\My_Thesis\AnnouncementAPI\bin\Debug\net6.0\Google.Apis.dll
-C:\Users\akist\source\repos\My_Thesis\AnnouncementAPI\bin\Debug\net6.0\Google.Apis.Auth.PlatformServices.dll
-C:\Users\akist\source\repos\My_Thesis\AnnouncementAPI\bin\Debug\net6.0\Google.Apis.Auth.dll
-C:\Users\akist\source\repos\My_Thesis\AnnouncementAPI\bin\Debug\net6.0\Google.Apis.Core.dll
-C:\Users\akist\source\repos\My_Thesis\AnnouncementAPI\bin\Debug\net6.0\Google.Apis.Gmail.v1.dll
-C:\Users\akist\source\repos\My_Thesis\AnnouncementAPI\bin\Debug\net6.0\Microsoft.AspNetCore.Authentication.Google.dll

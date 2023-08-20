@@ -1,0 +1,58 @@
+﻿@* @using DTOs.Common;
+@inject HttpClient Http
+
+
+<label style="
+        box-shadow: 0 2px 7px #4caf50;
+        display: inline-flex;
+        width: 150px;
+        justify-content: space-around;
+        border-radius: 2em;
+        color: white;
+        border:2px solid;
+        cursor: pointer;
+        align-items: center;
+        padding:16px;
+        background-color: #4caf50;"
+       for="fileInput2">
+    Upload Image<MudIcon Icon="@Icons.Filled.CloudUpload" />
+</label>
+
+<InputFile id="fileInput2" OnChange="UploadImages"/>
+
+
+@code
+{
+
+
+    private async Task UploadImages(InputFileChangeEventArgs e)
+    {
+        using var content = new MultipartFormDataContent();
+
+        var file = e;
+
+        var filecontent = file.OpenReadStream();
+
+
+        filecontent.Headers.ContentType = new System.Net.Http.Headers.MediaTypeHeaderValue(content.ContentType);
+
+        var response = await Http.PostAsync("https://localhost:5001/api/FileUpload", content);
+
+        var result = await response.Content.ReadFromJsonAsync<List<UploadResult>>();
+
+        if (result is not null)
+        {
+            uploadResults = uploadResults.Concat(result).ToList();
+        }
+
+    }
+    private string GetStoredFileName(string fileName)
+    {
+        var uploadResult = uploadResults.SingleOrDefault(f => f.FileName == fileName);
+        if (uploadResult is not null)
+        {
+            return uploadResult.StoredFileName;
+        }
+        return "File not found";
+    }
+} *@

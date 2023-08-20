@@ -9,6 +9,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using DTOs.Data;
 using Microsoft.AspNetCore.Authorization;
+using System.Collections;
 
 namespace AnnouncementAPI.Controllers
 {
@@ -16,72 +17,7 @@ namespace AnnouncementAPI.Controllers
     [ApiController]
     public class AnnouncementController : ControllerBase
     {
-        private static List<AnnouncementDTO> announcements = new()
-        {
-            new()
-            {
-                Title = "Security issues and their solution",
-                Abstract = "In the modern world of Reading practice to help you understand simple texts and find specific information in everyday material. Texts include emails, invitations, personal messages, tips, notices and signs.Reading practice to help you understand simple texts and find specific information",
-                Body = "troll",
-                Author = "Terezakis",
-                Date = DateTime.Now,
-                Alert = false
-            },
-            new()
-            {
-                Title = "Social hour",
-                Abstract = "Reading practice to help you understand texts with everyday or job-related language. Texts include articles, travel guides, emails, adverts and reviews.Reading practice to help you understand texts with everyday or job-related language. Texts include articles, travel guides, emails, adverts and reviews.",
-                Body = "test",
-                Author= "Doe",
-                Date = DateTime.Now,
-                Alert = false
-            },
-            new()
-            {
-                Title = "Παρουσίαση Διπλωματικής",
-                Abstract = "Reading practice to help you understand long, complex texts about a wide variety of topics, some of which may be unfamiliar. Texts include specialised articles, biographies and summaries.Reading practice to help you understand long, complex texts about a wide variety of topics, some of which may be unfamiliar. Texts include specialised articles, biographies and summaries.",
-                Author = "Akis",
-                Body = "test",
-                Date = DateTime.Now,
-                Alert = false
-            },
-            new()
-            {
-                Title = "Test",
-                Abstract = "Reading practice to help you understand simple information, words and sentences about known topics. Texts include posters, messages, forms and timetables.Reading practice to help you understand simple information, words and sentences about known topics. Texts include posters, messages, forms and timetables.",
-                Body = "Test",
-                Date = DateTime.Now,
-                Alert = false
-            },
-            new(){
-                Title = "Security issues and their solution",
-                Abstract = "Reading practice to help you understand simple information, words and sentences about known topics. Texts include posters, messages, forms and timetables.Reading practice to help you understand simple information, words and sentences about known topics. Texts include posters, messages, forms and timetables.Reading practice to help you understand simple information, words and sentences about known topics. Texts include posters, messages, forms and timetables.",
-                Body = "troll",
-                Author = "Terezakis",
-                Date = DateTime.Now,
-                Alert = false
-            },
-            new()
-            {
-                Title = "Social hour",
-                Abstract = "Friday 4 o'clock at B3...",
-                Body = "test",
-                Author= "Doe",
-                Date = DateTime.Now,
-                Alert = false
-            },
-            new()
-            {
-                Title = "Παρουσίαση Διπλωματικής",
-                Abstract = "Πέμπτη 5.30 θα πραγματοποιηθεί...",
-                Author = "Akis",
-                Body = "test",
-                Date = DateTime.Now,
-                Alert = false
-            }
 
-
-        };
 
         private static StatisticsDTO Statistics = new()
         {
@@ -98,59 +34,6 @@ namespace AnnouncementAPI.Controllers
             _context = context;
         }
 
-        /*
-        [HttpPut]
-        public async Task<ActionResult> Edit(int id, AnnouncementDTO ann)
-        {
-            var UserID = await this.User.GetIdByUser();
-
-            if (!dealerHasCar)
-            {
-                return BadRequest(Result.Failure("You cannot edit this ann"));
-            }
-
-            var category = await this.categories.Find(input.Category);
-
-            var manufacturer = await this.manufacturers.FindByName(input.Manufacturer);
-
-            manufacturer ??= new Manufacturer
-            {
-                Name = input.Manufacturer
-            };
-
-            var carAd = await this.carAds.Find(id);
-
-            carAd.Manufacturer = manufacturer;
-            carAd.Model = input.Model;
-            carAd.Category = category;
-            carAd.ImageUrl = input.ImageUrl;
-            carAd.PricePerDay = input.PricePerDay;
-            carAd.Options = new Options
-            {
-                HasClimateControl = input.HasClimateControl,
-                NumberOfSeats = input.NumberOfSeats,
-                TransmissionType = input.TransmissionType
-            };
-
-            await this.carAds.Save(carAd);
-
-            return Result.Success;
-        }
-        */
-        // GET: api/ | get announcement by parameter
-        [HttpGet("GetAnnouncementBy")]
-        public async Task<ActionResult<GetAnnouncementsByResponse>> getAnouncementBy()
-        {
-            return new GetAnnouncementsByResponse()
-            {
-                Announcements = announcements,
-                SumOfAnnouncements = announcements.Count()
-
-            };
-        }
-
-
-        
 
         // GET: api/ | get all announcements
         [HttpGet("GetAllAnnouncements")]
@@ -159,7 +42,6 @@ namespace AnnouncementAPI.Controllers
             return Ok(await _context.Announcements.ToListAsync());
 
         }
-
 
         // GET: api/ | get announcement by parameter
         [HttpGet("GetStats")]
@@ -180,7 +62,6 @@ namespace AnnouncementAPI.Controllers
         {
             Announcement ann = new Announcement();
 
-            ann.AnnID = 0;
             ann.AnnID = new();
             ann.Abstract = body.Abstract;
             ann.Title = body.Title;
@@ -197,32 +78,50 @@ namespace AnnouncementAPI.Controllers
         }
 
 
-
-
-
-
-        // PUT api/<controller>/5
-        [HttpPut("{id}")]
-        public void updateAnnouncement(int id, [FromBody] string value)
+        // PUT api/UpdateAnnouncement
+        [HttpPut("UpdateAnnouncementByID/{id}")]
+        public async Task<ActionResult<AnnouncementDTO>> UpdateAnnouncement(int id, AnnouncementDTO? body)
         {
-            
+            var announcement = await _context.Announcements.FindAsync(id);
+
+            if (announcement == null)
+            {
+                return NotFound();
+            }
+            else
+            {
+                try
+                {
+                    //_context.Announcements.Remove(announcement.Title);
+                    announcement.Title = body.Title;
+                    announcement.Abstract= body.Abstract;
+                    announcement.Body = body.Body;
+                    announcement.Date = body.Date;
+                    announcement.Author = body.Author;
+
+                    //_context.Announcements.Update(announcement);
+
+                    await _context.SaveChangesAsync();
+                    return NoContent(); 
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine($"Error occured {ex}"); 
+                    return BadRequest(ex.Message);
+                }
+                
+            }
         }
 
 
 
-
-
-
-
-        //[Authorize]
         //GET api/{object} get announcement by any type
         [HttpGet("GetAnnouncementByObj/")]
-        public async Task<ActionResult<AnnouncementDTO>> GetAnnouncementByObj(int? id, string? title, DateTime? date)
+        public async Task<ActionResult<GetAnnouncementsByResponse>> GetAnnouncementByObj(int? id, string? title, DateTime? date, int? limit, int? skip)
         {
             //TODO validation
-            AnnouncementDTO toReturn;
 
-            var announcementsList = announcements.AsEnumerable();
+            var announcementsList = _context.Announcements.Where(_ => true);
 
             if (id is not null)
             {
@@ -237,8 +136,17 @@ namespace AnnouncementAPI.Controllers
                 announcementsList = announcementsList.Where(a => a.Date == date);
             }
 
+            int count = announcementsList.Count();
 
-            toReturn = announcementsList.Select(a => new AnnouncementDTO
+            if ((limit is not null) && (skip is not null))
+            {
+                int s = skip.Value;
+                int l = limit.Value;
+                announcementsList = announcementsList.OrderBy(i => i.AnnID).Skip((s - 1) * l).Take(l);
+            }
+
+
+            var listToReturn = announcementsList.Select(a => new AnnouncementDTO
             {
                 AnnID = a.AnnID,
                 Abstract = a.Abstract,
@@ -246,7 +154,13 @@ namespace AnnouncementAPI.Controllers
                 Body = a.Body,
                 Date = a.Date,
                 Title = a.Title,
-            }).FirstOrDefault();
+            }).ToListAsync();
+
+            var toReturn = new GetAnnouncementsByResponse
+            {
+                Announcements = await listToReturn,
+                SumOfAnnouncements = count,
+            };
 
             return toReturn;
 
@@ -254,13 +168,9 @@ namespace AnnouncementAPI.Controllers
 
 
         // DELETE api/<controller>/5
-        [HttpDelete("{id}")]
+        [HttpDelete("DeleteAnnouncementByID/{id}")]
         public async Task<ActionResult<List<AnnouncementDTO>>> DeleteAnnouncement(int id)
         {
-            if (id == null)
-            {
-                return BadRequest("Announcement not selected");
-            }
             var announcement = await _context.Announcements.SingleOrDefaultAsync(a => a.AnnID == id);
 
             if (announcement == null)
@@ -271,7 +181,7 @@ namespace AnnouncementAPI.Controllers
             _context.Announcements.Remove(announcement);
 
             await _context.SaveChangesAsync();
-            
+
             return Ok(_context.Announcements);
 
 

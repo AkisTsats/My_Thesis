@@ -825,11 +825,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Users\\akist\\Source\\Repos\\My_Thesis\\EFDataAccessLibrary\\EFDataAccessLibrary.csproj",
+      "projectUniqueName": "C:\\Users\\akist\\source\\repos\\My_Thesis\\EFDataAccessLibrary\\EFDataAccessLibrary.csproj",
       "projectName": "EFDataAccessLibrary",
-      "projectPath": "C:\\Users\\akist\\Source\\Repos\\My_Thesis\\EFDataAccessLibrary\\EFDataAccessLibrary.csproj",
+      "projectPath": "C:\\Users\\akist\\source\\repos\\My_Thesis\\EFDataAccessLibrary\\EFDataAccessLibrary.csproj",
       "packagesPath": "C:\\Users\\akist\\.nuget\\packages\\",
-      "outputPath": "C:\\Users\\akist\\Source\\Repos\\My_Thesis\\EFDataAccessLibrary\\obj\\",
+      "outputPath": "C:\\Users\\akist\\source\\repos\\My_Thesis\\EFDataAccessLibrary\\obj\\",
       "projectStyle": "PackageReference",
       "fallbackFolders": [
         "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
@@ -899,7 +899,7 @@
             "privateAssets": "all"
           }
         },
-        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\7.0.102\\RuntimeIdentifierGraph.json"
+        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\7.0.400\\RuntimeIdentifierGraph.json"
       }
     }
   }

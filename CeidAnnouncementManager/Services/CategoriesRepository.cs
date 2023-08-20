@@ -30,5 +30,14 @@ namespace CeidAnnouncementManager.Services
             return annResponse;
 
         }
+
+        public async Task<IEnumerable<CategoriesDTO>> FetchCategories(int id)
+        {
+            var response = await http.GetStringAsync(BaseUrl + $"/api/Categories/GetCategoriesByID/{id}");
+            var annResponse = response.DeserializeMethod<List<CategoriesDTO>>();
+
+            return annResponse;
+
+        }
     }
 }

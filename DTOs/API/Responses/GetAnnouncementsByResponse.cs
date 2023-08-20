@@ -9,7 +9,7 @@ namespace DTOs.API.Responses
 {
     public class GetAnnouncementsByResponse
     {
-        public IEnumerable<AnnouncementDTO> Announcements { get; set; }
+        public List<AnnouncementDTO> Announcements { get; set; }
         public int SumOfAnnouncements { get; set; }
     }
 

@@ -17,6 +17,9 @@ namespace DTOs.Data
         public DateTime Date { get; set; }
         public bool Alert { get; set; }
         public string Author { get; set; }
+        //public string imgPath { get; set; }
+        //public List<string> filesPath { get; set; }
+
         //public List<SubjectsDTO>? Subjects { get; set; }
     }
 

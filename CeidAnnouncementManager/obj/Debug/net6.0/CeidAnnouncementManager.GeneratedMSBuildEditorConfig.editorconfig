@@ -28,6 +28,10 @@ build_metadata.AdditionalFiles.CssScope =
 build_metadata.AdditionalFiles.TargetPath = UGFnZXNcQ3JlYXRlQW5ub3VuY2VtZW50LnJhem9y
 build_metadata.AdditionalFiles.CssScope = 
 
+[C:/Users/akist/source/repos/My_Thesis/CeidAnnouncementManager/Pages/EditAnnouncmenet.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcRWRpdEFubm91bmNtZW5ldC5yYXpvcg==
+build_metadata.AdditionalFiles.CssScope = 
+
 [C:/Users/akist/source/repos/My_Thesis/CeidAnnouncementManager/Pages/Index.razor]
 build_metadata.AdditionalFiles.TargetPath = UGFnZXNcSW5kZXgucmF6b3I=
 build_metadata.AdditionalFiles.CssScope = 
@@ -56,6 +60,10 @@ build_metadata.AdditionalFiles.CssScope =
 build_metadata.AdditionalFiles.TargetPath = U2hhcmVkXEFkZEZpbGUucmF6b3I=
 build_metadata.AdditionalFiles.CssScope = 
 
+[C:/Users/akist/source/repos/My_Thesis/CeidAnnouncementManager/Shared/AddImage.razor]
+build_metadata.AdditionalFiles.TargetPath = U2hhcmVkXEFkZEltYWdlLnJhem9y
+build_metadata.AdditionalFiles.CssScope = 
+
 [C:/Users/akist/source/repos/My_Thesis/CeidAnnouncementManager/Shared/AddRemoveCategories.razor]
 build_metadata.AdditionalFiles.TargetPath = U2hhcmVkXEFkZFJlbW92ZUNhdGVnb3JpZXMucmF6b3I=
 build_metadata.AdditionalFiles.CssScope = 
@@ -82,10 +90,6 @@ build_metadata.AdditionalFiles.CssScope =
 
 [C:/Users/akist/source/repos/My_Thesis/CeidAnnouncementManager/Shared/SelectSubjects.razor]
 build_metadata.AdditionalFiles.TargetPath = U2hhcmVkXFNlbGVjdFN1YmplY3RzLnJhem9y
-build_metadata.AdditionalFiles.CssScope = 
-
-[C:/Users/akist/source/repos/My_Thesis/CeidAnnouncementManager/Shared/TestAPI.razor]
-build_metadata.AdditionalFiles.TargetPath = U2hhcmVkXFRlc3RBUEkucmF6b3I=
 build_metadata.AdditionalFiles.CssScope = 
 
 [C:/Users/akist/source/repos/My_Thesis/CeidAnnouncementManager/_Imports.razor]

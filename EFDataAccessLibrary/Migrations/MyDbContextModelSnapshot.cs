@@ -19,6 +19,21 @@ namespace EFDataAccessLibrary.Migrations
                 .HasAnnotation("ProductVersion", "6.0.1")
                 .HasAnnotation("Relational:MaxIdentifierLength", 64);
 
+            modelBuilder.Entity("AnnouncementCategoriesList", b =>
+                {
+                    b.Property<int>("AnnouncementsAnnID")
+                        .HasColumnType("int");
+
+                    b.Property<int>("CategoriesListCategoryID")
+                        .HasColumnType("int");
+
+                    b.HasKey("AnnouncementsAnnID", "CategoriesListCategoryID");
+
+                    b.HasIndex("CategoriesListCategoryID");
+
+                    b.ToTable("AnnouncementCategoriesList");
+                });
+
             modelBuilder.Entity("CategoriesListUser", b =>
                 {
                     b.Property<int>("CategoriesListCategoryID")
@@ -56,15 +71,12 @@ namespace EFDataAccessLibrary.Migrations
                         .HasColumnType("datetime(6)");
 
                     b.Property<string>("Title")
-                        .IsRequired()
-                        .HasColumnType("varchar(255)");
+                        .HasColumnType("longtext");
 
                     b.Property<int?>("UserID")
                         .HasColumnType("int");
 
                     b.HasKey("AnnID");
-
-                    b.HasAlternateKey("Title");
 
                     b.HasIndex("UserID");
 
@@ -83,6 +95,80 @@ namespace EFDataAccessLibrary.Migrations
                     b.HasKey("CategoryID");
 
                     b.ToTable("CList");
+                });
+
+            modelBuilder.Entity("EFDataAccessLibrary.Data.CategoriesListAnnouncement", b =>
+                {
+                    b.Property<int>("AnnouncementID")
+                        .HasColumnType("int");
+
+                    b.Property<int>("CategoryID")
+                        .HasColumnType("int");
+
+                    b.HasKey("AnnouncementID", "CategoryID");
+
+                    b.HasIndex("CategoryID");
+
+                    b.ToTable("categoriesListannouncement");
+                });
+
+            modelBuilder.Entity("EFDataAccessLibrary.Data.CategoriesListUser", b =>
+                {
+                    b.Property<int>("UserID")
+                        .HasColumnType("int");
+
+                    b.Property<int>("CategoryID")
+                        .HasColumnType("int");
+
+                    b.HasKey("UserID", "CategoryID");
+
+                    b.HasIndex("CategoryID");
+
+                    b.ToTable("categorieslistuser");
+                });
+
+            modelBuilder.Entity("EFDataAccessLibrary.Data.File", b =>
+                {
+                    b.Property<int>("FileID")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    b.Property<int?>("AnnouncementAnnID")
+                        .HasColumnType("int");
+
+                    b.Property<string>("ContentType")
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("FileName")
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("Path")
+                        .HasColumnType("longtext");
+
+                    b.HasKey("FileID");
+
+                    b.HasIndex("AnnouncementAnnID");
+
+                    b.ToTable("Files");
+                });
+
+            modelBuilder.Entity("EFDataAccessLibrary.Data.Image", b =>
+                {
+                    b.Property<int>("ImageID")
+                        .HasColumnType("int");
+
+                    b.Property<string>("ImageName")
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("ImageType")
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("Path")
+                        .HasColumnType("longtext");
+
+                    b.HasKey("ImageID");
+
+                    b.ToTable("Images");
                 });
 
             modelBuilder.Entity("EFDataAccessLibrary.Data.Permission", b =>
@@ -290,6 +376,21 @@ namespace EFDataAccessLibrary.Migrations
                     b.ToTable("UserYearsList");
                 });
 
+            modelBuilder.Entity("AnnouncementCategoriesList", b =>
+                {
+                    b.HasOne("EFDataAccessLibrary.Data.Announcement", null)
+                        .WithMany()
+                        .HasForeignKey("AnnouncementsAnnID")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("EFDataAccessLibrary.Data.CategoriesList", null)
+                        .WithMany()
+                        .HasForeignKey("CategoriesListCategoryID")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
             modelBuilder.Entity("CategoriesListUser", b =>
                 {
                     b.HasOne("EFDataAccessLibrary.Data.CategoriesList", null)
@@ -312,6 +413,64 @@ namespace EFDataAccessLibrary.Migrations
                         .HasForeignKey("UserID");
 
                     b.Navigation("User");
+                });
+
+            modelBuilder.Entity("EFDataAccessLibrary.Data.CategoriesListAnnouncement", b =>
+                {
+                    b.HasOne("EFDataAccessLibrary.Data.Announcement", "Announcement")
+                        .WithMany("CategoriesListAnnouncements")
+                        .HasForeignKey("AnnouncementID")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("EFDataAccessLibrary.Data.CategoriesList", "Category")
+                        .WithMany("CategoriesListAnnouncements")
+                        .HasForeignKey("CategoryID")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Announcement");
+
+                    b.Navigation("Category");
+                });
+
+            modelBuilder.Entity("EFDataAccessLibrary.Data.CategoriesListUser", b =>
+                {
+                    b.HasOne("EFDataAccessLibrary.Data.CategoriesList", "Category")
+                        .WithMany("CategoriesListUsers")
+                        .HasForeignKey("CategoryID")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("EFDataAccessLibrary.Data.User", "User")
+                        .WithMany("CategoriesListUsers")
+                        .HasForeignKey("UserID")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Category");
+
+                    b.Navigation("User");
+                });
+
+            modelBuilder.Entity("EFDataAccessLibrary.Data.File", b =>
+                {
+                    b.HasOne("EFDataAccessLibrary.Data.Announcement", "Announcement")
+                        .WithMany("Files")
+                        .HasForeignKey("AnnouncementAnnID");
+
+                    b.Navigation("Announcement");
+                });
+
+            modelBuilder.Entity("EFDataAccessLibrary.Data.Image", b =>
+                {
+                    b.HasOne("EFDataAccessLibrary.Data.Announcement", "Announcement")
+                        .WithOne("Image")
+                        .HasForeignKey("EFDataAccessLibrary.Data.Image", "ImageID")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Announcement");
                 });
 
             modelBuilder.Entity("EFDataAccessLibrary.Data.Permission", b =>
@@ -366,9 +525,27 @@ namespace EFDataAccessLibrary.Migrations
                         .IsRequired();
                 });
 
+            modelBuilder.Entity("EFDataAccessLibrary.Data.Announcement", b =>
+                {
+                    b.Navigation("CategoriesListAnnouncements");
+
+                    b.Navigation("Files");
+
+                    b.Navigation("Image");
+                });
+
+            modelBuilder.Entity("EFDataAccessLibrary.Data.CategoriesList", b =>
+                {
+                    b.Navigation("CategoriesListAnnouncements");
+
+                    b.Navigation("CategoriesListUsers");
+                });
+
             modelBuilder.Entity("EFDataAccessLibrary.Data.User", b =>
                 {
                     b.Navigation("Announcements");
+
+                    b.Navigation("CategoriesListUsers");
 
                     b.Navigation("Permissions");
 

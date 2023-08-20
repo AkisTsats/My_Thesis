@@ -2,8 +2,6 @@
 
 
 @inject HttpClient Http
-@*@using Microsoft.AspNetCore.Authorization
-@attribute [Authorize]*@
 
 @using DTOs.Data;
 
@@ -65,10 +63,10 @@
 @code {
     DTOs.Data.UserDTO User = new()
         {
-            Name = "Makis",
-            Surname = "Kotsabsis",
-            PrimaryEmail = "gatoula@gmail.com",
-            SecondaryEmail = "gatoulis@gmail.com",
+            Name = "Test",
+            Surname = "Name",
+            PrimaryEmail = "test@gmail.com",
+            SecondaryEmail = "test@gmail.com",
             Role = "Student",
             PhoneNumber = "6969696969",
             EnrollmentYear = 1970,

@@ -31,7 +31,10 @@
 
 	<ItemGroup>
 		<Folder Include="Mqtt\" />
-		<Folder Include="WordPressApi\" />
+		<Folder Include="FileUploadService\" />
+		<Folder Include="Files\" />
+		<Folder Include="Images\" />
+		<Folder Include="WordPressAPI\" />
 	</ItemGroup>
 
 </Project>

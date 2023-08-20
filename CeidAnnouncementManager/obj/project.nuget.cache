@@ -1,6 +1,6 @@
 {
   "version": 2,
-  "dgSpecHash": "jivrmtYcuJZ7dG7HFh1KkvLC5/90l93sQtMGUEs0OoemuS069RyVmNu8CkalYF/3LXRowDUP6xIcY/K2qlPB8Q==",
+  "dgSpecHash": "p7JD4YkwkOY5/Y3kaeL4ftL79mkN6DUnYKlUR1dxU1iqGuZtyTvN2sfuZVZr+L/igAUorD7veC8QHX815JAz5Q==",
   "success": true,
   "projectFilePath": "C:\\Users\\akist\\source\\repos\\My_Thesis\\CeidAnnouncementManager\\CeidAnnouncementManager.csproj",
   "expectedPackageFiles": [
@@ -37,7 +37,7 @@
     "C:\\Users\\akist\\.nuget\\packages\\system.runtime.compilerservices.unsafe\\6.0.0\\system.runtime.compilerservices.unsafe.6.0.0.nupkg.sha512",
     "C:\\Users\\akist\\.nuget\\packages\\system.text.encodings.web\\6.0.0\\system.text.encodings.web.6.0.0.nupkg.sha512",
     "C:\\Users\\akist\\.nuget\\packages\\system.text.json\\6.0.0\\system.text.json.6.0.0.nupkg.sha512",
-    "C:\\Users\\akist\\.nuget\\packages\\microsoft.netcore.app.runtime.mono.browser-wasm\\6.0.13\\microsoft.netcore.app.runtime.mono.browser-wasm.6.0.13.nupkg.sha512"
+    "C:\\Users\\akist\\.nuget\\packages\\microsoft.netcore.app.runtime.mono.browser-wasm\\6.0.21\\microsoft.netcore.app.runtime.mono.browser-wasm.6.0.21.nupkg.sha512"
   ],
   "logs": []
 }

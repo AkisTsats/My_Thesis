@@ -32,7 +32,12 @@ namespace EFDataAccessLibrary.Data
                 .WithMany(b => b.Announcements);
 
             modelBuilder.Entity<Announcement>()
-                .HasAlternateKey(c => c.Title);
+                .HasOne(a => a.Image)
+                .WithOne(b => b.Announcement)
+                .HasForeignKey<Image>(c => c.ImageID);
+
+            // modelBuilder.Entity<Announcement>()
+            //   .HasAlternateKey(c => c.Title);
 
             modelBuilder.Entity<User>()
                 .HasOne(a => a.Preferences)
@@ -53,10 +58,22 @@ namespace EFDataAccessLibrary.Data
                 .HasMany(a => a.Users)
                 .WithMany(b => b.SubjectsList);
 
+
             modelBuilder.Entity<CategoriesList>()
                 .HasMany(a => a.Users)
                 .WithMany(b => b.CategoriesList);
 
+
+            modelBuilder.Entity<CategoriesListUser>()
+                .HasKey(a => new { a.UserID, a.CategoryID});
+
+            modelBuilder.Entity<CategoriesList>()
+                .HasMany(a => a.Announcements)
+                .WithMany(b => b.CategoriesList);
+
+
+            modelBuilder.Entity<CategoriesListAnnouncement>()
+                .HasKey(a => new { a.AnnouncementID, a.CategoryID});
         }
 
 
@@ -65,12 +82,14 @@ namespace EFDataAccessLibrary.Data
         public DbSet<Announcement> Announcements { get; set; }
         public DbSet<Preference> Preferences { get; set; }
         public DbSet<Permission> Permissions { get; set; }
+        public DbSet<File> Files { get; set; }
+        public DbSet<Image> Images { get; set; }
         public DbSet<Statistics> Stats { get; set; }
-        //public DbSet<Category> Categories { get; set; }
-        //public DbSet<Subject> Subjects { get; set; }
         public DbSet<YearsList> YList { get; set; }
         public DbSet<CategoriesList> CList { get; set; }
         public DbSet<SubjectsList> SList { get; set; }
+        public DbSet<CategoriesListAnnouncement> categoriesListannouncement { get; set; }
+        public DbSet<CategoriesListUser> categorieslistuser { get; set; }
 
     }
 }

@@ -2,10 +2,16 @@
   "ExpandedNodes": [
     "",
     "\\AnnouncementAPI",
+    "\\AnnouncementAPI\\Controllers",
     "\\CeidAnnouncementManager",
+    "\\CeidAnnouncementManager\\Pages",
+    "\\CeidAnnouncementManager\\Shared",
     "\\DTOs",
+    "\\DTOs\\API",
+    "\\DTOs\\API\\Requests",
+    "\\DTOs\\API\\Responses",
     "\\DTOs\\Data"
   ],
-  "SelectedNode": "\\AnnouncementAPI\\Startup.cs",
+  "SelectedNode": "\\CeidAnnouncementManager\\Pages\\EditAnnouncmenet.razor",
   "PreviewInSolutionExplorer": false
 }

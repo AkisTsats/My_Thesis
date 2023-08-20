@@ -1,4 +1,8 @@
-﻿<label  style="
+﻿@using DTOs.Common;
+@inject HttpClient Http
+
+
+<label style="
         box-shadow: 0 2px 7px #4caf50;
         display: inline-flex;
         width: 150px;
@@ -9,33 +13,65 @@
         cursor: pointer;
         align-items: center;
         padding:16px;
-        background-color: #4caf50;"         
+        background-color: #4caf50;"
        for="fileInput2">
-    Upload <MudIcon Icon="@Icons.Filled.CloudUpload"/>
+    Upload Files<MudIcon Icon="@Icons.Filled.CloudUpload" />
 </label>
 
 <InputFile id="fileInput2" OnChange="UploadFiles" hidden multiple />
 
-@if (files != null)
+@if (fileNames.Count > 0)
 {
     <MudList>
-        @foreach (var file in files)
+        @foreach (var file in fileNames)
         {
+            
             <MudListItem Icon="@Icons.Filled.AttachFile">
-                @file.Name <code>@file.Size bytes</code>
+                File: @file; 
             </MudListItem>
         }
     </MudList>
 }
 @code
 {
-    IList<IBrowserFile> files = new List<IBrowserFile>();
-    private void UploadFiles(InputFileChangeEventArgs e)
+    [Parameter] public EventCallback<MultipartFormDataContent> OnUpload { get; set; }
+
+    private int maxFilesNum = int.MaxValue;
+    private long maxFileSize = long.MaxValue;
+    private List<string> fileNames = new();
+    private List<UploadResult> uploadResults = new();
+
+
+    private async Task UploadFiles(InputFileChangeEventArgs e)
     {
-        foreach (var file in e.GetMultipleFiles())
+        var content = new MultipartFormDataContent();
+
+        foreach (var file in e.GetMultipleFiles(maxFilesNum))
         {
-            files.Add(file);
+            var filecontent = new StreamContent(file.OpenReadStream(maxFileSize));
+            filecontent.Headers.ContentType = new System.Net.Http.Headers.MediaTypeHeaderValue(file.ContentType);
+            fileNames.Add(file.Name);
+
+            content.Add
+            (
+                content: filecontent,
+                name: "\"files\"",
+                fileName: file.Name);
+
+
         }
-        //TODO upload the files to the server
+
+        await OnUpload.InvokeAsync(content);
+
+
+    }
+    private string GetStoredFileName(string fileName)
+    {
+        var uploadResult = uploadResults.SingleOrDefault(f => f.FileName == fileName);
+        if (uploadResult is not null)
+        {
+            return uploadResult.StoredFileName;
+        }
+        return "File not found";
     }
 }
