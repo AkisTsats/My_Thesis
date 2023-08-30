@@ -13,6 +13,7 @@ using System.Collections;
 
 namespace AnnouncementAPI.Controllers
 {
+    [Authorize]
     [Route("api/[controller]")]
     [ApiController]
     public class AnnouncementController : ControllerBase

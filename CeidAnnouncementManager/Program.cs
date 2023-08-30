@@ -12,33 +12,43 @@ var builder = WebAssemblyHostBuilder.CreateDefault(args);
 builder.RootComponents.Add<App>("#app");
 builder.RootComponents.Add<HeadOutlet>("head::after");
 
-builder.Services.AddScoped(sp => new HttpClient { BaseAddress = new Uri(builder.HostEnvironment.BaseAddress) });
+//builder.Services.AddScoped(sp => new HttpClient { BaseAddress = new Uri(builder.HostEnvironment.BaseAddress) });
 builder.Services.AddScoped<CategoriesRepository>();
 builder.Services.AddMudServices();
 
+var services = builder.Services;
 
-//builder.Services.AddOidcAuthentication(options =>
-//{
-//    builder.Configuration.Bind("Local", options.ProviderOptions);
-//});
+RegisterHttpClient(builder, services);
 
-//builder.Services.AddScoped<CustomAuthenticationMessageHandler>();
-//builder.Services.AddHttpClient("api", opt => opt.BaseAddress = new Uri("https://demo.identityserver.io"))
-//    .AddHttpMessageHandler<CustomAuthenticationMessageHandler>();
-//builder.Services.AddScoped(sp => sp.GetRequiredService<IHttpClientFactory>().CreateClient("api"));
+builder.Services.AddOidcAuthentication(options =>
+{
+    options.ProviderOptions.MetadataUrl = "http://localhost:8080/realms/Test/.well-known/openid-configuration";
+    options.ProviderOptions.Authority = "http://localhost:8080/realms/Test";
+    options.ProviderOptions.ClientId = "test-client";
+    options.ProviderOptions.ResponseType = "id_token token";
 
-//builder.Services.AddOidcAuthentication(opt =>
-//{
-//    opt.ProviderOptions.Authority = "https://demo.identityserver.io";
-//    opt.ProviderOptions.ClientId = "interactive.public";
-//    opt.ProviderOptions.ResponseType = "code";
-//    opt.ProviderOptions.DefaultScopes.Add("api");
-//    opt.ProviderOptions.DefaultScopes.Add("email");
-//    opt.ProviderOptions.DefaultScopes.Add("profile");
-//});
+    options.UserOptions.NameClaim = "preferred_username";
+    options.UserOptions.RoleClaim = "roles";
+    options.UserOptions.ScopeClaim = "scope";
+});
+
 
 await builder.Build().RunAsync();
 
+static void RegisterHttpClient(
+    WebAssemblyHostBuilder builder,
+    IServiceCollection services)
+{
+    var httpClientName = "Default";
+
+    services.AddHttpClient(httpClientName,
+        client => client.BaseAddress = new Uri(builder.HostEnvironment.BaseAddress))
+            .AddHttpMessageHandler<BaseAddressAuthorizationMessageHandler>();
+
+    services.AddScoped(
+        sp => sp.GetRequiredService<IHttpClientFactory>()
+            .CreateClient(httpClientName));
+}
 //public class CustomAuthenticationMessageHandler : AuthorizationMessageHandler
 //{
 //    public CustomAuthenticationMessageHandler(IAccessTokenProvider provder, NavigationManager nav) : base(provder, nav)

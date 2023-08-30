@@ -9,12 +9,28 @@
 @using static DTOs.Common.Helpers;
 @using DTOs.API.Responses;
 
+@using Microsoft.AspNetCore.Components.Authorization
+@using Microsoft.AspNetCore.Components.WebAssembly.Authentication
+@using System.Security.Claims
+
+@inject AuthenticationStateProvider AuthenticationStateProvider
+
 <PageTitle>Announcements Manager</PageTitle>
 
 <MudText Typo="Typo.h3">Welcome to Ceid Announcements Manager</MudText>
 
 <MudGrid>
-    @if (_myDTO != null)
+    @if (claims.Count() > 0)
+    {
+        <h2>User Claims:</h2>
+        <ul>
+            @foreach (var claim in claims)
+            {
+                <li>@claim.Type: @claim.Value</li>
+            }
+        </ul>
+    }
+    @* @if (_myDTO != null)
     {
         @foreach (var myVar in _myDTO)
         {
@@ -29,18 +45,13 @@
                         <MudText>@myVar.Author</MudText>
                         <MudText Typo="Typo.body2">@myVar.Abstract</MudText>
                     </MudCardContent>
-                    @*<MudCardActions>
-            <MudButton Variant="Variant.Filled" Color="Color.Secondary" OnClick="@(e => ToggleOverlay(true))">Show Overlay</MudButton>
-            <MudOverlay Visible="isVisible" >
-            <ShowAnnouncement></ShowAnnouncement>
-            <MudButton Variant="Variant.Filled" Color="Color.Primary" OnClick="@(e => ToggleOverlay(false))">Hide Overlay</MudButton>
-            </MudOverlay>
-            </MudCardActions>*@
+                    
                     <MudButton @onclick="@(e => click(myVar.AnnID))">  test </MudButton>
                 </MudCard>
             </MudItem>
         }
-    }
+    } *@
+    
 </MudGrid>
 
 
@@ -55,7 +66,7 @@
 
     public async Task<IEnumerable<AnnouncementDTO>> PrintWebApiResponse()
     {
-        var response = await Http.GetStringAsync("https://localhost:5001/api/Announcement/GetAnnouncementBy");
+        var response = await Http.GetStringAsync("https://localhost:5001/api/Announcement/GetAllAnnouncement");
         //string serializedString = System.Text.Json.JsonSerializer.Serialize(response);
 
         Console.WriteLine(response);
@@ -67,10 +78,11 @@
     }
 
     private IEnumerable<AnnouncementDTO>? _myDTO;
+
     protected override async Task OnInitializedAsync()
     {
-
-        _myDTO = await PrintWebApiResponse();
+        await GetClaimsPrincipalData();
+       // _myDTO = await PrintWebApiResponse();
     }
 
 
@@ -79,4 +91,19 @@
     {
         UriHelper.NavigateTo($"showannouncement/{id}");
     }
+
+    private IEnumerable<Claim> claims = Enumerable.Empty<Claim>();
+
+    //protected override Task OnInitializedAsync() => GetClaimsPrincipalData();
+
+    private async Task GetClaimsPrincipalData()
+    {
+        var authState = await AuthenticationStateProvider.GetAuthenticationStateAsync();
+        var user = authState.User;
+        if (user.Identity?.IsAuthenticated ?? false)
+        {
+            claims = user.Claims;
+        }
+    }
+
 }

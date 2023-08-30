@@ -67,6 +67,10 @@
               "target": "Package",
               "version": "[1.60.0.3056, )"
             },
+            "Keycloak.AuthServices.Authentication": {
+              "target": "Package",
+              "version": "[1.2.1, )"
+            },
             "MailKit": {
               "target": "Package",
               "version": "[3.3.0, )"

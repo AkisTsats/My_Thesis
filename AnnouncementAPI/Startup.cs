@@ -26,11 +26,15 @@ using Google.Apis.Services;
 using Google.Apis.Gmail.v1;
 using Microsoft.AspNetCore.Authentication.Google;
 using Microsoft.AspNetCore.Identity;
+using Keycloak.AuthServices.Authentication;
+using static System.Net.WebRequestMethods;
 
 namespace AnnouncementAPI
 {
     public class Startup
     {
+        //public KeycloakAuthenticationOptions configuration;
+
         //private const string connectionString = "Server=localhost;User Id=root;Password='r00t;';Database=test";
 
         public Startup(IConfiguration configuration)
@@ -87,13 +91,53 @@ namespace AnnouncementAPI
             services.AddAuthorization();
             */
 
+            services.AddEndpointsApiExplorer();
+            services.AddKeycloakAuthentication(Configuration);
+
+
+            //var openIdConnectUrl = $"{Configuration["Keycloak:auth-server-url"]}"
+            //                      + $"realms/{Configuration["Keycloak: realm"]}/"
+            //                      + ".well-known/openid-configuration";
+
+            var openIdConnectUrl = "http://localhost:8080/realms/Test/.well-known/openid-configuration";
+
+
+
+            services.AddSwaggerGen(c =>
+            {
+                var securityScheme = new OpenApiSecurityScheme
+                {
+                    Name = "Auth",
+                    In = ParameterLocation.Header,
+                    Type = SecuritySchemeType.OpenIdConnect,
+                    OpenIdConnectUrl = new Uri(openIdConnectUrl),
+                    Scheme = "bearer",
+                    BearerFormat = "JWT",
+                    Reference = new OpenApiReference
+                    {
+                        Id = "Bearer",
+                        Type = ReferenceType.SecurityScheme
+                    }
+                };
+                c.AddSecurityDefinition(securityScheme.Reference.Id, securityScheme);
+                c.AddSecurityRequirement(new OpenApiSecurityRequirement
+                {
+                    {securityScheme, Array.Empty<string>()}
+                });
+            });
+
+
+
+
+
             services.AddControllers();
             services.AddSwaggerGen(c =>
             {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "AnnouncementAPI", Version = "v1" });
             });
 
-            services.AddDbContext<EFDataAccessLibrary.Data.MyDbContext>(options => {
+            services.AddDbContext<EFDataAccessLibrary.Data.MyDbContext>(options =>
+            {
                 options.UseMySql(new MySqlServerVersion(new Version(8, 0, 21)));
                 //options.UseQueryTrackingBehavior(QueryTrackingBehavior.NoTracking);
             });
@@ -121,9 +165,9 @@ namespace AnnouncementAPI
 
             app.UseRouting();
 
-            //app.UseAuthentication();
+            app.UseAuthentication();
 
-            //app.UseAuthorization();
+            app.UseAuthorization();
 
             app.UseEndpoints(endpoints =>
             {

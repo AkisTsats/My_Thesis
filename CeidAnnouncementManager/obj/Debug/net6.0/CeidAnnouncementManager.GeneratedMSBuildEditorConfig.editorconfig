@@ -80,8 +80,16 @@ build_metadata.AdditionalFiles.CssScope =
 build_metadata.AdditionalFiles.TargetPath = U2hhcmVkXERyb3Bkb3duLnJhem9y
 build_metadata.AdditionalFiles.CssScope = 
 
+[C:/Users/akist/source/repos/My_Thesis/CeidAnnouncementManager/Shared/LoginDisplay.razor]
+build_metadata.AdditionalFiles.TargetPath = U2hhcmVkXExvZ2luRGlzcGxheS5yYXpvcg==
+build_metadata.AdditionalFiles.CssScope = 
+
 [C:/Users/akist/source/repos/My_Thesis/CeidAnnouncementManager/Shared/Moderation.razor]
 build_metadata.AdditionalFiles.TargetPath = U2hhcmVkXE1vZGVyYXRpb24ucmF6b3I=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/akist/source/repos/My_Thesis/CeidAnnouncementManager/Shared/RedirectToLogin.razor]
+build_metadata.AdditionalFiles.TargetPath = U2hhcmVkXFJlZGlyZWN0VG9Mb2dpbi5yYXpvcg==
 build_metadata.AdditionalFiles.CssScope = 
 
 [C:/Users/akist/source/repos/My_Thesis/CeidAnnouncementManager/Shared/SelectCategories.razor]

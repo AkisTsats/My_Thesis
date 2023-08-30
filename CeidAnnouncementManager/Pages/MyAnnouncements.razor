@@ -1,12 +1,15 @@
 ﻿@inject IJSRuntime JSRuntime
-@inject HttpClient Http
+
 @using System.Text.Json
 @using System.Text.Json.Serialization;
 @using DTOs.Data;
 @using static DTOs.Common.Helpers;
 @using DTOs.API.Responses;
+@using Microsoft.AspNetCore.Authorization;
 @inject NavigationManager UriHelper
 
+@attribute [Authorize]
+@inject HttpClient Http
 
 @page "/myannouncements"
 

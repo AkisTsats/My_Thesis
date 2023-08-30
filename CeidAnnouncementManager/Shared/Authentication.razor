@@ -1,5 +1,15 @@
 ﻿@page "/authentication/{action}"
+@using Microsoft.AspNetCore.Components.WebAssembly.Authentication
+<RemoteAuthenticatorView Action="@Action" />
+
+@code{
+    [Parameter] public string? Action { get; set; }
+}
+
+
+@* @page "/authentication/{action}"
 @using Microsoft.AspNetCore.Components.WebAssembly
+<script src="_content/Microsoft.AspNetCore.Components.WebAssembly.Authentication/AuthenticationService.js"></script>
 
 <Microsoft.AspNetCore.Components.WebAssembly.Authentication.RemoteAuthenticatorView Action="@Action">
 
@@ -7,5 +17,6 @@
 
 @code {
     [Parameter]
-    public string Action { get; set; }
+    public string? Action { get; set; }
 }
+ *@
