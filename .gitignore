@@ -5,3 +5,5 @@
 /Tsatsoulis_Christoforos.docx
 **/bin/*
 **/obj/*
+/obj
+/bin
