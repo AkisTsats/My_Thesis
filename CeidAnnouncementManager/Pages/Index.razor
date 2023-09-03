@@ -5,7 +5,6 @@
 
 @using System.Text.Json
 @using System.Text.Json.Serialization;
-@using Blazor.Shared;
 @using DTOs.Data;
 @using static DTOs.Common.Helpers;
 @using DTOs.API.Responses;
@@ -64,13 +63,10 @@
     {
         isVisible = value;
     }
-    private WeatherForecast[]? forecasts;
     public async Task<IEnumerable<AnnouncementDTO>> PrintWebApiResponse()
     {
         var response = await Http.GetStringAsync("https://localhost:5001/api/Announcement/GetAllAnnouncement");
         ////string serializedString = System.Text.Json.JsonSerializer.Serialize(response);
-        
-        Console.WriteLine(forecasts);
 
         var annResponse = response.DeserializeMethod<GetAnnouncementsByResponse>();
         
@@ -82,7 +78,6 @@
 
     protected override async Task OnInitializedAsync()
     {
-        forecasts = await Http.GetFromJsonAsync<WeatherForecast[]>("WeatherForecast");
         await GetClaimsPrincipalData();
        // _myDTO = await PrintWebApiResponse();
     }
