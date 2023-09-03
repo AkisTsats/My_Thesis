@@ -1,7 +1,4 @@
-﻿################################################################################
-# This .gitignore file was automatically created by Microsoft(R) Visual Studio.
-################################################################################
-
+﻿
 /Tsatsoulis_Christoforos.docx
 **/bin/*
 **/obj/*
@@ -9,3 +6,5 @@
 /bin
 bin/
 obj/
+*/obj/*
+*/obj
