@@ -24,10 +24,10 @@ namespace CeidAnnouncementManager.Services
 
         public async Task<IEnumerable<CategoriesDTO>> FetchCategories()
         { 
-            var response = await http.GetStringAsync(BaseUrl + "/api/Categories/GetCategories");
-            var annResponse = response.DeserializeMethod<List<CategoriesDTO>>();
+            //var response = await http.GetStringAsync(BaseUrl + "/api/Categories/GetCategories");
+            //var annResponse = response.DeserializeMethod<List<CategoriesDTO>>();
 
-            return annResponse;
+            return Enumerable.Empty<CategoriesDTO>();
 
         }
 

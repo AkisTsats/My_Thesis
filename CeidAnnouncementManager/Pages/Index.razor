@@ -9,52 +9,62 @@
 @using static DTOs.Common.Helpers;
 @using DTOs.API.Responses;
 
+@using Microsoft.AspNetCore.Authorization;
 @using Microsoft.AspNetCore.Components.Authorization
 @using Microsoft.AspNetCore.Components.WebAssembly.Authentication
 @using System.Security.Claims
+@* @attribute [Authorize] *@
 
 @inject AuthenticationStateProvider AuthenticationStateProvider
 
-<PageTitle>Announcements Manager</PageTitle>
+<PageTitle>Διαχείρηση Ανακοινώσεων του ΤΜΗΥΠ</PageTitle>
 
-<MudText Typo="Typo.h3">Welcome to Ceid Announcements Manager</MudText>
+<MudText Typo="Typo.h3">Καλωσήλθατε στην Διαχείριση Ανακοινώσεων του ΤΜΗΥΠ</MudText>
 
-<MudGrid>
-    @if (claims.Count() > 0)
+<MudGrid Justify="Justify.Center" Class="d-flex" Spacing="2" Style="align-items: center">
+    @* @if (claims.Count() > 0)
     {
-        <h2>User Claims:</h2>
-        <ul>
-            @foreach (var claim in claims)
-            {
-                <li>@claim.Type: @claim.Value</li>
-            }
-        </ul>
+    <h2>User Claims:</h2>
+    <ul>
+    @foreach (var claim in claims)
+    {
+    <li>@claim.Type: @claim.Value</li>
     }
-    @* @if (_myDTO != null)
-    {
-        @foreach (var myVar in _myDTO)
+    </ul>
+    } *@
+    @if (_myDTO != null)
+    {   @foreach (var myVar in _myDTO)
         {
-            <MudItem xs="12">
-                <MudCard>
+            var annID = myVar.AnnID;
+            <MudItem xs="10" aling-center>
+                <MudCard Style="background-color: #EDE7F6;">
                     <MudCardHeader>
                         <CardHeaderContent>
                             <MudText Typo="Typo.h6">@myVar.Title</MudText>
                         </CardHeaderContent>
+                        <CardHeaderActions>
+                            <MudIconButton Icon="@Icons.Material.Filled.Settings" Color="Color.Default" />
+                        </CardHeaderActions>
                     </MudCardHeader>
                     <MudCardContent>
                         <MudText>@myVar.Author</MudText>
                         <MudText Typo="Typo.body2">@myVar.Abstract</MudText>
                     </MudCardContent>
-                    
-                    <MudButton @onclick="@(e => click(myVar.AnnID))">  test </MudButton>
+                    @*                     <MudChip Label="true">Undergraduate</MudChip>
+            <MudChip Label="true">Μαθηματικά 1</MudChip>
+            <MudChip Label="true">Αλγόριθμοι</MudChip>
+            *@                    <MudCardActions>
+                        <MudButton OnClick="() => NavigateTo(annID)" Variant="Variant.Text" Color="Color.Info">Read More</MudButton>
+                    </MudCardActions>
                 </MudCard>
             </MudItem>
         }
-    } *@
-    
+        <MudItem xs="5"></MudItem>
+        <MudItem xs="6">
+            <MudPagination SelectedChanged="PageChanged" Color="Color.Info" Count="@numOfPages" />
+        </MudItem>
+    }
 </MudGrid>
-
-
 
 @code {
 
@@ -63,26 +73,83 @@
     {
         isVisible = value;
     }
-    public async Task<IEnumerable<AnnouncementDTO>> PrintWebApiResponse()
+
+    private int _selected = 1;
+    private int numOfPages = 1;
+    private int pageSize = 10;
+
+    public async Task<IEnumerable<AnnouncementDTO>> GetWebApiResponse()
     {
-        var response = await Http.GetStringAsync("https://localhost:5001/api/Announcement/GetAllAnnouncement");
-        ////string serializedString = System.Text.Json.JsonSerializer.Serialize(response);
+        string s1 = pageSize.ToString();
+        string s2 = _selected.ToString();
+        var response = await Http.GetStringAsync("https://localhost:5001/api/Announcement/GetAnnouncementByObj?" + "limit=" + s1 + "&skip=" + s2);
+
+        //string serializedString = System.Text.Json.JsonSerializer.Serialize(response);
+
+        Console.WriteLine(response);
+        //Console.WriteLine(serializedString);
 
         var annResponse = response.DeserializeMethod<GetAnnouncementsByResponse>();
-        
-        return annResponse.Announcements;
+
+        int count = annResponse.SumOfAnnouncements;
+
+        numOfPages = getPageCount(count);
+
+
+        var ann = annResponse.Announcements;
+
+        return ann;
 
     }
 
-    private IEnumerable<AnnouncementDTO>? _myDTO;
+    private int getPageCount(int count)
+    {
+        //count % pageSize == 0 ? numOfPages = (count/pageSize) : numOfPages = (count/pageSize) + 1;
+        if (count % pageSize == 0)
+        {
+            numOfPages = (count / pageSize);
+        }
+        else
+        {
+            numOfPages = (count / pageSize) + 1;
+        }
+
+        return numOfPages;
+    }
+
+    public async Task<IEnumerable<AnnouncementDTO>> PrintWebApiResponse()
+    {
+        _allDTO = await GetWebApiResponse();
+        return _allDTO;
+    }
+
+
+
+    public async Task<IEnumerable<AnnouncementDTO>> PageChanged(int i)
+    {
+        _selected = i;
+        _change = await PrintWebApiResponse();
+        _myDTO = _change;
+        return _change;
+    }
+
+    @inject NavigationManager NavManager;
+
+    private void NavigateTo(int id)
+    {
+        var s = id.ToString();
+        NavManager.NavigateTo("showannouncement/" + s);
+    }
+
+    private IEnumerable<AnnouncementDTO> _myDTO;
+    private IEnumerable<AnnouncementDTO> _allDTO;
+    private IEnumerable<AnnouncementDTO> _change;
 
     protected override async Task OnInitializedAsync()
     {
         await GetClaimsPrincipalData();
-       // _myDTO = await PrintWebApiResponse();
+        _myDTO = await PrintWebApiResponse();
     }
-
-
 
     private void click(int id)
     {
@@ -100,6 +167,14 @@
         if (user.Identity?.IsAuthenticated ?? false)
         {
             claims = user.Claims;
+        }
+        foreach (var claim in claims)
+        {
+            if (claim.Type == "email")
+            {
+                var mail = claim.Value;
+                Console.WriteLine(mail);
+            }
         }
     }
 

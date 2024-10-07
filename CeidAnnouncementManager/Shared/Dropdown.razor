@@ -10,7 +10,7 @@
 
 <MudPaper Height="400px" Width="100%">
     <MudContainer MaxWidth="MaxWidth.Small">
-        <MudSelect T="string" Label="Subjects" MultiSelection="true" @bind-Value="value" @bind-SelectedValues="options">
+        <MudSelect T="string" Label="Μαθήματα" MultiSelection="true" @bind-Value="value" @bind-SelectedValues="options">
             @if (all is not null)
             {
                 @foreach (var state in all)
@@ -19,7 +19,7 @@
                 }           }
         </MudSelect>
     </MudContainer>
-    <MudButton OnClick="() => SaveCategories()" Variant="Variant.Filled" Color="Color.Primary">Update Categories</MudButton>
+    <MudButton OnClick="() => SaveCategories()" Variant="Variant.Filled" Color="Color.Info">Update Categories</MudButton>
 </MudPaper>
 
 @*<MudGrid Class="mt-6 px-4">
@@ -55,8 +55,8 @@
     {
         //try
         //{
-        all = await _categoriesRepository.FetchCategories();
-        selected = await _categoriesRepository.FetchCategories(id);
+        // all = await _categoriesRepository.FetchCategories();
+        // selected = await _categoriesRepository.FetchCategories(id);
         foreach (var sel in selected)
         {
 

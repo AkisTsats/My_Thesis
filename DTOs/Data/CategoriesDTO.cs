@@ -6,9 +6,8 @@ using System.Threading.Tasks;
 
 namespace DTOs.Data
 {
-    public class CategoriesDTO
+    public record CategoriesDTO(int CategoryID, string CategoryName)
     {
-        public int CategoryID { get; set; }
-        public string CategoryName { get; set; }
+        public static CategoriesDTO? DEFAULT_NO_CATEGORY_CHOOSEN = new(0, "Δεν έχει επιλεχθεί κατηγορία");
     }
 }

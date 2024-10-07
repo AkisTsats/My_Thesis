@@ -1,9 +1,10 @@
 ﻿@using DTOs.Data;
 
 <MudNavMenu>
-    <MudNavLink Href="/" Match="NavLinkMatch.All">Announcement Manager</MudNavLink>
-    <MudNavLink Href="/myannouncements" Match="NavLinkMatch.Prefix">My Announcements</MudNavLink>
-    <MudNavLink Href="/usersettings" Match="NavLinkMatch.Prefix">User Settings</MudNavLink>
+    <MudNavLink Href="/" Match="NavLinkMatch.All">Διαχείριση Ανακοινώσεων</MudNavLink>
+    <MudNavLink Href="/myannouncements" Match="NavLinkMatch.Prefix">Οι ανακοινώσεις μου</MudNavLink>
+    <MudNavLink Href="/createannouncement" Match="NavLinkMatch.Prefix">Δημιουργία ανακοίνωσης</MudNavLink>
+    <MudNavLink Href="/usersettings" Match="NavLinkMatch.Prefix">Οι ρυθμίσεις μου</MudNavLink>
     @if (permissions.canEditAllAnn == true)
     {
         <MudNavLink Href="/announcementsformoderation" Match="NavLinkMatch.Prefix">Moderation</MudNavLink>
@@ -14,52 +15,6 @@
     }
 </MudNavMenu>
 
-
-@*
-<div class="top-row ps-3 navbar navbar-dark">
-    <div class="container-fluid">
-        <a class="navbar-brand" href="">Announcement Manager</a>
-        <button title="Navigation menu" class="navbar-toggler">
-            <span class="navbar-toggler-icon"></span>
-        </button>
-    </div>
-</div>
-
-
-<nav class="flex-column">
-    <div class="nav-item px-3">
-        <NavLink class="nav-link" href="" Match="NavLinkMatch.All">
-            <span class="oi oi-home" aria-hidden="true"></span> Main
-        </NavLink>
-    </div>
-    <div class="nav-item px-3">
-        <NavLink class="nav-link" href="myannouncements">
-            <span class="oi oi-plus" aria-hidden="true"></span> My Announcements
-        </NavLink>
-    </div>
-    <div class="nav-item px-3">
-        <NavLink class="nav-link" href="usersettings">
-            <span class="oi oi-list-rich" aria-hidden="true"></span> User Settings
-        </NavLink>
-    </div>
-    @if (permissions.canEditAllAnn == true)
-    {
-        <div class="nav-item px-3">
-            <NavLink class="nav-link" href="announcementsformoderation">
-                <span class="oi oi-list-rich" aria-hidden="true"></span> Moderation
-            </NavLink>
-        </div>
-    }
-    @if (permissions.canSeeStats == true)
-    {
-        <div class="nav-item px-3">
-            <NavLink class="nav-link" href="statistics">
-                <span class="oi oi-list-rich" aria-hidden="true"></span> Stats
-            </NavLink>
-        </div>
-    }
-</nav>
-*@
 
 
 @code {

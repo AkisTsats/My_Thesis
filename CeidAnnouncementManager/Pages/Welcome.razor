@@ -7,9 +7,9 @@
 @using static DTOs.Common.Helpers;
 @using DTOs.API.Responses;
 
-<PageTitle>Announcements Manager</PageTitle>
+<PageTitle>Διαχείρηση Ανακοινώσεων του ΤΜΗΥΠ</PageTitle>
 
-<MudText Typo="Typo.h4">Welcome to Ceid Announcements Manager, please login to enjoy the full experience</MudText>
+<MudText Typo="Typo.h4">Καλως ήρθατε στην Διαχείρηση Ανακοινώσεων του ΤΜΗΥΠ</MudText>
 
 <MudGrid>
     @if (_myDTO != null)
@@ -28,7 +28,7 @@
                         <MudText Typo="Typo.body2">@myVar.Abstract</MudText>
                     </MudCardContent>
                     <MudCardActions>
-                        <MudButton Href="showannouncement" Variant="Variant.Text" Color="Color.Primary">Read More</MudButton>
+                        <MudButton Href="showannouncement" Variant="Variant.Text" Color="Color.Info">Read More</MudButton>
                     </MudCardActions>
                 </MudCard>
             </MudItem>

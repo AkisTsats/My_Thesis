@@ -1,13 +1,15 @@
 ﻿using System;
+using System.Threading.Tasks;
 using MailKit.Net.Smtp;
 using MimeKit;
 using MailKit;
+using MailKit.Security;
 
 namespace AnnouncementAPI.Mail
 {
     public class MailKit
     {
-        public void MailKitSender(string receiverName, string subject, string mailBody, string type, string receiverMail)
+        public async Task MailKitSender(string receiverName, string subject, string mailBody, string type, string receiverMail)
         {
             MimeMessage message = new MimeMessage();
 
@@ -19,7 +21,7 @@ namespace AnnouncementAPI.Mail
 
             message.Body = new TextPart(MimeKit.Text.TextFormat.Html)
             {
-
+                Text = mailBody
             };
 
 
@@ -27,7 +29,8 @@ namespace AnnouncementAPI.Mail
 
             try
             {
-                client.Connect("smtp.gmail.com", 465, true);
+                client.Connect("smtp.ethereal.email", 587, SecureSocketOptions.StartTls);
+                client.Authenticate("mohamed.bednar82@ethereal.email", "xSTCXBbj2G6U4hq4Fn");
                 client.Send(message);
             }
             catch (Exception ex)

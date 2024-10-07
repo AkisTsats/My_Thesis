@@ -1,48 +1,47 @@
 ﻿@page "/usersettings"
-
+@attribute [Authorize]
 
 @inject HttpClient Http
 
 @using DTOs.Data;
+@using Microsoft.AspNetCore.Authorization;
+@using DTOs.API.Responses
+@using DTOs.Common
 
-<PageTitle>User Settings</PageTitle>
+<PageTitle>Οι Ρυθμίσεις μου</PageTitle>
 
-<MudText Typo="Typo.h3">User Settings</MudText>
-
+<MudText Typo="Typo.h3">Οι Ρυθμίσεις μου</MudText>
 
 <MudGrid>
     <MudItem xs="6">
         <MudItem xs="12" sm="6" md="4">
-            <MudTextField T="string" Variant="Variant.Filled" Placeholder="@User.Name" Disabled Label="Name"></MudTextField>
+            <MudTextField T="string" Variant="Variant.Filled" Placeholder="@_myDTO.Name" @bind-Value="postUser.Name" Disabled Label="Όνομα"></MudTextField>
         </MudItem>
         <MudItem xs="12" sm="6" md="4">
-            <MudTextField T="string" Label="@User.Surname" Variant="Variant.Filled" Adornment="Adornment.Start" Disabled Placeholder="Surname"></MudTextField>
+            <MudTextField T="string" Label="@_myDTO.Surname" Variant="Variant.Filled" @bind-Value="postUser.Surname" Adornment="Adornment.Start" Disabled Placeholder="Επώνυμο"></MudTextField>
         </MudItem>
         <MudItem xs="12" sm="6" md="4">
-            <MudTextField T="string" Label="@User.PrimaryEmail" Variant="Variant.Filled" Adornment="Adornment.Start" Placeholder="Primary Email" Disabled></MudTextField>
-        </MudItem>
-        <MudItem xs="12" sm="6" md="4">
-            <MudTextField T="string" Label="@User.Role" Variant="Variant.Filled" Adornment="Adornment.Start" Placeholder="Role" Disabled></MudTextField>
+            <MudTextField T="string" Label="@_myDTO.PrimaryEmail" Variant="Variant.Filled" @bind-Value="postUser.PrimaryEmail" Adornment="Adornment.Start" Placeholder="Βασική διέυθυνση ηλ. ταχυδρομείου" Disabled></MudTextField>
         </MudItem>
     </MudItem>
     <MudItem xs="6">
         <MudItem xs="12" sm="6" md="4">
-            <MudTextField T="int" Label="Phone Number" Required="false" Placeholder="Insert your phone number"/>
+            <MudTextField T="string" Label="Προσθήκη τηλεφώνου" @bind-Value="postUser.PhoneNumber" Required="false" Placeholder="Προσθήκη τηλεφώνου" />
         </MudItem>
         <MudItem xs="12" sm="6" md="4">
-            <MudTextField T="string" Label="Secondary Email" Required="false" Placeholder="Insert your back up mail" />
+            <MudTextField T="string" Label="Προσθήκη εναλλακτικού ηλ. ταχυδροείου" @bind-Value="postUser.SecondaryEmail" Required="false" Placeholder="Προσθήκη εναλλακτικού ηλ. ταχυδροείου" />
         </MudItem>
         <MudItem xs="12" sm="6" md="4">
-            <MudTextField T="int" Label="Current Year" Required="false" Placeholder="Insert your current year" />
+            <MudTextField T="int" Label="Τρέχον έτος" @bind-Value="postUser.CurrentYear" Required="false" Placeholder="Τρέχον έτος" />
         </MudItem>
         <MudItem xs="12" sm="6" md="4">
-            <MudTextField T="int" Label="Enrollment Year" Required="false" Placeholder="Insert your enrollment year"/>
+            <MudTextField T="int" Label="Έτος εισαγωγής" @bind-Value="postUser.EnrollmentYear" Required="false" Placeholder="Έτος εισαγωγής" />
         </MudItem>
     </MudItem>
     <MudItem xs="12">
         <div class="d-flex align-center justify-space-between mt-6">
             <MudCheckBox T="bool" Class="ml-n2" Label="Recieve notifications by email" />
-            <MudButton Variant="Variant.Filled" Color="Color.Primary" Class="ml-auto">Save Settings</MudButton>
+            <MudButton Variant="Variant.Filled" Color="Color.Info" Class="ml-auto" OnClick="Update">Save Settings</MudButton>
         </div>
     </MudItem>
     <MudItem xs="6">
@@ -59,106 +58,49 @@
 </MudGrid>
 
 
+ @code {
 
-@code {
-    DTOs.Data.UserDTO User = new()
-        {
-            Name = "Test",
-            Surname = "Name",
-            PrimaryEmail = "test@gmail.com",
-            SecondaryEmail = "test@gmail.com",
-            Role = "Student",
-            PhoneNumber = "6969696969",
-            EnrollmentYear = 1970,
-            CurrentYear = 3
+    @inject NavigationManager NavManager
+    [Inject] private IDialogService DialogService { get; set; }
 
-        };
+    [Parameter]
+    public int id { get; set; }
 
-    DTOs.Data.PreferenceDTO Preference = new()
-        {
-            InMail = true,
-            InBrowser = true,
-            InPhone = true,
-            PauseAlert = false,
-            PauseOneDay = false,
-            PauseOneHour = false
-        };
+    private UserDTO _myDTO;
+    UserDTO postUser = new UserDTO();
+
+    public async Task<UserDTO> PrintWebApiResponse()
+    {
+        var response = await Http.GetStringAsync($"https://localhost:5001/api/User/GetUserBy?1");
+        //string serializedString = System.Text.Json.JsonSerializer.Serialize(response);
+
+        Console.WriteLine(response);
+
+        var apiResponse = response.DeserializeMethod<UserDTO>();
+
+        return apiResponse;
+
+    }
+
+    protected override async Task OnInitializedAsync()
+    {
+        _myDTO = await PrintWebApiResponse();
+    }
+
+    async Task Update()
+    {
+        id = 1;
+        var post = postUser.SerializeMethod<UserDTO>();
+        postUser.UserID = id;
+        postUser.Name = _myDTO.Name;
+        postUser.Surname = _myDTO.Surname;
+        postUser.PrimaryEmail = _myDTO.PrimaryEmail;
+        postUser.Role = "admin";
+
+        var response = await Http.PutAsJsonAsync("https://localhost:5001/api/User/UpdateUserByID/1", postUser);
+
+        var result = await response.Content.ReadFromJsonAsync<List<string>>();
+
+    }
 
 }
-
-
-@*
-<p>Ajust your settigs according to your needs</p>
-<div class="row">
-    <div class="col-6 border p-3">
-
-        <div class="dropdown">
-            <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                Dropdown button
-            </button>
-            <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-                <a class="dropdown-item" href="#">Action</a>
-                <a class="dropdown-item" href="#">Another action</a>
-                <a class="dropdown-item" href="#">Something else here</a>
-            </div>
-        </div>
-
-    </div>
-
-    <TestAPI></TestAPI>
-
-    <div class="col-6 border p-3">
-        Name: @User.Name
-        <br />
-        Surname: @User.Surname
-        <br />
-        Primary Mail: @User.PrimaryEmail
-        <br />
-        Role: @User.Role
-        <br />
-
-        Enrollment Year :
-        <input type="number" @bind-value="@User.EnrollmentYear" @bind-value:event="oninput" />
-        <br />
-
-        Current Year :
-        <input type="number" @bind-value="@User.CurrentYear" @bind-value:event="oninput" />
-        <br />
-
-        Secondary Mail:
-        <input type="text" @bind-value="@User.SecondaryEmail" @bind-value:event="oninput" />
-        <br />
-
-        Phone Number:
-        <input type="text" @bind-value="@User.PhoneNumber" @bind-value:event="oninput" />
-        <br />
-
-        Receive Notification on Mail:
-        <input type="checkbox" @bind-value="Preference.InMail" checked="@(Preference.InMail?"checked":null)" />
-        <br />
-
-        Receive Notification on Browser:
-        <input type="checkbox" @bind-value="Preference.InBrowser" checked="@(Preference.InBrowser?"checked":null)" />
-        <br />
-
-        Receive Notification on Phone:
-        <input type="checkbox" @bind-value="Preference.InPhone" checked="@(Preference.InPhone?"checked":null)" />
-        <br />
-
-        Pause Alert for one hour:
-        <input type="checkbox" @bind-value="Preference.PauseOneHour" checked="@(Preference.PauseOneHour?"checked":null)" />
-        <br />
-
-        Pause Alert for one day:
-        <input type="checkbox" @bind-value="Preference.PauseOneDay" checked="@(Preference.PauseOneDay?"checked":null)" />
-        <br />
-
-        Pause Alert permanently:
-        <input type="checkbox" @bind-value="Preference.PauseAlert" checked="@(Preference.PauseAlert?"checked":null)" />
-        <br />
-
-
-    </div>
-</div>
-
-*@

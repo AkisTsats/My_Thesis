@@ -12,9 +12,9 @@ namespace EFDataAccessLibrary.Data
         [Key]
         public int FileID { get; set; }
         public string FileName { get; set; }
-        public string ContentType { get; set; } 
-        public string Path { get; set; }
-
+        public string? ContentType { get; set; } 
+        public string? Path { get; set; }
+        public bool? IsPrimaryImage { get; set; }
         public Announcement Announcement { get; set; }
 
     }

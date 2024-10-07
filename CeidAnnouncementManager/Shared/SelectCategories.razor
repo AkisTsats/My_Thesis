@@ -1,30 +1,64 @@
-﻿<MudText Typo="Typo.h3">Select Categories</MudText>
-
+﻿@inject CategoriesRepository _categoriesRepository;
+@inject HttpClient Http
+@using System.Text.Json;
 @using System;
 @using System.Collections.Generic;
+@using CeidAnnouncementManager.Services;
+@using DTOs.Common;
 @using DTOs.Data;
 
 <MudPaper Height="400px" Width="100%">
     <MudContainer MaxWidth="MaxWidth.Small">
-        <MudSelect T="string" Label="Categories" MultiSelection="true" @bind-Value="value" @bind-SelectedValues="options">
-            @foreach (var state in states)
+        <MudSelect T="string" Label="Κατηγορίες" MultiSelection="true" @bind-Value="value" @bind-SelectedValues="options">
+            @if (all is not null)
             {
-                <MudSelectItem T="string" Value="@state">@state</MudSelectItem>
+                @foreach (var category in all)
+                {
+                    <MudSelectItem T="string" Value="@category.CategoryName">@category.CategoryName</MudSelectItem>
+                }
             }
         </MudSelect>
     </MudContainer>
 </MudPaper>
 
-
 @code {
-
-
     private string value { get; set; } = "Nothing selected";
-    private IEnumerable<string> options { get; set; } = new HashSet<string>();
+    private IEnumerable<string> options { get; set; }
+    private IEnumerable<CategoriesDTO> all;
+    private IEnumerable<CategoriesDTO> selected;
+    private List<CategoriesDTO> newCategories;
+    private int id = 1;
 
-    private string[] states =
+
+
+    protected override async Task OnInitializedAsync()
     {
-        "Μαθηματικά 1", "Μαθηματικά 2", "Γραμμική Άλγεβρα", "Φυσική",
-    };
+        try
+        {
+            // all = await _categoriesRepository.FetchCategories();
+            // selected = await _categoriesRepository.FetchCategories(id);
 
+            options = selected.Select(sel => sel.CategoryName);
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Error fetching categories: {ex}");
+        }
+    }
+
+    public async Task SaveCategories()
+    {
+        try
+        {
+            //var toPost = JsonSerializer.Serialize(options);
+
+            Console.WriteLine(options);
+
+            await Http.PutAsJsonAsync($"https://localhost:5001/api/Categories/UpdateCategories/1", options);
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Error while posting: {ex}");
+        }
+    }
 }

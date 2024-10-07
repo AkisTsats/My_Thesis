@@ -1,4 +1,5 @@
-﻿using System;
+﻿using DTOs.Common;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
@@ -17,10 +18,9 @@ namespace DTOs.Data
         public DateTime Date { get; set; }
         public bool Alert { get; set; }
         public string Author { get; set; }
-        //public string imgPath { get; set; }
-        //public List<string> filesPath { get; set; }
+        public int UserID { get; set; }
+        public List<UploadResult> Files { get; set; }
 
-        //public List<SubjectsDTO>? Subjects { get; set; }
     }
 
 }

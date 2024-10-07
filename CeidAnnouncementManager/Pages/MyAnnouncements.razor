@@ -1,30 +1,37 @@
-﻿@inject IJSRuntime JSRuntime
-
-@using System.Text.Json
+﻿@using System.Text.Json
 @using System.Text.Json.Serialization;
+@using CeidAnnouncementManager.Services
 @using DTOs.Data;
+@inject CategoriesRepository _categoriesRepository;
+@inject HttpClient Http
 @using static DTOs.Common.Helpers;
 @using DTOs.API.Responses;
 @using Microsoft.AspNetCore.Authorization;
 @inject NavigationManager UriHelper
-
+@inject IJSRuntime JSRuntime
 @attribute [Authorize]
-@inject HttpClient Http
 
 @page "/myannouncements"
 
 <PageTitle>My Announcements</PageTitle>
 
-
-
-
-
 <MudGrid Justify="Justify.Center" Class="d-flex" Spacing="2" Style="align-items: center">
-
+    
     @if (_myDTO != null)
     {
-        <MudText xs="4" Typo="Typo.h3">My Announcements</MudText>
-        <MudItem xs="6"></MudItem>
+        <MudText xs="4" Typo="Typo.h3">Οι Ανακοινώσεις μου</MudText>
+        <MudItem xs="6">
+            <MudSelect Label="Filter by Category" @bind-Value="value" @bind-SelectedValues="options">
+                @if (all is not null)
+                {
+                    @foreach (var category in all)
+                    {
+                        <MudSelectItem T="string" Value="@category.CategoryName">@category.CategoryName</MudSelectItem>
+                    }
+                }
+                <MudButton OnClick="HandleCategoryChange" Variant="Variant.Filled" Color="Color.Info">Filter</MudButton>
+            </MudSelect>
+        </MudItem>
         <MudItem xs="2" Style="align-items: center;">
             <MudButton Variant="Variant.Filled" align-center EndIcon="@Icons.Material.Filled.Add" Style="background-color: yellowgreen; color: white; width: 200px; height: 60px;" Href="createannouncement">
                 Create New Announcement
@@ -47,39 +54,45 @@
                         <MudText>@myVar.Author</MudText>
                         <MudText Typo="Typo.body2">@myVar.Abstract</MudText>
                     </MudCardContent>
-                    <MudChip Label="true">Undergraduate</MudChip>
+    @*                 <MudChip Label="true">Undergraduate</MudChip>
                     <MudChip Label="true">Μαθηματικά 1</MudChip>
-                    <MudChip Label="true">Αλγόριθμοι</MudChip>
+                    <MudChip Label="true">Αλγόριθμοι</MudChip> *@
                     <MudCardActions>
-                        <MudButton OnClick="() => NavigateTo(annID)" Variant="Variant.Text" Color="Color.Primary">Read More</MudButton>
+                        <MudButton OnClick="() => NavigateTo(annID)" Variant="Variant.Text" Color="Color.Info">Read More</MudButton>
                     </MudCardActions>
                 </MudCard>
             </MudItem>
         }
         <MudItem xs="5"></MudItem>
         <MudItem xs="6">
-            <MudPagination SelectedChanged="PageChanged" Color="Color.Primary" Count="@numOfPages" />
+            <MudPagination SelectedChanged="PageChanged" Color="Color.Info" Count="@numOfPages" />
         </MudItem>
     }
-
+    
 </MudGrid>
 
-
-
-
-
 @code {
-
-
-    private int _selected = 1;
+    private int _selected =1;
+    private string value { get; set; } = "Nothing selected";
     private int numOfPages = 1;
     private int pageSize = 10;
+    private int id = 1;
+
+    private IEnumerable<CategoriesDTO> all;
+    private IEnumerable<CategoriesDTO> selected;
+    private IEnumerable<AnnouncementDTO>? _myDTO;
+    private IEnumerable<AnnouncementDTO>? _allDTO;
+    private IEnumerable<AnnouncementDTO>? _change;
+
+    private IEnumerable<string> options { get; set; } = new HashSet<string>();
 
     public async Task<IEnumerable<AnnouncementDTO>> GetWebApiResponse()
     {
         string s1 = pageSize.ToString();
         string s2 = _selected.ToString();
-        var response = await Http.GetStringAsync("https://localhost:5001/api/Announcement/GetAnnouncementByObj?" + "limit=" + s1 + "&skip=" + s2);
+        string categoryFilter = options != null ? $"&category={options.First()}" : "";
+
+        var response = await Http.GetStringAsync($"https://localhost:5001/api/Announcement/GetAnnouncementByObj?limit={s1}&skip={s2}{categoryFilter}");
 
         //string serializedString = System.Text.Json.JsonSerializer.Serialize(response);
 
@@ -88,15 +101,28 @@
 
         var annResponse = response.DeserializeMethod<GetAnnouncementsByResponse>();
 
-        int count = annResponse.SumOfAnnouncements;
+        var count = annResponse.SumOfAnnouncements;
 
-        int numOfPages = getPageCount(count);
-
+        numOfPages = getPageCount(count);
 
         var ann = annResponse.Announcements;
 
         return ann;
+    }
+    private async Task<IEnumerable<AnnouncementDTO>> HandleCategoryChange()
+    {
+        return await GetWebApiResponse();
+    }
 
+    public async Task GetCategories()
+    {
+        all = await _categoriesRepository.FetchCategories();
+        //selected = await _categoriesRepository.FetchCategories(id);
+        foreach (var sel in all)
+        {
+            var catToAdd = sel.CategoryName;
+            options = options.Concat(new[] { catToAdd });
+        }
     }
 
     private int getPageCount(int count)
@@ -110,25 +136,21 @@
         {
             numOfPages = (count / pageSize) + 1;
         }
-
         return numOfPages;
     }
 
     public async Task<IEnumerable<AnnouncementDTO>> PrintWebApiResponse()
     {
         _allDTO = await GetWebApiResponse();
-
-
         return _allDTO;
     }
 
-
     protected override async Task OnInitializedAsync()
     {
+        await GetCategories();
 
         _myDTO = await PrintWebApiResponse();
     }
-
 
     public async Task<IEnumerable<AnnouncementDTO>> PageChanged(int i)
     {
@@ -139,7 +161,7 @@
         return _change;
     }
 
-    @inject NavigationManager NavManager
+    @inject NavigationManager NavManager;
 
     private void NavigateTo(int id)
     {
@@ -147,61 +169,4 @@
         NavManager.NavigateTo("showannouncement/" + s);
     }
 
-    private IEnumerable<AnnouncementDTO> _myDTO;
-    private IEnumerable<AnnouncementDTO> _allDTO;
-    private IEnumerable<AnnouncementDTO> _change;
 }
-
-
-
-
-
-
-
-
-@*
-    @foreach (var myVar in _myDTO)
-{
-    <div class="container mt-5 mb-5">
-        <div class="d-flex justify-content-center row">
-            <div class="col-md-10">
-                <div class="row p-2 bg-white border rounded">
-
-                    <div class="col-md-6 mt-1">
-                        <h5>@myVar.Title</h5>
-                        <div class="d-flex flex-row">
-                            <div class="mt-1 mb-1 spec-1"><span>@myVar.AnnID</span></div>
-                        </div>
-                        <div class="mt-1 mb-1 spec-1"><span>@myVar.Subjects</span></div>
-                        <div class="mt-1 mb-1 spec-1"><span>@myVar.Date</span></div>
-                        <p class="text-justify text-truncate para mb-0">@myVar.Body<br><br></p>
-                        <div class="align-items-center align-content-center col-md-3 border-left mt-1">
-                        </div>
-                        <NavLink class="nav-link" href="showannouncement">
-                            <span class="oi oi-list-rich" aria-hidden="true"></span> Show Announcement
-                        </NavLink>
-                    </div>
-
-
-                </div>
-            </div>
-        </div>
-    </div>
-}
-
-
-
-
-
-<div class="container">
-    <div class="row">
-        <div class="col text-center">
-            <NavLink class="nav-link" href="createannouncement">
-                <span class="oi oi-plus" aria-hidden="true"></span> Προσθήκη Ανακοίνωσης
-            </NavLink>
-        </div>
-    </div>
-</div>*@
-
-
-

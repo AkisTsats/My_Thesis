@@ -1,52 +1,79 @@
 ﻿@page "/createannouncement"
 @inject HttpClient Http
+@inject SettingsRepository _settingsRepository;
 @inject NavigationManager UriHelper
 @using System.Net.Http
 @using System.Net.Http.Json
 @using System.Text.Json
 @using System.Text.Json.Serialization;
+@using CeidAnnouncementManager.Services
 @using DTOs.Common;
 @using DTOs.Data;
 @using static DTOs.Common.Helpers;
 @using DTOs.API.Responses;
 @using CeidAnnouncementManager.Shared;
 
-<MudText Typo="Typo.h3">Create Announcement</MudText>
+<MudText Typo="Typo.h3">Προσθήκη Ανακοίνωσης</MudText>
 
 <MudGrid Justify="Justify.Center">
     <MudItem xs="12" sm="7">
         <MudPaper Class="pa-4">
-            <MudForm Model="@postBody">
-                <MudTextField T="string" Label="Title" Required="true" @bind-Value="postBody.Title" />
-
-                <MudTextField T="string" Label="Abstract" @bind-Value="postBody.Abstract" Required="true" />
-                <MudTextField T="string" Label="Body" @bind-Value="postBody.Body" Lines="30" Required="true" />
-                @if (permissions2.SOS == true)
+            <MudForm Model="@announcement">
+                <MudTextField T="string" Label="Τίτλος" Required="true" @bind-Value="announcement.Title" />
+                <MudTextField T="string" Label="Περίληψη" @bind-Value="announcement.Abstract" Required="false" />
+                <MudExRichTextEdit @ref="@Editor"
+                                   ReadOnly="false"
+                                   Height="444"
+                                   Class="m-2"
+                                   Placeholder="Edit html">
+			 
+                </MudExRichTextEdit>
+                <MudTextField T="string" Label="Κείμενο" @bind-Value="announcement.Body" Lines="30" Required="true" />
+                @if (false)//TOADD check if he has permissions
                 {
                     <div class="d-flex align-center justify-space-between mt-6">
-                        <MudCheckBox T="bool" Class="ml-n2" @bind-Checked="postBody.Alert" Label="SOS" />
+                        <MudCheckBox T="bool" Class="ml-n2" @bind-Checked="announcement.Alert" Label="SOS" />
                     </div>
                 }
-
-
             </MudForm>
-            <AddFile OnUpload="Upload"></AddFile><AddImage></AddImage>
-            <MudButton Variant="Variant.Filled" Color="Color.Primary" Class="ml-auto"  OnClick="OnButtonClicked">Create Announcement </MudButton>
+            <MudSelect T="CategoriesDTO" Label="Επιλέξτε κατηγορίες" MultiSelection="true" @bind-Value="CategoriesDTO.DEFAULT_NO_CATEGORY_CHOOSEN" @bind-SelectedValues="SelectedCategories">
+                @foreach (var category in AllCategories)
+                {
+                    <MudSelectItem T="CategoriesDTO" Value="@category">@category.CategoryName</MudSelectItem>
+                }
+            </MudSelect>
+            <AddFile OnUpload="Upload"></AddFile><AddImage OnUpload="UploadImage"></AddImage>
+            <MudButton Variant="Variant.Filled" Color="Color.Info" Class="ml-auto" OnClick="OnButtonClicked">Προσθήκη Ανακοίνωσης</MudButton>
         </MudPaper>
-
     </MudItem>
 </MudGrid>
 
-
 @code {
-
+    private IEnumerable<CategoriesDTO> AllCategories { get; set; }
+    private IEnumerable<CategoriesDTO> SelectedCategories { get; set; }
 
     private List<UploadResult> uploadResults = new();
-    
+    MudExRichTextEdit Editor;	
+    protected override async Task OnInitializedAsync()
+    {
+        try
+        {
+            var settings = await _settingsRepository.FetchSettingsForCreateAnnouncement();
+            
+            AllCategories = settings.Categories;
+            //all other settings...
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Error fetching categories: {ex}");
+        }
+    }
+
+
     async Task Upload(MultipartFormDataContent content)
     {
         var fileToUpload = content;
-        var response = await Http.PostAsync("https://localhost:5001/api/FileUpload", content);
+        var response = await Http.PostAsync("https://localhost:5001/api/FileUpload/UploadService", content);
 
         var result = await response.Content.ReadFromJsonAsync<List<UploadResult>>();
 
@@ -54,155 +81,52 @@
         {
             uploadResults = uploadResults.Concat(result).ToList();
         }
-
     }
-    //public class annmodel
-    //{
-    //    public string Title { get; set; }
-    //    public string Abstract { get; set; }
-    //    public string Body { get; set; }
-    //    public DateTime Date { get; set; }
-    //    public bool Alert { get; set; }
-    //}
-    //Href="myannouncements"
+    async Task UploadImage(MultipartFormDataContent content)
+    {
+        var response = await Http.PostAsync("https://localhost:5001/api/FileUpload/UploadService?isImage=true", new MultipartFormDataContent()
+        { });
 
-    //annmodel mymod = new annmodel();
+        var result = await response.Content.ReadFromJsonAsync<List<UploadResult>>();
+
+        if (result is not null)
+        {
+            uploadResults = uploadResults.Concat(result).ToList();
+        }
+    }
+
     [Inject] private IDialogService DialogService { get; set; }
-    @inject NavigationManager NavManager
-    AnnouncementDTO postBody = new AnnouncementDTO();
+
+    AnnouncementDTO announcement = new AnnouncementDTO();
 
     //TODO add form validation and error handling
-    //TOADD postBody.Author
 
     private async void OnButtonClicked()
-    { 
+    {
         bool? result = await DialogService.ShowMessageBox(
-            "Are you sure you want to post this announcement?",
+            "Οριστική υποβολή ανακοίνωσης?",
             "",
-            yesText: "Post the announcement", cancelText: "Return to the announcement");
+            yesText: "Προσθήκη ανακοίνωσης", cancelText: "Επιστροφή στην ανακοίνωση");
         StateHasChanged();
         if (result == true)
         {
             await PostOnAPI();
-            NavManager.NavigateTo("myannouncements");
+            UriHelper.NavigateTo("myannouncements");
         }
-        
     }
-
-
 
     public async Task PostOnAPI()
     {
 
-        postBody.Author = "Admin";
-        //postBody.UserID = 1;
-        postBody.Date = DateTime.Now;
+        announcement.Author = "Admin";
+        announcement.UserID = 1;
+        announcement.Date = DateTime.Now;
+        announcement.Files = uploadResults;
 
-        var post = postBody.SerializeMethod<AnnouncementDTO>();
+        var post = announcement.SerializeMethod<AnnouncementDTO>();
 
-        Console.WriteLine(post);
+        //Console.WriteLine(post);
 
-        await Http.PostAsJsonAsync("https://localhost:5001/api/Announcement/CreateAnnouncement", postBody);
-
-
+        await Http.PostAsJsonAsync("https://localhost:5001/api/Announcement/CreateAnnouncement", announcement);
     }
-
-
-
-
-    private PermissionsDTO permissions = new DTOs.Data.PermissionsDTO
-        {
-            //Προσομοίωση φοιτητή
-            canAcceptAnn = false,
-            canAddCategories = true,
-            canAddSubjects = true,
-            canSeeStats = false,
-            canDeleteAllAnn = false,
-            canDeleteMyAnn = true,
-            canEditAllAnn = false,
-            canEditMyAnn = true,
-            canEditMySubjects = true,
-            canEditMyYears = true,
-            canEditNotifications = true,
-            canPostAnn = true,
-            canPostInfo = true,
-            canSeeAllAnn = false,
-            canSeeMyAnn = true,
-            canSeePubAnn = true,
-            selectCategory = false,
-            selectSubject = false,
-            SOS = false,
-        };
-
-    private PermissionsDTO permissions4 = new DTOs.Data.PermissionsDTO
-        {
-            //Προσομοίωση Ελεγκτή-φοιτητή
-            canAcceptAnn = true,
-            canAddCategories = true,
-            canAddSubjects = true,
-            canSeeStats = false,
-            canDeleteAllAnn = false,
-            canDeleteMyAnn = true,
-            canEditAllAnn = true,
-            canEditMyAnn = true,
-            canEditMySubjects = true,
-            canEditMyYears = true,
-            canEditNotifications = true,
-            canPostAnn = true,
-            canPostInfo = true,
-            canSeeAllAnn = true,
-            canSeeMyAnn = true,
-            canSeePubAnn = true,
-            selectCategory = false,
-            selectSubject = false,
-            SOS = true,
-        };
-
-    private PermissionsDTO permissions2 = new DTOs.Data.PermissionsDTO
-        {
-            //Προσομοίωση καθηγητή
-            canAcceptAnn = false,
-            canAddCategories = true,
-            canAddSubjects = true,
-            canSeeStats = false,
-            canDeleteAllAnn = false,
-            canDeleteMyAnn = true,
-            canEditAllAnn = false,
-            canEditMyAnn = true,
-            canEditMySubjects = false,
-            canEditMyYears = false,
-            canEditNotifications = false,
-            canPostAnn = true,
-            canPostInfo = true,
-            canSeeAllAnn = false,
-            canSeeMyAnn = true,
-            canSeePubAnn = true,
-            selectCategory = true,
-            selectSubject = true,
-            SOS = true,
-        };
-
-    private PermissionsDTO permissions3 = new DTOs.Data.PermissionsDTO
-        {
-            //Προσομοίωση διαχειριστή
-            canAcceptAnn = true,
-            canAddCategories = true,
-            canAddSubjects = true,
-            canSeeStats = true,
-            canDeleteAllAnn = true,
-            canDeleteMyAnn = true,
-            canEditAllAnn = true,
-            canEditMyAnn = true,
-            canEditMySubjects = true,
-            canEditMyYears = true,
-            canEditNotifications = true,
-            canPostAnn = true,
-            canPostInfo = true,
-            canSeeAllAnn = true,
-            canSeeMyAnn = true,
-            canSeePubAnn = true,
-            selectCategory = true,
-            selectSubject = true,
-            SOS = true,
-        };
 }

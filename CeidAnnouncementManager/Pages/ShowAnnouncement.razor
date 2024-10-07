@@ -1,4 +1,4 @@
-﻿@page "/showannouncement/{id:int}"
+﻿@* @page "/showannouncement/{id:int}"
 @using DTOs.API.Responses;
 @using DTOs.Data;
 @inject HttpClient Http
@@ -16,9 +16,17 @@
                     <MudCardHeader>
                         <CardHeaderContent>
                             <MudText Typo="Typo.h5">@myVar.Title</MudText>
-                            <MudText >Posted on: @myVar.Date</MudText>
+                            <MudText >Δημιουργήθηκε στις: @myVar.Date</MudText>
                         </CardHeaderContent>
                     </MudCardHeader>
+                    <MudCardContent>
+                        <MudText>@myVar.Body</MudText>
+                        @if (myVar.ImageData != null && myVar.ImageData.Length > 0)
+                        {
+                            var base64Image = Convert.ToBase64String(myVar.ImageData);
+                            <img src="data:image/png;base64,@base64Image" alt="Announcement Image" class="announcement-image" />
+                        }
+                    </MudCardContent>
                     <MudCardContent>
                         <MudText>@myVar.Body</MudText>
                     </MudCardContent>
@@ -26,8 +34,7 @@
             </MudItem>
         </MudGrid>
         <MudGrid Justify="Justify.Center" Class="d-flex" Spacing="2" Style="align-items: center;">
-            <MudButton OnClick="() => OnButtonClickedEdit(annID)" Variant="Variant.Filled" Color="Color.Primary">Edit announcement</MudButton>
-
+            <MudButton OnClick="() => OnButtonClickedEdit(annID)" Variant="Variant.Filled" Color="Color.Info">Edit announcement</MudButton>
             <MudButton OnClick="() => OnButtonClickedDelete(annID)" Variant="Variant.Filled" Color="Color.Secondary">Delete announcement</MudButton>
         </MudGrid>
     }
@@ -37,7 +44,6 @@
 
     @inject NavigationManager NavManager
     [Inject] private IDialogService DialogService { get; set; }
-
 
     [Parameter]
     public int id { get; set; }
@@ -54,18 +60,13 @@
         var apiResponse = response.DeserializeMethod<GetAnnouncementsByResponse>();
 
         var annResponse = apiResponse.Announcements;
-
-
-
-
+        
         return annResponse;
 
     }
 
-
     protected override async Task OnInitializedAsync()
     {
-
         _myDTO = await PrintWebApiResponse();
     }
 
@@ -114,3 +115,4 @@
     }
 
 }
+ *@

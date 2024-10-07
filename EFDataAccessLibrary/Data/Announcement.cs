@@ -19,12 +19,15 @@ namespace EFDataAccessLibrary.Data
         public bool Alert { get; set; }
         public string Author { get; set; }        
         public User User { get; set; }
-        public Image? Image { get; set; }
         public List<File>? Files { get; set; }
         public List<CategoriesList> CategoriesList { get; set; }
+        public List<SubjectsList> SubjectsList { get; set; }
 
         [InverseProperty(nameof(CategoriesListAnnouncement.Announcement))]
         public ICollection<CategoriesListAnnouncement> CategoriesListAnnouncements { get; set; }
+
+        [InverseProperty(nameof(SubjectsListAnnouncement.Announcement))]
+        public ICollection<SubjectsListAnnouncement> SubjectsListAnnouncements { get; set; }
 
     }
 

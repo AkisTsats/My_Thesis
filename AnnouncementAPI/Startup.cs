@@ -22,12 +22,16 @@ using System.Text.Json;
 using System.Threading.Tasks;
 using Google.Apis.Auth.OAuth2;
 using System.Threading;
+using System.Threading.Channels;
 using Google.Apis.Services;
 using Google.Apis.Gmail.v1;
 using Microsoft.AspNetCore.Authentication.Google;
 using Microsoft.AspNetCore.Identity;
 using Keycloak.AuthServices.Authentication;
 using static System.Net.WebRequestMethods;
+using AnnouncementAPI.Helpers;
+using AnnouncementAPI.Mail;
+using DTOs.Data;
 
 namespace AnnouncementAPI
 {
@@ -47,62 +51,13 @@ namespace AnnouncementAPI
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            /*
-            string clientId = "572524065265-617scagdltv2iglq1bt9239080d7shnp.apps.googleusercontent.com";
-            string clientSecret = "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";
-
-            string[] scopes = { "https://www.googleapis.com/auth/gmail.readonly" };
-
-            var credentials = GoogleWebAuthorizationBroker.AuthorizeAsync(
-                new ClientSecrets
-                {
-                    ClientId = clientId,
-                    ClientSecret = clientSecret
-                },
-                scopes, "user", CancellationToken.None).Result;
-
-
-            if (credentials.Token.IsExpired(SystemClock.Default))
-                credentials.RefreshTokenAsync(CancellationToken.None).Wait();
-
-            var service = new GmailService(new BaseClientService.Initializer()
-            {
-                HttpClientInitializer = credentials
-            });
-            
-
-
-            services.AddAuthentication(options =>
-            {
-                options.DefaultChallengeScheme = GoogleDefaults.AuthenticationScheme;
-                options.DefaultAuthenticateScheme = IdentityConstants.ExternalScheme;
-            })
-            .AddCookie(IdentityConstants.ExternalScheme)
-            .AddGoogle( options =>
-            {
-                options.ClientSecret = "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";
-                options.ClientId = "572524065265-617scagdltv2iglq1bt9239080d7shnp.apps.googleusercontent.com";
-                options.SignInScheme = IdentityConstants.ExternalScheme;
-                
-            });
-            
-            services.AddAuthentication();
-
-            services.AddAuthorization();
-            */
-
             services.AddEndpointsApiExplorer();
             services.AddKeycloakAuthentication(Configuration);
-
-
-            //var openIdConnectUrl = $"{Configuration["Keycloak:auth-server-url"]}"
-            //                      + $"realms/{Configuration["Keycloak: realm"]}/"
-            //                      + ".well-known/openid-configuration";
 
             var openIdConnectUrl = "http://localhost:8080/realms/Test/.well-known/openid-configuration";
 
 
-
+            //TOADD
             services.AddSwaggerGen(c =>
             {
                 var securityScheme = new OpenApiSecurityScheme
@@ -126,28 +81,22 @@ namespace AnnouncementAPI
                 });
             });
 
-
-
-
-
+            services.AddHostedService<ConsumerSingletonProcessorSendEmail>();
+            services.AddScoped<ProducerOfMyObjectsEndpoint>();
+            services.AddSingleton<Channel<AnnouncementDTO>>(Channel.CreateUnbounded<AnnouncementDTO>());
+            services.AddScoped<SendAnnouncement>();
             services.AddControllers();
-            services.AddSwaggerGen(c =>
-            {
-                c.SwaggerDoc("v1", new OpenApiInfo { Title = "AnnouncementAPI", Version = "v1" });
-            });
 
             services.AddDbContext<EFDataAccessLibrary.Data.MyDbContext>(options =>
             {
                 options.UseMySql(new MySqlServerVersion(new Version(8, 0, 21)));
                 //options.UseQueryTrackingBehavior(QueryTrackingBehavior.NoTracking);
             });
-
-
+            
             services.AddCors(setup => setup.AddPolicy("default", (options) =>
             options.AllowAnyMethod().AllowAnyHeader().AllowAnyOrigin()));
         }
 
-        //connectionString, MySqlServerVersion.AutoDetect(connectionString)
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
@@ -173,6 +122,8 @@ namespace AnnouncementAPI
             {
                 endpoints.MapControllers();
             });
+
+           
 
 
 

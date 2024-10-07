@@ -34,6 +34,21 @@ namespace EFDataAccessLibrary.Migrations
                     b.ToTable("AnnouncementCategoriesList");
                 });
 
+            modelBuilder.Entity("AnnouncementSubjectsList", b =>
+                {
+                    b.Property<int>("AnnouncementsAnnID")
+                        .HasColumnType("int");
+
+                    b.Property<int>("SubjectsListSubjectID")
+                        .HasColumnType("int");
+
+                    b.HasKey("AnnouncementsAnnID", "SubjectsListSubjectID");
+
+                    b.HasIndex("SubjectsListSubjectID");
+
+                    b.ToTable("AnnouncementSubjectsList");
+                });
+
             modelBuilder.Entity("CategoriesListUser", b =>
                 {
                     b.Property<int>("CategoriesListCategoryID")
@@ -142,6 +157,9 @@ namespace EFDataAccessLibrary.Migrations
                     b.Property<string>("FileName")
                         .HasColumnType("longtext");
 
+                    b.Property<bool?>("IsPrimaryImage")
+                        .HasColumnType("tinyint(1)");
+
                     b.Property<string>("Path")
                         .HasColumnType("longtext");
 
@@ -150,25 +168,6 @@ namespace EFDataAccessLibrary.Migrations
                     b.HasIndex("AnnouncementAnnID");
 
                     b.ToTable("Files");
-                });
-
-            modelBuilder.Entity("EFDataAccessLibrary.Data.Image", b =>
-                {
-                    b.Property<int>("ImageID")
-                        .HasColumnType("int");
-
-                    b.Property<string>("ImageName")
-                        .HasColumnType("longtext");
-
-                    b.Property<string>("ImageType")
-                        .HasColumnType("longtext");
-
-                    b.Property<string>("Path")
-                        .HasColumnType("longtext");
-
-                    b.HasKey("ImageID");
-
-                    b.ToTable("Images");
                 });
 
             modelBuilder.Entity("EFDataAccessLibrary.Data.Permission", b =>
@@ -243,22 +242,22 @@ namespace EFDataAccessLibrary.Migrations
                     b.Property<int>("UserID")
                         .HasColumnType("int");
 
-                    b.Property<bool>("InBrowser")
+                    b.Property<bool?>("InBrowser")
                         .HasColumnType("tinyint(1)");
 
-                    b.Property<bool>("InMail")
+                    b.Property<bool?>("InMail")
                         .HasColumnType("tinyint(1)");
 
-                    b.Property<bool>("InPhone")
+                    b.Property<bool?>("InPhone")
                         .HasColumnType("tinyint(1)");
 
-                    b.Property<bool>("PauseAlert")
+                    b.Property<bool?>("PauseAlert")
                         .HasColumnType("tinyint(1)");
 
-                    b.Property<bool>("PauseOneDay")
+                    b.Property<bool?>("PauseOneDay")
                         .HasColumnType("tinyint(1)");
 
-                    b.Property<bool>("PauseOneHour")
+                    b.Property<bool?>("PauseOneHour")
                         .HasColumnType("tinyint(1)");
 
                     b.HasKey("UserID");
@@ -297,6 +296,36 @@ namespace EFDataAccessLibrary.Migrations
                     b.ToTable("SList");
                 });
 
+            modelBuilder.Entity("EFDataAccessLibrary.Data.SubjectsListAnnouncement", b =>
+                {
+                    b.Property<int>("AnnouncementID")
+                        .HasColumnType("int");
+
+                    b.Property<int>("SubjectID")
+                        .HasColumnType("int");
+
+                    b.HasKey("AnnouncementID", "SubjectID");
+
+                    b.HasIndex("SubjectID");
+
+                    b.ToTable("subjectsListannouncement");
+                });
+
+            modelBuilder.Entity("EFDataAccessLibrary.Data.SubjectsListUser", b =>
+                {
+                    b.Property<int>("UserID")
+                        .HasColumnType("int");
+
+                    b.Property<int>("SubjectID")
+                        .HasColumnType("int");
+
+                    b.HasKey("UserID", "SubjectID");
+
+                    b.HasIndex("SubjectID");
+
+                    b.ToTable("subjectslistuser");
+                });
+
             modelBuilder.Entity("EFDataAccessLibrary.Data.User", b =>
                 {
                     b.Property<int>("UserID")
@@ -332,19 +361,19 @@ namespace EFDataAccessLibrary.Migrations
                     b.ToTable("Users");
                 });
 
-            modelBuilder.Entity("EFDataAccessLibrary.Data.YearsList", b =>
-                {
-                    b.Property<int>("YearsID")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
+            //modelBuilder.Entity("EFDataAccessLibrary.Data.YearsList", b =>
+            //    {
+            //        b.Property<int>("YearID")
+            //            .ValueGeneratedOnAdd()
+            //            .HasColumnType("int");
 
-                    b.Property<int>("Year")
-                        .HasColumnType("int");
+            //        b.Property<int>("Year")
+            //            .HasColumnType("int");
 
-                    b.HasKey("YearsID");
+            //        b.HasKey("YearID");
 
-                    b.ToTable("YList");
-                });
+            //        b.ToTable("YList");
+            //    });
 
             modelBuilder.Entity("SubjectsListUser", b =>
                 {
@@ -361,20 +390,20 @@ namespace EFDataAccessLibrary.Migrations
                     b.ToTable("SubjectsListUser");
                 });
 
-            modelBuilder.Entity("UserYearsList", b =>
-                {
-                    b.Property<int>("UsersUserID")
-                        .HasColumnType("int");
+            //modelBuilder.Entity("UserYearsList", b =>
+            //    {
+            //        b.Property<int>("UsersUserID")
+            //            .HasColumnType("int");
 
-                    b.Property<int>("YearsListYearsID")
-                        .HasColumnType("int");
+            //        b.Property<int>("YearsListYearID")
+            //            .HasColumnType("int");
 
-                    b.HasKey("UsersUserID", "YearsListYearsID");
+            //        b.HasKey("UsersUserID", "YearsListYearID");
 
-                    b.HasIndex("YearsListYearsID");
+            //        b.HasIndex("YearsListYearID");
 
-                    b.ToTable("UserYearsList");
-                });
+            //        b.ToTable("UserYearsList");
+            //    });
 
             modelBuilder.Entity("AnnouncementCategoriesList", b =>
                 {
@@ -387,6 +416,21 @@ namespace EFDataAccessLibrary.Migrations
                     b.HasOne("EFDataAccessLibrary.Data.CategoriesList", null)
                         .WithMany()
                         .HasForeignKey("CategoriesListCategoryID")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("AnnouncementSubjectsList", b =>
+                {
+                    b.HasOne("EFDataAccessLibrary.Data.Announcement", null)
+                        .WithMany()
+                        .HasForeignKey("AnnouncementsAnnID")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("EFDataAccessLibrary.Data.SubjectsList", null)
+                        .WithMany()
+                        .HasForeignKey("SubjectsListSubjectID")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });
@@ -462,17 +506,6 @@ namespace EFDataAccessLibrary.Migrations
                     b.Navigation("Announcement");
                 });
 
-            modelBuilder.Entity("EFDataAccessLibrary.Data.Image", b =>
-                {
-                    b.HasOne("EFDataAccessLibrary.Data.Announcement", "Announcement")
-                        .WithOne("Image")
-                        .HasForeignKey("EFDataAccessLibrary.Data.Image", "ImageID")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Announcement");
-                });
-
             modelBuilder.Entity("EFDataAccessLibrary.Data.Permission", b =>
                 {
                     b.HasOne("EFDataAccessLibrary.Data.User", "User")
@@ -491,6 +524,44 @@ namespace EFDataAccessLibrary.Migrations
                         .HasForeignKey("EFDataAccessLibrary.Data.Preference", "UserID")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.Navigation("User");
+                });
+
+            modelBuilder.Entity("EFDataAccessLibrary.Data.SubjectsListAnnouncement", b =>
+                {
+                    b.HasOne("EFDataAccessLibrary.Data.Announcement", "Announcement")
+                        .WithMany("SubjectsListAnnouncements")
+                        .HasForeignKey("AnnouncementID")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("EFDataAccessLibrary.Data.SubjectsList", "Subject")
+                        .WithMany("SubjectsListAnnouncements")
+                        .HasForeignKey("SubjectID")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Announcement");
+
+                    b.Navigation("Subject");
+                });
+
+            modelBuilder.Entity("EFDataAccessLibrary.Data.SubjectsListUser", b =>
+                {
+                    b.HasOne("EFDataAccessLibrary.Data.SubjectsList", "Subject")
+                        .WithMany("SubjectsListUsers")
+                        .HasForeignKey("SubjectID")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("EFDataAccessLibrary.Data.User", "User")
+                        .WithMany("SubjectsListUsers")
+                        .HasForeignKey("UserID")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Subject");
 
                     b.Navigation("User");
                 });
@@ -520,7 +591,7 @@ namespace EFDataAccessLibrary.Migrations
 
                     b.HasOne("EFDataAccessLibrary.Data.YearsList", null)
                         .WithMany()
-                        .HasForeignKey("YearsListYearsID")
+                        .HasForeignKey("YearsListYearID")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });
@@ -531,7 +602,7 @@ namespace EFDataAccessLibrary.Migrations
 
                     b.Navigation("Files");
 
-                    b.Navigation("Image");
+                    b.Navigation("SubjectsListAnnouncements");
                 });
 
             modelBuilder.Entity("EFDataAccessLibrary.Data.CategoriesList", b =>
@@ -539,6 +610,13 @@ namespace EFDataAccessLibrary.Migrations
                     b.Navigation("CategoriesListAnnouncements");
 
                     b.Navigation("CategoriesListUsers");
+                });
+
+            modelBuilder.Entity("EFDataAccessLibrary.Data.SubjectsList", b =>
+                {
+                    b.Navigation("SubjectsListAnnouncements");
+
+                    b.Navigation("SubjectsListUsers");
                 });
 
             modelBuilder.Entity("EFDataAccessLibrary.Data.User", b =>
@@ -550,6 +628,8 @@ namespace EFDataAccessLibrary.Migrations
                     b.Navigation("Permissions");
 
                     b.Navigation("Preferences");
+
+                    b.Navigation("SubjectsListUsers");
                 });
 #pragma warning restore 612, 618
         }
