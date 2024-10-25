@@ -36,12 +36,12 @@ namespace AnnouncementAPI.Controllers
 
             if (request.InCategoriesIds is not null)
             {
-                query = query.Where(a => a.CategoriesListAnnouncements.Any(b => request.InCategoriesIds.Contains(b.CategoryId)));
+                query = query.Where(a => a.RelatedToCategories.Any(b => request.InCategoriesIds.Contains(b.Id)));
             }
 
             if (request.InSubjectIds is not null)
             {
-                query = query.Where(a => a.SubjectsListAnnouncements.Any(b => request.InSubjectIds.Contains(b.SubjectId)));
+                query = query.Where(a => a.RelatedToSubjects.Any(b => request.InSubjectIds.Contains(b.Id)));
             }
 
             if (request.OrderByCreationDateAscending)
@@ -54,10 +54,10 @@ namespace AnnouncementAPI.Controllers
             }
             else
             {
-                query = query.OrderBy(a => a.AnnID);
+                query = query.OrderBy(a => a.Id);
             }
 
-            query = query.Where(e => true); // filter non published, soft deleted etc
+            //query = query.Where(e => true); // filter non published, soft deleted etc
 
             var count = await query.CountAsync();
 
@@ -81,7 +81,7 @@ namespace AnnouncementAPI.Controllers
         {
             var announcement =
                 await _context.Announcements
-                    .Where(e => e.AnnID == id)
+                    .Where(e => e.Id == id)
                     .Select(e => AnnouncementMapper(e))
                     .FirstOrDefaultAsync();
 
@@ -96,13 +96,11 @@ namespace AnnouncementAPI.Controllers
 
         private static AnnouncementDTO AnnouncementMapper(Announcement entry) => new()
         {
-            AnnID = entry.AnnID,
+            AnnID = entry.Id,
             Title = entry.Title,
             Abstract = entry.Abstract,
             Body = entry.Body,
             Date = entry.CreationDate,
-            Alert = entry.Alert,
-            Author = entry.Author,
         };
     }
 

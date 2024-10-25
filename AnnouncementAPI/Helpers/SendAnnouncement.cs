@@ -29,24 +29,26 @@ namespace AnnouncementAPI.Helpers
 
         public async Task<List<string>> SendToMail(AnnouncementDTO announcement)
         {
-            var announcementCategoriesIds = await _context.categoriesListannouncement
-                .Where(a => a.AnnouncementID == announcement.AnnID)
-                .Select(b => b.CategoryId)
-                .ToListAsync();
+            //TODO what the ... is going on here
+            //var announcementCategoriesIds = await _context.Categories
+            //    .Where(a => a.Id == announcement.AnnID)
+            //    .Select(b => b.Id)
+            //    .ToListAsync();
 
-            var usersWithSelectedCategories = await _context.categorieslistuser
-                .Where(a => announcementCategoriesIds.Contains(a.CategoryID))
-                .Select(b => b.UserID)
-                .ToListAsync();
+            //var usersWithSelectedCategories = await _context.Subjects
+            //    .Where(a => announcementCategoriesIds.Contains(a.Id))
+            //    .Select(b => b.Id)
+            //    .ToListAsync();
 
-            var emailsFromCategories = await _context.Users
-                .Where(a => usersWithSelectedCategories.Contains(a.UserID))
-                .Select(b => b.PrimaryEmail)
-                .ToListAsync();
+            //var emailsFromCategories = await _context.Users
+            //    .Where(a => usersWithSelectedCategories.Contains(a.Id))
+            //    .Select(b => b.PrimaryEmail)
+            //    .ToListAsync();
 
-            Console.WriteLine($"fetched mail categories{emailsFromCategories}");
+            //Console.WriteLine($"fetched mail categories{emailsFromCategories}");
 
-            return emailsFromCategories;
+            throw new NotImplementedException();
+            //return emailsFromCategories;
         }
 
 

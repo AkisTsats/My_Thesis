@@ -63,10 +63,12 @@
 
     protected override async Task OnInitializedAsync()
     {
+        _myDTO = await PrintWebApiResponse();
+
         try
         {
             var settings = await _settingsRepository.FetchSettingsForCreateAnnouncement();
-            _myDTO = await PrintWebApiResponse();
+            
             AllCategories = settings.Categories;
             AllSubjects = settings.Subjects;
         }

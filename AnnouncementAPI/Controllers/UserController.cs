@@ -27,10 +27,10 @@ namespace AnnouncementAPI.Controllers
         public async Task<ActionResult<UserDTO>> GetUserController()
         {
             return await _context.Users
-                .Where(u => u.UserID == 7)
+                .Where(u => u.Id == 7)
                 .Select(u => new UserDTO
                 {
-                    Name = u.Name
+                    Name = u.FullName
                 }).FirstOrDefaultAsync();
         }
 
@@ -39,10 +39,10 @@ namespace AnnouncementAPI.Controllers
         public async Task<ActionResult<UserDTO>> GetAllUsersController()
         {
             return await _context.Users
-                .Where(u => u.UserID == 7)
+                .Where(u => u.Id == 7)
                 .Select(u => new UserDTO
                 {
-                    Name = u.Name
+                    Name = u.FullName
                 }).FirstOrDefaultAsync();
         }
 
@@ -55,21 +55,21 @@ namespace AnnouncementAPI.Controllers
 
             if (id is not null)
             {
-                userToRet = userToRet.Where(u => u.UserID == id);
+                userToRet = userToRet.Where(u => u.Id == id);
             }
 
             if (email is not null)
             {
-                userToRet = userToRet.Where(u => u.PrimaryEmail == email);
+                userToRet = userToRet.Where(u => u.Email == email);
 
             }
 
             var toRet = await userToRet.Select(u => new UserDTO
             {
-                UserID = u.UserID,
-                Name = u.Name,
-                Surname = u.Surname,
-                PrimaryEmail = u.PrimaryEmail
+                UserID = u.Id,
+                Name = u.FullName,
+                Surname = u.FirstName,
+                PrimaryEmail = u.Email
                 //CurrentYear = u.CurrentYear,
                 //SecondaryEmail = u.SecondaryEmail,
                 //EnrollmentYear = u.EnrollmentYear,
@@ -86,7 +86,7 @@ namespace AnnouncementAPI.Controllers
         [HttpPut("UpdateUserByID/{id}")]
         public async Task<ActionResult<UserDTO>> updateUser(int id, UserDTO? body)
         {
-            var user = await _context.Users.Where(a => a.UserID == id).FirstOrDefaultAsync();
+            var user = await _context.Users.Where(a => a.Id == id).FirstOrDefaultAsync();
 
             if (user == null)
             {
@@ -96,10 +96,11 @@ namespace AnnouncementAPI.Controllers
             {
                 try
                 {
-                    user.CurrentYear = body.CurrentYear;
-                    user.PhoneNumber = body.PhoneNumber;
-                    user.PrimaryEmail = body.PrimaryEmail;
-                    user.SecondaryEmail = body.SecondaryEmail;
+                    throw new NotImplementedException();
+                    //user.CurrentYear = body.CurrentYear;
+                    //user.PrimaryPhoneNumber = body.PhoneNumber;
+                    //user.Email = body.PrimaryEmail;
+                    //user.SecondaryEmail = body.SecondaryEmail;
 
                     await _context.SaveChangesAsync();
                     return Ok(user);

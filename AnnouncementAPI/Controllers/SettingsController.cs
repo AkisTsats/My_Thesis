@@ -18,17 +18,17 @@ namespace AnnouncementAPI.Controllers
         [HttpGet("GetSettingsForAnnouncementCreation")]
         public async Task<ActionResult<SettingsForAnnouncementCreation>> GetSettingsForAnnouncementCreation()
         {
-            var categories = await _context.CList
+            var categories = await _context.Categories
                 .Select(a => new CategoriesDTO(
-                    a.CategoryID,
-                    a.CategoryName
+                    a.Id,
+                    a.Name
                     ))
                 .ToListAsync();
 
-            var subjects = await _context.SList
+            var subjects = await _context.Subjects
                 .Select(a => new SubjectsDTO(
-                    a.SubjectID,
-                    a.SubjectName
+                    a.Id,
+                    a.Name
                     ))
                 .ToListAsync();
 

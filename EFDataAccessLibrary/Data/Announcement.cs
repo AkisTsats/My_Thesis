@@ -2,33 +2,34 @@
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace EFDataAccessLibrary.Data
 {
     public class Announcement
     {
         [Key]
-        public int AnnID { get; set; }
+        public int Id { get; set; }
+
+        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
+        public DateTime CreatedTs { get; set; }
+
         public string Title { get; set; }
         public string Abstract { get; set; }
         public string Body { get; set; }
         public DateTime CreationDate { get; set; }
-        public bool Alert { get; set; }
-        public string Author { get; set; }        
-        public User User { get; set; }
-        public List<File>? Files { get; set; }
-        public List<CategoriesList> CategoriesList { get; set; }
-        public List<SubjectsList> SubjectsList { get; set; }
 
-        [InverseProperty(nameof(CategoriesListAnnouncement.Announcement))]
-        public ICollection<CategoriesListAnnouncement> CategoriesListAnnouncements { get; set; }
+        public User Creator { get; set; }
 
-        [InverseProperty(nameof(SubjectsListAnnouncement.Announcement))]
-        public ICollection<SubjectsListAnnouncement> SubjectsListAnnouncements { get; set; }
+        public Resource? PrimaryResource { get; set; }
 
+        [InverseProperty(nameof(Resource.RelatesToAnnouncement))]
+        public ICollection<Resource> RelatedResources { get; set; }
+
+        [InverseProperty(nameof(Category.RelatesToAnnouncements))]
+        public ICollection<Category> RelatedToCategories { get; set; }
+
+        [InverseProperty(nameof(Subject.RelatesToAnnouncements))]
+        public ICollection<Subject> RelatedToSubjects { get; set; }
     }
 
 }

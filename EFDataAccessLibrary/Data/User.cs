@@ -1,36 +1,47 @@
-﻿using System.Collections.Generic;
+﻿using Microsoft.EntityFrameworkCore;
+using System;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace EFDataAccessLibrary.Data
 {
+    public record NotificationSettings(
+        bool NotifyByEmail,
+        IEnumerable<string> NotifyEmails,
+        bool NotifyByPhone,
+        IEnumerable<string> NotifyPhoneNumbers
+        );
+
     public class User
     {
         [Key]
-        public int UserID { get; set; }
-        public string Name { get; set; }
-        public string Surname { get; set; }
-        public string PrimaryEmail { get; set; }
-        public string SecondaryEmail { get; set; }
-        public string Role { get; set; }
-        public string PhoneNumber { get; set; }
-        public int EnrollmentYear { get; set; }
-        public int CurrentYear { get; set; }
-        public Preference Preferences { get; set; }
-        public Permission Permissions { get; set; }
-        public ICollection<Announcement> Announcements { get; set; }
-        public List<YearsList> YearsList { get; set; }
-        public List<SubjectsList> SubjectsList { get; set; }
-        public List<CategoriesList> CategoriesList { get; set; }
+        public int Id { get; set; }
 
-        [InverseProperty(nameof(CategoriesListUser.User))]
-        public ICollection<CategoriesListUser> CategoriesListUsers { get; set; }
+        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
+        public DateTime CreatedTs { get; set; }
 
-        [InverseProperty(nameof(SubjectsListUser.User))]
-        public ICollection<SubjectsListUser> SubjectsListUsers { get; set; }
-        
+        public string FullName { get; set; }
+        public string FirstName { get; set; }
+        public string LastName { get; set; }
+        public string Email { get; set; }
+        public int? EnrollmentYear { get; set; }
+        public UserType Type { get; set; }
+        public UserRole Role { get; set; }
+        public DateTime? PauseNotificationsUntil { get; set; }
+        public string NotificationSettings { get; set; }
 
+        [NotMapped]
+        public NotificationSettings NotificationSettingsDeserialized
+        {
+            get => System.Text.Json.JsonSerializer.Deserialize<NotificationSettings>(NotificationSettings);
+            set => NotificationSettings = System.Text.Json.JsonSerializer.Serialize(value);
+        }
 
+        [InverseProperty(nameof(Subject.SelectedByUsers))]
+        public ICollection<Subject> SelectedSubjects { get; set; }
 
+        [InverseProperty(nameof(Category.SelectedByUsers))]
+        public ICollection<Category> SelectedCategories { get; set; }
     }
 }

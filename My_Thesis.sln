@@ -18,6 +18,11 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DTOs", "DTOs\DTOs.csproj", 
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "EFDataAccessLibrary", "EFDataAccessLibrary\EFDataAccessLibrary.csproj", "{94A4AB50-1001-494C-A624-A8979AAE7482}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DataCreatorForTesting", "DataCreatorForTesting\DataCreatorForTesting.csproj", "{E0611317-50B9-49E5-A2BE-133E0E2AB17C}"
+	ProjectSection(ProjectDependencies) = postProject
+		{94A4AB50-1001-494C-A624-A8979AAE7482} = {94A4AB50-1001-494C-A624-A8979AAE7482}
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -40,6 +45,10 @@ Global
 		{94A4AB50-1001-494C-A624-A8979AAE7482}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{94A4AB50-1001-494C-A624-A8979AAE7482}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{94A4AB50-1001-494C-A624-A8979AAE7482}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E0611317-50B9-49E5-A2BE-133E0E2AB17C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E0611317-50B9-49E5-A2BE-133E0E2AB17C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E0611317-50B9-49E5-A2BE-133E0E2AB17C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E0611317-50B9-49E5-A2BE-133E0E2AB17C}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

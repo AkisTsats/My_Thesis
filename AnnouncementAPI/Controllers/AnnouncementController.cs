@@ -69,9 +69,7 @@ namespace AnnouncementAPI.Controllers
                 Abstract = body.Abstract,
                 Title = body.Title,
                 Body = body.Body,
-                Alert = body.Alert,
                 CreationDate = body.Date,
-                Author = body.Author,
                 //Files = body.Files.Select(f => new File
                 //{
                 //    FileName = f.FileName,
@@ -83,19 +81,19 @@ namespace AnnouncementAPI.Controllers
 
             foreach (var file in body.Files)
             {
-                var newFile = new File
+                var newFile = new Resource
                 {
-                    Announcement = ann,
-                    FileName = file.FileName,
-                    ContentType = file.ContentType,
-                    Path = file.Path,
-                    IsPrimaryImage = true //.IsPrimaryImage;
+                    //Announcement = ann,
+                    //FileName = file.FileName,
+                    //ContentType = file.ContentType,
+                    //Path = file.Path,
+                    //IsPrimaryImage = true //.IsPrimaryImage;
                 };
-                await _context.Files.AddAsync(newFile);
+                await _context.Resources.AddAsync(newFile);
             }
 
             await _context.Announcements.AddAsync(ann);
-            
+
             await _context.SaveChangesAsync();
 
             //await _producer.myEndpoint(body);
@@ -124,7 +122,6 @@ namespace AnnouncementAPI.Controllers
                     announcement.Abstract = body.Abstract;
                     announcement.Body = body.Body;
                     announcement.CreationDate = body.Date;
-                    announcement.Author = body.Author;
 
                     //_context.Announcements.Update(announcement);
 
@@ -145,72 +142,72 @@ namespace AnnouncementAPI.Controllers
         public async Task<ActionResult<GetAnnouncementsByResponse>> GetAnnouncementByObj(int? id, string? title, DateTime? date, string? category, int? limit, int? skip)
         {
             //TODO validation
+            throw new NotImplementedException();
+            //var announcementsList = _context.Announcements.Where(_ => true);
 
-            var announcementsList = _context.Announcements.Where(_ => true);
+            //if (id is not null)
+            //{
+            //    announcementsList = announcementsList.Where(a => a.Id == id);
+            //}
+            //if (title is not null)
+            //{
+            //    announcementsList = announcementsList.Where(a => a.Title.Contains(title));
+            //}
+            //if (date is not null)
+            //{
+            //    announcementsList = announcementsList.Where(a => a.CreationDate == date);
+            //}
 
-            if (id is not null)
-            {
-                announcementsList = announcementsList.Where(a => a.AnnID == id);
-            }
-            if (title is not null)
-            {
-                announcementsList = announcementsList.Where(a => a.Title.Contains(title));
-            }
-            if (date is not null)
-            {
-                announcementsList = announcementsList.Where(a => a.CreationDate == date);
-            }
+            //int count = announcementsList.Count();
 
-            int count = announcementsList.Count();
+            //if ((limit is not null) && (skip is not null))
+            //{
+            //    int s = skip.Value;
+            //    int l = limit.Value;
+            //    announcementsList = announcementsList.OrderBy(i => i.Id).Skip((s - 1) * l).Take(l);
+            //}
 
-            if ((limit is not null) && (skip is not null))
-            {
-                int s = skip.Value;
-                int l = limit.Value;
-                announcementsList = announcementsList.OrderBy(i => i.AnnID).Skip((s - 1) * l).Take(l);
-            }
+            //if (category is not null)
+            //{
+            //    var categoryId = _context.Categories.Where(a => a.Name == category).Select(b => b.Id).First();
 
-            if (category is not null)
-            {
-                var categoryId = _context.CList.Where(a => a.CategoryName == category).Select(b => b.CategoryID).First();
+            //    var filteredAnnouncementsList = _context.Categories
+            //        .Where(a => a.Id == categoryId).Select(b => b.);
 
-                var filteredAnnouncementsList = _context.categoriesListannouncement
-                    .Where(a => a.CategoryId == categoryId).Select(b => b.Announcement);
+            //    var filteredList = filteredAnnouncementsList.Select(a => new AnnouncementDTO()
+            //    {
+            //        AnnID = a.Id,
+            //        Abstract = a.Abstract,
+            //        Alert = a.Alert,
+            //        Body = a.Body,
+            //        Date = a.CreationDate,
+            //        Title = a.Title,
+            //    }).ToListAsync();
 
-                var filteredList = filteredAnnouncementsList.Select(a => new AnnouncementDTO()
-                {
-                    AnnID = a.AnnID,
-                    Abstract = a.Abstract,
-                    Alert = a.Alert,
-                    Body = a.Body,
-                    Date = a.CreationDate,
-                    Title = a.Title,
-                }).ToListAsync();
+            //    var filteredRet = new GetAnnouncementsByResponse
+            //    {
+            //        Announcements = await filteredList,
+            //        SumOfAnnouncements = count,
+            //    };
+            //    return filteredRet;
+            //}
 
-                var filteredRet = new GetAnnouncementsByResponse
-                {
-                    Announcements = await filteredList,
-                    SumOfAnnouncements = count,
-                };
-                return filteredRet;
-            }
+            //var listToReturn = announcementsList.Select(a => new AnnouncementDTO
+            //{
+            //    AnnID = a.Id,
+            //    Abstract = a.Abstract,
+            //    Alert = a.Alert,
+            //    Body = a.Body,
+            //    Date = a.CreationDate,
+            //    Title = a.Title,
+            //}).ToListAsync();
 
-            var listToReturn = announcementsList.Select(a => new AnnouncementDTO
-            {
-                AnnID = a.AnnID,
-                Abstract = a.Abstract,
-                Alert = a.Alert,
-                Body = a.Body,
-                Date = a.CreationDate,
-                Title = a.Title,
-            }).ToListAsync();
-
-            var toReturn = new GetAnnouncementsByResponse
-            {
-                Announcements = await listToReturn,
-                SumOfAnnouncements = count,
-            };
-            return toReturn;
+            //var toReturn = new GetAnnouncementsByResponse
+            //{
+            //    Announcements = await listToReturn,
+            //    SumOfAnnouncements = count,
+            //};
+            //return toReturn;
         }
 
 
@@ -219,7 +216,7 @@ namespace AnnouncementAPI.Controllers
         [HttpDelete("DeleteAnnouncementByID/{id}")]
         public async Task<ActionResult<List<AnnouncementDTO>>> DeleteAnnouncement(int id)
         {
-            var announcement = await _context.Announcements.SingleOrDefaultAsync(a => a.AnnID == id);
+            var announcement = await _context.Announcements.SingleOrDefaultAsync(a => a.Id == id);
 
             if (announcement == null)
             {
