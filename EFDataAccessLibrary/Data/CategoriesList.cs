@@ -14,12 +14,10 @@ namespace EFDataAccessLibrary.Data
         public int CategoryID { get; set; }
         public string CategoryName { get; set; }
 
-        public List<User> Users { get; set; }
 
         [InverseProperty(nameof(CategoriesListUser.Category))]
         public ICollection<CategoriesListUser> CategoriesListUsers { get; set; }
 
-        public List<Announcement> Announcements { get; set; }
 
         [InverseProperty(nameof(CategoriesListAnnouncement.Category))]
         public ICollection<CategoriesListAnnouncement> CategoriesListAnnouncements { get; set; }

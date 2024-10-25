@@ -8,7 +8,7 @@ namespace EFDataAccessLibrary.Data
 {
     public class SubjectsListAnnouncement
     {
-        public int SubjectID { get; set; }
+        public int SubjectId { get; set; }
 
         public int AnnouncementID { get; set; }
 

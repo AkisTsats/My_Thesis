@@ -1,18 +1,24 @@
 ﻿@using DTOs.Data;
+@using Microsoft.AspNetCore.Components.Authorization
+
 
 <MudNavMenu>
-    <MudNavLink Href="/" Match="NavLinkMatch.All">Διαχείριση Ανακοινώσεων</MudNavLink>
-    <MudNavLink Href="/myannouncements" Match="NavLinkMatch.Prefix">Οι ανακοινώσεις μου</MudNavLink>
-    <MudNavLink Href="/createannouncement" Match="NavLinkMatch.Prefix">Δημιουργία ανακοίνωσης</MudNavLink>
-    <MudNavLink Href="/usersettings" Match="NavLinkMatch.Prefix">Οι ρυθμίσεις μου</MudNavLink>
-    @if (permissions.canEditAllAnn == true)
-    {
-        <MudNavLink Href="/announcementsformoderation" Match="NavLinkMatch.Prefix">Moderation</MudNavLink>
-    }
-    @if (permissions.canSeeStats == true)
-    {
-        <MudNavLink Href="/statistics" Match="NavLinkMatch.Prefix">Stats</MudNavLink>
-    }
+    <MudNavLink Href="/" Match="NavLinkMatch.All">Ανακοινώσεις</MudNavLink>
+    <AuthorizeView>
+        <Authorized>
+            <MudNavLink Href="/myannouncements" Match="NavLinkMatch.Prefix">Οι ανακοινώσεις μου</MudNavLink>
+            <MudNavLink Href="/createannouncement" Match="NavLinkMatch.Prefix">Δημιουργία ανακοίνωσης</MudNavLink>
+            <MudNavLink Href="/usersettings" Match="NavLinkMatch.Prefix">Οι ρυθμίσεις μου</MudNavLink>
+            @if (permissions.canEditAllAnn == true)
+            {
+                <MudNavLink Href="/announcementsformoderation" Match="NavLinkMatch.Prefix">Moderation</MudNavLink>
+            }
+            @if (permissions.canSeeStats == true)
+            {
+                <MudNavLink Href="/statistics" Match="NavLinkMatch.Prefix">Stats</MudNavLink>
+            }
+        </Authorized>
+    </AuthorizeView>
 </MudNavMenu>
 
 

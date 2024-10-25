@@ -19,81 +19,129 @@
     <MudItem xs="12" sm="7">
         <MudPaper Class="pa-4">
             <MudForm Model="@announcement">
-                <MudTextField T="string" Label="Τίτλος" Required="true" @bind-Value="announcement.Title" />
-                <MudTextField T="string" Label="Περίληψη" @bind-Value="announcement.Abstract" Required="false" />
+                <MudTextField Class="mt-10" T="string" Label="Τίτλος" Required="true" @bind-Value="announcement.Title" />
+                <MudTextField Class="mt-10" T="string" Label="Περίληψη" Lines="4" @bind-Value="announcement.Abstract" Required="false" />
                 <MudExRichTextEdit @ref="@Editor"
                                    ReadOnly="false"
                                    Height="444"
-                                   Class="m-2"
-                                   Placeholder="Edit html">
-			 
+                                   Class="mt-10"
+                                   Placeholder="Κείμενο">
+                    <ToolbarContent>
+                        <select class="ql-header">
+                            <option selected=""></option>
+                            <option value="1"></option>
+                            <option value="2"></option>
+                            <option value="3"></option>
+                            <option value="4"></option>
+                            <option value="5"></option>
+                        </select>
+                        <span class="ql-formats">
+                            <button class="ql-bold"></button>
+                            <button class="ql-italic"></button>
+                            <button class="ql-underline"></button>
+                            <button class="ql-strike"></button>
+                        </span>
+                        <span class="ql-formats">
+                            <select class="ql-color"></select>
+                            <select class="ql-background"></select>
+                        </span>
+                        <span class="ql-formats">
+                            <button class="ql-list" value="ordered"></button>
+                            <button class="ql-list" value="bullet"></button>
+                        </span>
+                        <span class="ql-formats">
+                            <button class="ql-link"></button>
+                        </span>
+                    </ToolbarContent>
                 </MudExRichTextEdit>
-                <MudTextField T="string" Label="Κείμενο" @bind-Value="announcement.Body" Lines="30" Required="true" />
+                @* <MudTextField T="string" Label="Κείμενο" @bind-Value="announcement.Body" Lines="30" Required="true" /> *@
                 @if (false)//TOADD check if he has permissions
                 {
                     <div class="d-flex align-center justify-space-between mt-6">
                         <MudCheckBox T="bool" Class="ml-n2" @bind-Checked="announcement.Alert" Label="SOS" />
                     </div>
                 }
+                <MudSelect Class="mt-10" T="CategoriesDTO" Label="Επιλέξτε κατηγορίες" MultiSelection="true" ToStringFunc="@CategoryConverter" @bind-Value="CategoriesDTO.DEFAULT_NO_CATEGORY_CHOOSEN" @bind-SelectedValues="SelectedCategories" MultiSelectionTextFunc="@(new Func<List<string>, string>(GetMultiselectionTextForCategories))">
+                    @foreach (var category in AllCategories)
+                    {
+                        <MudSelectItem T="CategoriesDTO" Value="@category">@category.CategoryName</MudSelectItem>
+                    }
+                </MudSelect>
+                <MudSelect Class="mt-10" T="SubjectsDTO" Label="Επιλέξτε μαθήματα" MultiSelection="true" ToStringFunc="@SubjectConverter" @bind-Value="SubjectsDTO.DEFAULT_NO_SUBJECT_CHOOSEN" @bind-SelectedValues="SelectedSubjects" MultiSelectionTextFunc="@(new Func<List<string>, string>(GetMultiselectionTextForSubjects))">
+                    @foreach (var subject in AllSubjects)
+                    {
+                        <MudSelectItem T="SubjectsDTO" Value="@subject">@subject.SubjectName</MudSelectItem>
+                    }
+                </MudSelect>
+                @* <MudButton Variant="Variant.Filled" Color="Color.Secondary" Class="mt-10 mb-auto" onchange="imageInput"> Ανέβασμα Αρχείου</MudButton> *@
+                <InputFile OnChange="OnImageUpload" Ανέβασμα Αρχείου />
+                <MudSpacer />
+                <MudButton Variant="Variant.Filled" Color="Color.Primary" Class="mt-10 mb-auto" OnClick="OnAnnouncementSubmit">Προσθήκη Ανακοίνωσης</MudButton>
             </MudForm>
-            <MudSelect T="CategoriesDTO" Label="Επιλέξτε κατηγορίες" MultiSelection="true" @bind-Value="CategoriesDTO.DEFAULT_NO_CATEGORY_CHOOSEN" @bind-SelectedValues="SelectedCategories">
-                @foreach (var category in AllCategories)
-                {
-                    <MudSelectItem T="CategoriesDTO" Value="@category">@category.CategoryName</MudSelectItem>
-                }
-            </MudSelect>
-            <AddFile OnUpload="Upload"></AddFile><AddImage OnUpload="UploadImage"></AddImage>
-            <MudButton Variant="Variant.Filled" Color="Color.Info" Class="ml-auto" OnClick="OnButtonClicked">Προσθήκη Ανακοίνωσης</MudButton>
         </MudPaper>
     </MudItem>
 </MudGrid>
 
 @code {
-    private IEnumerable<CategoriesDTO> AllCategories { get; set; }
-    private IEnumerable<CategoriesDTO> SelectedCategories { get; set; }
+    #region Categories picker
+    private IEnumerable<CategoriesDTO> AllCategories { get; set; } = [];
+    private IEnumerable<CategoriesDTO> SelectedCategories { get; set; } = [];
+
+    private string GetMultiselectionTextForCategories(List<string> selectedValues) => selectedValues.Count == 0 ? "Δεν έχουν επιλεχθεί κατηγορίες" : $"Επιλεγμένες Κατηγορίες: {string.Join(", ", selectedValues.Select(x => x))}";
+
+    Func<CategoriesDTO, string> CategoryConverter = p => p?.CategoryName;
+    #endregion
+
+    #region Subject picker
+    private IEnumerable<SubjectsDTO> AllSubjects { get; set; } = [];
+    private IEnumerable<SubjectsDTO> SelectedSubjects { get; set; } = [];
+
+    private string GetMultiselectionTextForSubjects(List<string> selectedValues) => selectedValues.Count == 0 ? "Δεν έχουν επιλεχθεί Μαθήματα" : $"Επιλεγμένες Μαθήματα: {string.Join(", ", selectedValues.Select(x => x))}";
+
+    Func<SubjectsDTO, string> SubjectConverter = p => p?.SubjectName;
+    #endregion
 
     private List<UploadResult> uploadResults = new();
-    MudExRichTextEdit Editor;	
+
+    MudExRichTextEdit Editor;
     protected override async Task OnInitializedAsync()
     {
         try
         {
             var settings = await _settingsRepository.FetchSettingsForCreateAnnouncement();
-            
+
             AllCategories = settings.Categories;
-            //all other settings...
+            AllSubjects = settings.Subjects;
         }
         catch (Exception ex)
         {
             Console.WriteLine($"Error fetching categories: {ex}");
         }
     }
+    // async Task Upload(MultipartFormDataContent content)
+    // {
+    //     var fileToUpload = content;
+    //     var response = await Http.PostAsync("https://localhost:5001/api/FileUpload/UploadService", content);
 
+    //     var result = await response.Content.ReadFromJsonAsync<List<UploadResult>>();
 
-    async Task Upload(MultipartFormDataContent content)
-    {
-        var fileToUpload = content;
-        var response = await Http.PostAsync("https://localhost:5001/api/FileUpload/UploadService", content);
+    //     if (result is not null)
+    //     {
+    //         uploadResults = uploadResults.Concat(result).ToList();
+    //     }
+    // }
+    // async Task UploadImage(MultipartFormDataContent content)
+    // {
+    //     var response = await Http.PostAsync("https://localhost:5001/api/FileUpload/UploadService?isImage=true", new MultipartFormDataContent()
+    //     { });
 
-        var result = await response.Content.ReadFromJsonAsync<List<UploadResult>>();
+    //     var result = await response.Content.ReadFromJsonAsync<List<UploadResult>>();
 
-        if (result is not null)
-        {
-            uploadResults = uploadResults.Concat(result).ToList();
-        }
-    }
-    async Task UploadImage(MultipartFormDataContent content)
-    {
-        var response = await Http.PostAsync("https://localhost:5001/api/FileUpload/UploadService?isImage=true", new MultipartFormDataContent()
-        { });
-
-        var result = await response.Content.ReadFromJsonAsync<List<UploadResult>>();
-
-        if (result is not null)
-        {
-            uploadResults = uploadResults.Concat(result).ToList();
-        }
-    }
+    //     if (result is not null)
+    //     {
+    //         uploadResults = uploadResults.Concat(result).ToList();
+    //     }
+    // }
 
     [Inject] private IDialogService DialogService { get; set; }
 
@@ -101,7 +149,7 @@
 
     //TODO add form validation and error handling
 
-    private async void OnButtonClicked()
+    private async void OnAnnouncementSubmit()
     {
         bool? result = await DialogService.ShowMessageBox(
             "Οριστική υποβολή ανακοίνωσης?",
@@ -113,20 +161,60 @@
             await PostOnAPI();
             UriHelper.NavigateTo("myannouncements");
         }
+        StateHasChanged();
     }
 
     public async Task PostOnAPI()
     {
-
         announcement.Author = "Admin";
         announcement.UserID = 1;
         announcement.Date = DateTime.Now;
         announcement.Files = uploadResults;
+
+        announcement.Body = await this.Editor.GetHtml();
 
         var post = announcement.SerializeMethod<AnnouncementDTO>();
 
         //Console.WriteLine(post);
 
         await Http.PostAsJsonAsync("https://localhost:5001/api/Announcement/CreateAnnouncement", announcement);
+    }
+
+    public async Task OnImageUpload(InputFileChangeEventArgs e)
+    {
+        var content = await UploadFiles(e);
+        var fileToUpload = content;
+        var response = await Http.PostAsync("https://localhost:5001/api/FileUpload/UploadService", content);
+
+        var result = await response.Content.ReadFromJsonAsync<List<UploadResult>>();
+
+        var imageUrl = result[0]?.Path;
+        await this.Editor.InsertImage(imageUrl);
+        StateHasChanged();
+    }
+
+    [Parameter] public EventCallback<MultipartFormDataContent> OnUpload { get; set; }
+
+    private int maxFilesNum = int.MaxValue;
+    private long maxFileSize = long.MaxValue;
+    private List<string?> uploadResult = new();
+
+    private async Task<MultipartContent> UploadFiles(InputFileChangeEventArgs e)
+    {
+        var content = new MultipartFormDataContent();
+
+        foreach (var file in e.GetMultipleFiles(maxFilesNum))
+        {
+            var filecontent = new StreamContent(file.OpenReadStream(maxFileSize));
+            filecontent.Headers.ContentType = new System.Net.Http.Headers.MediaTypeHeaderValue(file.ContentType);
+
+            content.Add
+            (
+                content: filecontent,
+                name: "\"files\"",
+                fileName: file.Name);
+        }
+        await OnUpload.InvokeAsync(content);
+        return content;
     }
 }

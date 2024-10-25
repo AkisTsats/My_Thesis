@@ -31,7 +31,7 @@ namespace AnnouncementAPI.Helpers
         {
             var announcementCategoriesIds = await _context.categoriesListannouncement
                 .Where(a => a.AnnouncementID == announcement.AnnID)
-                .Select(b => b.CategoryID)
+                .Select(b => b.CategoryId)
                 .ToListAsync();
 
             var usersWithSelectedCategories = await _context.categorieslistuser

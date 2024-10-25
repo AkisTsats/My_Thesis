@@ -17,7 +17,7 @@ namespace EFDataAccessLibrary.Data
         : base(options)
         { }
 
-        public const string connectionString = "Server=localhost;User Id=root;Password='r00t;';Database=announcementapi";
+        public const string connectionString = "Server=localhost;User Id=root;Password='r00t;';Database=announcementapiVNext";
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
@@ -49,13 +49,13 @@ namespace EFDataAccessLibrary.Data
                 .HasMany(a => a.Users)
                 .WithMany(b => b.YearsList);
 
-            modelBuilder.Entity<SubjectsList>()
-                .HasMany(a => a.Users)
-                .WithMany(b => b.SubjectsList);
+            //modelBuilder.Entity<SubjectsList>()
+            //    .HasMany(a => a.Users)
+            //    .WithMany(b => b.SubjectsList);
 
-            modelBuilder.Entity<CategoriesList>()
-                .HasMany(a => a.Users)
-                .WithMany(b => b.CategoriesList);
+            //modelBuilder.Entity<CategoriesList>()
+            //    .HasMany(a => a.Users)
+            //    .WithMany(b => b.CategoriesList);
 
             modelBuilder.Entity<CategoriesListUser>()
                 .HasKey(a => new { a.UserID, a.CategoryID});
@@ -63,19 +63,19 @@ namespace EFDataAccessLibrary.Data
             modelBuilder.Entity<SubjectsListUser>()
                 .HasKey(a => new { a.UserID, a.SubjectID });
             
-            modelBuilder.Entity<CategoriesList>()
-                .HasMany(a => a.Announcements)
-                .WithMany(b => b.CategoriesList);
+            //modelBuilder.Entity<CategoriesList>()
+            //    .HasMany(a => a.Announcements)
+            //    .WithMany(b => b.CategoriesList);
 
-            modelBuilder.Entity<SubjectsList>()
-                .HasMany(a => a.Announcements)
-                .WithMany(b => b.SubjectsList);
+            //modelBuilder.Entity<SubjectsList>()
+            //    .HasMany(a => a.Announcements)
+            //    .WithMany(b => b.SubjectsList);
 
             modelBuilder.Entity<CategoriesListAnnouncement>()
-                .HasKey(a => new { a.AnnouncementID, a.CategoryID});
+                .HasKey(a => new { a.AnnouncementID, a.CategoryId});
 
             modelBuilder.Entity<SubjectsListAnnouncement>()
-                .HasKey(a => new { a.AnnouncementID, a.SubjectID });
+                .HasKey(a => new { a.AnnouncementID, a.SubjectId });
         }
 
         public DbSet<User> Users { get; set; }

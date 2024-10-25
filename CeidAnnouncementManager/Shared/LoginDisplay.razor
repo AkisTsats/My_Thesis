@@ -6,11 +6,11 @@
 
 <AuthorizeView>
     <Authorized>
-        <a href="http://localhost:8080/realms/Test/account/#/personal-info">@context.User.Identity?.Name</a>
-        <button class="nav-link btn btn-link" @onclick="BeginSignOut">Log out</button>
+        <MudNavLink Href="http://localhost:8080/realms/Test/account/#/personal-info" Match="NavLinkMatch.Prefix">Συνδεμένος ως: @context.User.Identity?.Name</MudNavLink>
+        <MudNavLink @onclick="BeginSignOut" Match="NavLinkMatch.Prefix">Αποσύνδεση</MudNavLink>
     </Authorized>
     <NotAuthorized>
-        <MudNavLink Href="authentication/login" Match="NavLinkMatch.Prefix">Log in</MudNavLink>
+        <MudNavLink Href="authentication/login" Match="NavLinkMatch.Prefix">Σύνδεση</MudNavLink>
     </NotAuthorized>
 </AuthorizeView>
 

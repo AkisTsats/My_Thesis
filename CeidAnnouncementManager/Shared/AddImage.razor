@@ -7,12 +7,10 @@
         width: 150px;
         justify-content: space-around;
         border-radius: 2em;
-        color: white;
         border:2px solid;
         cursor: pointer;
         align-items: center;
         padding:16px;
-        background-color: #4caf50;"
        for="imageInput2">
     Upload Image<MudIcon Icon="@Icons.Material.Filled.CloudUpload" />
 </label>
@@ -45,35 +43,4 @@
         await OnUpload.InvokeAsync(content);
 
     }
-    // private string GetStoredFileName(string fileName)
-    // {
-    //     var uploadResult = uploadResults.SingleOrDefault(f => f.FileName == fileName);
-    //     if (uploadResult is not null)
-    //     {
-    //         return uploadResult.StoredFileName;
-    //     }
-    //     return "File not found";
-    // }
-    // private byte[] fileBytes;
-    // private string imageDataUrl;
-
-    // private async Task UploadImages(InputFileChangeEventArgs e)
-    // {
-    //     try
-    //     {
-    //         var imageFile = e.GetMultipleFiles().FirstOrDefault();
-    //         if (imageFile != null)
-    //         {
-    //             using var stream = imageFile.OpenReadStream();
-    //             using var memoryStream = new MemoryStream();
-    //             await stream.CopyToAsync(memoryStream);
-    //             fileBytes = memoryStream.ToArray();
-    //             imageDataUrl = $"data:{imageFile.ContentType};base64,{Convert.ToBase64String(fileBytes)}";
-    //         }
-    //     }
-    //     catch (Exception ex)
-    //     {
-    //         Console.WriteLine($"Error uploading image: {ex}");
-    //     }
-    // }
 }

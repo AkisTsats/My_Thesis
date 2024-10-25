@@ -1,17 +1,20 @@
 ﻿@inherits LayoutComponentBase
 
-<MudThemeProvider />
+<MudThemeProvider Theme="@MyCustomTheme" />
 <MudPopoverProvider />
 <MudDialogProvider />
 <MudSnackbarProvider />
 
 
 <MudLayout>
-    <MudAppBar>
+
+    <MudAppBar Elevation="_themeManager.AppBarElevation">
+        <MudThemeManagerButton OnClick="@((e) => OpenThemeManager(true))" />
+        <MudThemeManager Open="_themeManagerOpen" OpenChanged="OpenThemeManager" Theme="_themeManager" ThemeChanged="UpdateTheme" />
         <MudIconButton Icon="@Icons.Material.Filled.Menu" Edge="Edge.Start" OnClick="@((e) => DrawerToggle())"/>
         <MudText Typo="Typo.h5">Διαχείριση Ανακοινώσεων ΤΜΗΥΠ</MudText>
     </MudAppBar>
-    <MudDrawer @bind-Open="_drawerOpen">
+    <MudDrawer @bind-Open="_drawerOpen" ClipMode="_themeManager.DrawerClipMode" Elevation="_themeManager.DrawerElevation">
         <NavMenu/>
         <LoginDisplay/>
     </MudDrawer>
@@ -27,9 +30,34 @@
         _drawerOpen = !_drawerOpen;
     }
 
+    private ThemeManagerTheme _themeManager = new ThemeManagerTheme();
+    public bool _themeManagerOpen = false;
+
+    void OpenThemeManager(bool value)
+    {
+        _themeManagerOpen = value;
+    }
+
+    void UpdateTheme(ThemeManagerTheme value)
+    {
+        _themeManager = value;
+        StateHasChanged();
+    }
+
     protected override void OnInitialized()
     {
         StateHasChanged();
     }
 
+    MudTheme MyCustomTheme = new MudTheme()
+        {
+            PaletteLight = new()
+            {
+                //perfection
+                // Background = Colors.Pink.Lighten5,
+                // Primary = Colors.Red.Default,
+                // TextPrimary = Colors.Green.Default,
+            },
+
+        };
 }

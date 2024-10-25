@@ -15,7 +15,7 @@ namespace EFDataAccessLibrary.Data
         public string Title { get; set; }
         public string Abstract { get; set; }
         public string Body { get; set; }
-        public DateTime Date { get; set; }
+        public DateTime CreationDate { get; set; }
         public bool Alert { get; set; }
         public string Author { get; set; }        
         public User User { get; set; }

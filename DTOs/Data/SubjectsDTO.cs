@@ -6,9 +6,8 @@ using System.Threading.Tasks;
 
 namespace DTOs.Data
 {
-    public class SubjectsDTO
+    public record SubjectsDTO(int SubjectID, string SubjectName)
     {
-        public int SubjectID { get; set; }
-        public string SubjectName { get; set; }
+        public static SubjectsDTO? DEFAULT_NO_SUBJECT_CHOOSEN = new(0, "Δεν έχει επιλεχθεί μάθημα");
     }
 }

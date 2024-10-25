@@ -64,7 +64,7 @@ public class CustomAuthorizationMessageHandler : AuthorizationMessageHandler
         : base(provider, navigation)
     {
         ConfigureHandler(
-            authorizedUrls: new[] { "https://localhost:5001" });
+            authorizedUrls: new[] { "https://localhost:5001/Announcement" });
     }
 }
 

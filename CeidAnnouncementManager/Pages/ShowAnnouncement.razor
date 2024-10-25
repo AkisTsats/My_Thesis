@@ -50,7 +50,7 @@
 
     private IEnumerable<AnnouncementDTO> _myDTO;
 
-    public async Task<IEnumerable<AnnouncementDTO>> PrintWebApiResponse()
+    public async Task<IEnumerable<AnnouncementDTO>> FetchAnnouncementsResponse()
     {
         var response = await Http.GetStringAsync($"https://localhost:5001/api/Announcement/GetAnnouncementByObj?id={id}");
         //string serializedString = System.Text.Json.JsonSerializer.Serialize(response);
@@ -67,7 +67,7 @@
 
     protected override async Task OnInitializedAsync()
     {
-        _myDTO = await PrintWebApiResponse();
+        _myDTO = await FetchAnnouncementsResponse();
     }
 
 

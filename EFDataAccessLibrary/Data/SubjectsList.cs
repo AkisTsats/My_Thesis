@@ -14,11 +14,11 @@ namespace EFDataAccessLibrary.Data
         [Key]
         public int SubjectID { get; set; }
         public string SubjectName { get; set; }
-        public List<User> Users { get; set; }
+        //public List<User> Users { get; set; }
         [InverseProperty(nameof(SubjectsListUser.Subject))]
         public ICollection<SubjectsListUser> SubjectsListUsers { get; set; }
 
-        public List<Announcement> Announcements { get; set; }
+        //public List<Announcement> Announcements { get; set; }
 
         [InverseProperty(nameof(SubjectsListAnnouncement.Subject))]
         public ICollection<SubjectsListAnnouncement> SubjectsListAnnouncements { get; set; }

@@ -70,7 +70,7 @@ namespace AnnouncementAPI.Controllers
                 Title = body.Title,
                 Body = body.Body,
                 Alert = body.Alert,
-                Date = body.Date,
+                CreationDate = body.Date,
                 Author = body.Author,
                 //Files = body.Files.Select(f => new File
                 //{
@@ -123,7 +123,7 @@ namespace AnnouncementAPI.Controllers
                     announcement.Title = body.Title;
                     announcement.Abstract = body.Abstract;
                     announcement.Body = body.Body;
-                    announcement.Date = body.Date;
+                    announcement.CreationDate = body.Date;
                     announcement.Author = body.Author;
 
                     //_context.Announcements.Update(announcement);
@@ -158,7 +158,7 @@ namespace AnnouncementAPI.Controllers
             }
             if (date is not null)
             {
-                announcementsList = announcementsList.Where(a => a.Date == date);
+                announcementsList = announcementsList.Where(a => a.CreationDate == date);
             }
 
             int count = announcementsList.Count();
@@ -175,7 +175,7 @@ namespace AnnouncementAPI.Controllers
                 var categoryId = _context.CList.Where(a => a.CategoryName == category).Select(b => b.CategoryID).First();
 
                 var filteredAnnouncementsList = _context.categoriesListannouncement
-                    .Where(a => a.CategoryID == categoryId).Select(b => b.Announcement);
+                    .Where(a => a.CategoryId == categoryId).Select(b => b.Announcement);
 
                 var filteredList = filteredAnnouncementsList.Select(a => new AnnouncementDTO()
                 {
@@ -183,7 +183,7 @@ namespace AnnouncementAPI.Controllers
                     Abstract = a.Abstract,
                     Alert = a.Alert,
                     Body = a.Body,
-                    Date = a.Date,
+                    Date = a.CreationDate,
                     Title = a.Title,
                 }).ToListAsync();
 
@@ -201,7 +201,7 @@ namespace AnnouncementAPI.Controllers
                 Abstract = a.Abstract,
                 Alert = a.Alert,
                 Body = a.Body,
-                Date = a.Date,
+                Date = a.CreationDate,
                 Title = a.Title,
             }).ToListAsync();
 

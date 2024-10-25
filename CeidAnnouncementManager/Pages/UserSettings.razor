@@ -1,8 +1,12 @@
 ﻿@page "/usersettings"
 @attribute [Authorize]
-
+@inject NavigationManager NavManager
+@inject HttpClient Http
+@inject SettingsRepository _settingsRepository;
+@inject NavigationManager UriHelper
 @inject HttpClient Http
 
+@using CeidAnnouncementManager.Services
 @using DTOs.Data;
 @using Microsoft.AspNetCore.Authorization;
 @using DTOs.API.Responses
@@ -12,56 +16,65 @@
 
 <MudText Typo="Typo.h3">Οι Ρυθμίσεις μου</MudText>
 
-<MudGrid>
-    <MudItem xs="6">
-        <MudItem xs="12" sm="6" md="4">
-            <MudTextField T="string" Variant="Variant.Filled" Placeholder="@_myDTO.Name" @bind-Value="postUser.Name" Disabled Label="Όνομα"></MudTextField>
-        </MudItem>
-        <MudItem xs="12" sm="6" md="4">
-            <MudTextField T="string" Label="@_myDTO.Surname" Variant="Variant.Filled" @bind-Value="postUser.Surname" Adornment="Adornment.Start" Disabled Placeholder="Επώνυμο"></MudTextField>
-        </MudItem>
-        <MudItem xs="12" sm="6" md="4">
-            <MudTextField T="string" Label="@_myDTO.PrimaryEmail" Variant="Variant.Filled" @bind-Value="postUser.PrimaryEmail" Adornment="Adornment.Start" Placeholder="Βασική διέυθυνση ηλ. ταχυδρομείου" Disabled></MudTextField>
-        </MudItem>
-    </MudItem>
-    <MudItem xs="6">
-        <MudItem xs="12" sm="6" md="4">
-            <MudTextField T="string" Label="Προσθήκη τηλεφώνου" @bind-Value="postUser.PhoneNumber" Required="false" Placeholder="Προσθήκη τηλεφώνου" />
-        </MudItem>
-        <MudItem xs="12" sm="6" md="4">
-            <MudTextField T="string" Label="Προσθήκη εναλλακτικού ηλ. ταχυδροείου" @bind-Value="postUser.SecondaryEmail" Required="false" Placeholder="Προσθήκη εναλλακτικού ηλ. ταχυδροείου" />
-        </MudItem>
-        <MudItem xs="12" sm="6" md="4">
-            <MudTextField T="int" Label="Τρέχον έτος" @bind-Value="postUser.CurrentYear" Required="false" Placeholder="Τρέχον έτος" />
-        </MudItem>
-        <MudItem xs="12" sm="6" md="4">
-            <MudTextField T="int" Label="Έτος εισαγωγής" @bind-Value="postUser.EnrollmentYear" Required="false" Placeholder="Έτος εισαγωγής" />
-        </MudItem>
-    </MudItem>
-    <MudItem xs="12">
-        <div class="d-flex align-center justify-space-between mt-6">
-            <MudCheckBox T="bool" Class="ml-n2" Label="Recieve notifications by email" />
-            <MudButton Variant="Variant.Filled" Color="Color.Info" Class="ml-auto" OnClick="Update">Save Settings</MudButton>
-        </div>
-    </MudItem>
-    <MudItem xs="6">
-        <MudPaper Class="d-flex align-center justify-center mud-width-full py-8">
-            <SelectCategories></SelectCategories>
-        </MudPaper>
-    </MudItem>
-    <MudItem xs="6">
-        <MudPaper Class="d-flex align-center justify-center mud-width-full py-8">
-            <SelectSubjects></SelectSubjects>
-        </MudPaper>
-    </MudItem>
-
-</MudGrid>
-
+    <MudForm Model="@_myDTO" Class="pa-md-6 mx-lg-auto">
+        <MudTextField Label="Όνομα" @bind-Value="_myDTO.Name" Disabled ></MudTextField>
+        <MudTextField Label="Επώνυμο" @bind-Value="_myDTO.Surname" Disabled></MudTextField>
+        <MudTextField Label="Βασική διέυθυνση ηλ. ταχυδρομείου" @bind-Value="_myDTO.PrimaryEmail" Disabled></MudTextField>
+        <MudTextField Label="Προσθήκη τηλεφώνου" @bind-Value="_myDTO.PhoneNumber" Required="false"></MudTextField>
+        <MudTextField Label="Προσθήκη εναλλακτικού ηλ. ταχυδροείου" @bind-Value="_myDTO.SecondaryEmail" Required="false"></MudTextField>
+        <MudTextField Label="Τρέχον έτος" @bind-Value="_myDTO.CurrentYear" Required="false"></MudTextField>
+        <MudTextField Label="Έτος εισαγωγής" @bind-Value="_myDTO.EnrollmentYear" Required="false"></MudTextField>
+        <MudSwitch For="@(() => model.getByEmail)" Label="Parameter Label" Color="Color.Primary" />
+        <MudButton Variant="Variant.Filled" Color="Color.Info" OnClick="Update">Save Settings</MudButton> 
+        <MudSelect Class="mt-10" T="CategoriesDTO" Label="Επιλέξτε κατηγορίες" MultiSelection="true" ToStringFunc="@CategoryConverter" @bind-Value="CategoriesDTO.DEFAULT_NO_CATEGORY_CHOOSEN" @bind-SelectedValues="SelectedCategories" MultiSelectionTextFunc="@(new Func<List<string>, string>(GetMultiselectionTextForCategories))">
+            @foreach (var category in AllCategories)
+            {
+                <MudSelectItem T="CategoriesDTO" Value="@category">@category.CategoryName</MudSelectItem>
+            }
+        </MudSelect>
+        <MudSelect Class="mt-10" T="SubjectsDTO" Label="Επιλέξτε μαθήματα" MultiSelection="true" ToStringFunc="@SubjectConverter" @bind-Value="SubjectsDTO.DEFAULT_NO_SUBJECT_CHOOSEN" @bind-SelectedValues="SelectedSubjects" MultiSelectionTextFunc="@(new Func<List<string>, string>(GetMultiselectionTextForSubjects))">
+            @foreach (var subject in AllSubjects)
+            {
+                <MudSelectItem T="SubjectsDTO" Value="@subject">@subject.SubjectName</MudSelectItem>
+            }
+        </MudSelect>
+     </MudForm>
 
  @code {
-
-    @inject NavigationManager NavManager
     [Inject] private IDialogService DialogService { get; set; }
+
+    #region Categories picker
+    private IEnumerable<CategoriesDTO> AllCategories { get; set; } = [];
+    private IEnumerable<CategoriesDTO> SelectedCategories { get; set; } = [];
+
+    private string GetMultiselectionTextForCategories(List<string> selectedValues) => selectedValues.Count == 0 ? "Δεν έχουν επιλεχθεί κατηγορίες" : $"Επιλεγμένες Κατηγορίες: {string.Join(", ", selectedValues.Select(x => x))}";
+
+    Func<CategoriesDTO, string> CategoryConverter = p => p?.CategoryName;
+    #endregion
+
+    #region Subject picker
+    private IEnumerable<SubjectsDTO> AllSubjects { get; set; } = [];
+    private IEnumerable<SubjectsDTO> SelectedSubjects { get; set; } = [];
+
+    private string GetMultiselectionTextForSubjects(List<string> selectedValues) => selectedValues.Count == 0 ? "Δεν έχουν επιλεχθεί Μαθήματα" : $"Επιλεγμένες Μαθήματα: {string.Join(", ", selectedValues.Select(x => x))}";
+
+    Func<SubjectsDTO, string> SubjectConverter = p => p?.SubjectName;
+    #endregion
+
+    protected override async Task OnInitializedAsync()
+    {
+        try
+        {
+            var settings = await _settingsRepository.FetchSettingsForCreateAnnouncement();
+            _myDTO = await PrintWebApiResponse();
+            AllCategories = settings.Categories;
+            AllSubjects = settings.Subjects;
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Error fetching categories: {ex}");
+        }
+    }
 
     [Parameter]
     public int id { get; set; }
@@ -82,11 +95,6 @@
 
     }
 
-    protected override async Task OnInitializedAsync()
-    {
-        _myDTO = await PrintWebApiResponse();
-    }
-
     async Task Update()
     {
         id = 1;
@@ -103,4 +111,15 @@
 
     }
 
+    #region Toggle Buttons
+    DisplayNameLabelClass model = new();
+
+    public class DisplayNameLabelClass
+    {
+        [Label("Λήψη ειδοποιήσεων στο email")]
+        public bool getByEmail { get; set; }
+        [Label("Boolean LabelAttribute")]
+        public bool getBySMS { get; set; }
+    }
+    #endregion
 }

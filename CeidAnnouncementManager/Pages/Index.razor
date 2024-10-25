@@ -1,7 +1,7 @@
 ﻿@page "/"
 @inject IJSRuntime JSRuntime
 @inject HttpClient Http
-@inject NavigationManager UriHelper
+@inject NavigationManager NavManager;
 
 @using System.Text.Json
 @using System.Text.Json.Serialization;
@@ -13,55 +13,47 @@
 @using Microsoft.AspNetCore.Components.Authorization
 @using Microsoft.AspNetCore.Components.WebAssembly.Authentication
 @using System.Security.Claims
-@* @attribute [Authorize] *@
 
 @inject AuthenticationStateProvider AuthenticationStateProvider
 
 <PageTitle>Διαχείρηση Ανακοινώσεων του ΤΜΗΥΠ</PageTitle>
 
-<MudText Typo="Typo.h3">Καλωσήλθατε στην Διαχείριση Ανακοινώσεων του ΤΜΗΥΠ</MudText>
-
 <MudGrid Justify="Justify.Center" Class="d-flex" Spacing="2" Style="align-items: center">
-    @* @if (claims.Count() > 0)
+    <MudImage Src="icon-192.jpg" Class="ma-6" Width="210" Height="55" />
+    @if (_myAnnouncementDtos != null)
     {
-    <h2>User Claims:</h2>
-    <ul>
-    @foreach (var claim in claims)
-    {
-    <li>@claim.Type: @claim.Value</li>
-    }
-    </ul>
-    } *@
-    @if (_myDTO != null)
-    {   @foreach (var myVar in _myDTO)
+        @foreach (var myVar in _myAnnouncementDtos)
         {
             var annID = myVar.AnnID;
             <MudItem xs="10" aling-center>
-                <MudCard Style="background-color: #EDE7F6;">
+                <MudCard>
                     <MudCardHeader>
                         <CardHeaderContent>
                             <MudText Typo="Typo.h6">@myVar.Title</MudText>
                         </CardHeaderContent>
                         <CardHeaderActions>
-                            <MudIconButton Icon="@Icons.Material.Filled.Settings" Color="Color.Default" />
+                            <MudText Typo="Typo.h6">@myVar.Date</MudText>
+                            @* <MudIconButton Icon="@Icons.Material.Filled.Settings"/> *@
                         </CardHeaderActions>
                     </MudCardHeader>
                     <MudCardContent>
                         <MudText>@myVar.Author</MudText>
                         <MudText Typo="Typo.body2">@myVar.Abstract</MudText>
                     </MudCardContent>
-                    @*                     <MudChip Label="true">Undergraduate</MudChip>
-            <MudChip Label="true">Μαθηματικά 1</MudChip>
-            <MudChip Label="true">Αλγόριθμοι</MudChip>
-            *@                    <MudCardActions>
-                        <MudButton OnClick="() => NavigateTo(annID)" Variant="Variant.Text" Color="Color.Info">Read More</MudButton>
+                    @* @foreach (var tag in myVar.Tags)
+                    {
+                         <MudChip Label="@tag" /> 
+                    } *@
+                    <MudCardActions>
+                        <MudButton OnClick="() => NavigateTo(annID)" Variant="Variant.Text">Read More</MudButton>
                     </MudCardActions>
                 </MudCard>
             </MudItem>
         }
+
         <MudItem xs="5"></MudItem>
         <MudItem xs="6">
-            <MudPagination SelectedChanged="PageChanged" Color="Color.Info" Count="@numOfPages" />
+            <MudPagination SelectedChanged="PageChanged" Count="@numOfPages" />
         </MudItem>
     }
 </MudGrid>
@@ -78,11 +70,11 @@
     private int numOfPages = 1;
     private int pageSize = 10;
 
-    public async Task<IEnumerable<AnnouncementDTO>> GetWebApiResponse()
+    public async Task<IEnumerable<AnnouncementDTO>> GetWebApiResponse()//TODO Move to Announcements repository
     {
         string s1 = pageSize.ToString();
         string s2 = _selected.ToString();
-        var response = await Http.GetStringAsync("https://localhost:5001/api/Announcement/GetAnnouncementByObj?" + "limit=" + s1 + "&skip=" + s2);
+        var response = await Http.GetStringAsync("https://localhost:5001/api/Public/GetAnnouncements?" + "limit=" + s1 + "&skip=" + s2);
 
         //string serializedString = System.Text.Json.JsonSerializer.Serialize(response);
 
@@ -102,7 +94,7 @@
 
     }
 
-    private int getPageCount(int count)
+    private int getPageCount(int count)//TODO Move to Announcements repository
     {
         //count % pageSize == 0 ? numOfPages = (count/pageSize) : numOfPages = (count/pageSize) + 1;
         if (count % pageSize == 0)
@@ -117,10 +109,10 @@
         return numOfPages;
     }
 
-    public async Task<IEnumerable<AnnouncementDTO>> PrintWebApiResponse()
+    public async Task<IEnumerable<AnnouncementDTO>> FetchAnnouncementsResponse()
     {
-        _allDTO = await GetWebApiResponse();
-        return _allDTO;
+        _allAnnouncementDtos = await GetWebApiResponse();
+        return _allAnnouncementDtos;
     }
 
 
@@ -128,12 +120,11 @@
     public async Task<IEnumerable<AnnouncementDTO>> PageChanged(int i)
     {
         _selected = i;
-        _change = await PrintWebApiResponse();
-        _myDTO = _change;
+        _change = await FetchAnnouncementsResponse();
+        _myAnnouncementDtos = _change;
         return _change;
     }
 
-    @inject NavigationManager NavManager;
 
     private void NavigateTo(int id)
     {
@@ -141,19 +132,19 @@
         NavManager.NavigateTo("showannouncement/" + s);
     }
 
-    private IEnumerable<AnnouncementDTO> _myDTO;
-    private IEnumerable<AnnouncementDTO> _allDTO;
+    private IEnumerable<AnnouncementDTO> _myAnnouncementDtos;
+    private IEnumerable<AnnouncementDTO> _allAnnouncementDtos;
     private IEnumerable<AnnouncementDTO> _change;
 
     protected override async Task OnInitializedAsync()
     {
         await GetClaimsPrincipalData();
-        _myDTO = await PrintWebApiResponse();
+        _myAnnouncementDtos = await FetchAnnouncementsResponse();
     }
 
     private void click(int id)
     {
-        UriHelper.NavigateTo($"showannouncement/{id}");
+        NavManager.NavigateTo($"showannouncement/{id}");
     }
 
     private IEnumerable<Claim> claims = Enumerable.Empty<Claim>();

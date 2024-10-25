@@ -1,10 +1,10 @@
-﻿using System.Linq;
-using System.Threading.Tasks;
-using DTOs.API.Requests;
+﻿using DTOs.API.Requests;
 using DTOs.Data;
 using EFDataAccessLibrary.Data;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace AnnouncementAPI.Controllers
 {
@@ -26,11 +26,10 @@ namespace AnnouncementAPI.Controllers
                 .ToListAsync();
 
             var subjects = await _context.SList
-                .Select(a => new SubjectsDTO
-                {
-                    SubjectID = a.SubjectID,
-                    SubjectName = a.SubjectName,
-                })
+                .Select(a => new SubjectsDTO(
+                    a.SubjectID,
+                    a.SubjectName
+                    ))
                 .ToListAsync();
 
             return Ok(new SettingsForAnnouncementCreation

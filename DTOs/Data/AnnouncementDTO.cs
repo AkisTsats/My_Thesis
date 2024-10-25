@@ -20,6 +20,7 @@ namespace DTOs.Data
         public string Author { get; set; }
         public int UserID { get; set; }
         public List<UploadResult> Files { get; set; }
+        public List<string> Tags { get; set; } //categories and stuff
 
     }
 
