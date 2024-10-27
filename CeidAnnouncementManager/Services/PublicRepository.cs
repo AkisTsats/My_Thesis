@@ -4,16 +4,24 @@ using static DTOs.Common.Helpers;
 
 namespace CeidAnnouncementManager.Services
 {
-    public class PublicAnnouncementsRepository
+    public class PublicRepository
     {
 
         private readonly HttpClient http = new();
 
-        public PublicAnnouncementsRepository()
+        public PublicRepository()
         { }
 
         const string BaseUrl = "https://localhost:5001";
 
+        public async Task<DTOs.API.Public.GetFilteringSettings.Response> FetchFilteringSettings()
+        {
+            var response = await http.GetStringAsync(BaseUrl + "/api/Public/GetFilteringSettings");
+
+            var responseDeserialized = response.DeserializeMethod<DTOs.API.Public.GetFilteringSettings.Response>();
+
+            return responseDeserialized;
+        }
 
         public async Task<DTOs.API.Public.GetAnnouncements.Response> FetchMultiple(DTOs.API.Public.GetAnnouncements.Request request)
         {

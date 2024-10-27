@@ -30,7 +30,7 @@ namespace AnnouncementAPI.Controllers
                 .Where(u => u.Id == 7)
                 .Select(u => new UserDTO
                 {
-                    Name = u.FullName
+                    FirstName = u.FullName
                 }).FirstOrDefaultAsync();
         }
 
@@ -42,7 +42,7 @@ namespace AnnouncementAPI.Controllers
                 .Where(u => u.Id == 7)
                 .Select(u => new UserDTO
                 {
-                    Name = u.FullName
+                    FirstName = u.FullName
                 }).FirstOrDefaultAsync();
         }
 
@@ -67,9 +67,9 @@ namespace AnnouncementAPI.Controllers
             var toRet = await userToRet.Select(u => new UserDTO
             {
                 Id = u.Id,
-                Name = u.FullName,
-                Surname = u.FirstName,
-                PrimaryEmail = u.Email
+                FirstName = u.FullName,
+                LastName = u.FirstName,
+                Email = u.Email
                 //CurrentYear = u.CurrentYear,
                 //SecondaryEmail = u.SecondaryEmail,
                 //EnrollmentYear = u.EnrollmentYear,

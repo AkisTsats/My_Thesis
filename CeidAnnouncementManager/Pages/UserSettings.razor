@@ -16,9 +16,9 @@
 <MudText Typo="Typo.h3">Οι Ρυθμίσεις μου</MudText>
 
     <MudForm Model="@_myDTO" Class="pa-md-6 mx-lg-auto">
-        <MudTextField Label="Όνομα" @bind-Value="_myDTO.Name" Disabled ></MudTextField>
-        <MudTextField Label="Επώνυμο" @bind-Value="_myDTO.Surname" Disabled></MudTextField>
-        <MudTextField Label="Βασική διέυθυνση ηλ. ταχυδρομείου" @bind-Value="_myDTO.PrimaryEmail" Disabled></MudTextField>
+        <MudTextField Label="Όνομα" @bind-Value="_myDTO.FirstName" Disabled ></MudTextField>
+        <MudTextField Label="Επώνυμο" @bind-Value="_myDTO.LastName" Disabled></MudTextField>
+        <MudTextField Label="Βασική διέυθυνση ηλ. ταχυδρομείου" @bind-Value="_myDTO.Email" Disabled></MudTextField>
         <MudTextField Label="Προσθήκη τηλεφώνου" @bind-Value="_myDTO.PhoneNumber" Required="false"></MudTextField>
         <MudTextField Label="Προσθήκη εναλλακτικού ηλ. ταχυδροείου" @bind-Value="_myDTO.SecondaryEmail" Required="false"></MudTextField>
         <MudTextField Label="Τρέχον έτος" @bind-Value="_myDTO.CurrentYear" Required="false"></MudTextField>
@@ -101,9 +101,9 @@
         id = 1;
         var post = postUser.SerializeMethod<UserDTO>();
         postUser.Id = id;
-        postUser.Name = _myDTO.Name;
-        postUser.Surname = _myDTO.Surname;
-        postUser.PrimaryEmail = _myDTO.PrimaryEmail;
+        postUser.FirstName = _myDTO.FirstName;
+        postUser.LastName = _myDTO.LastName;
+        postUser.Email = _myDTO.Email;
         postUser.Role = "admin";
 
         var response = await Http.PutAsJsonAsync("https://localhost:5001/api/User/UpdateUserByID/1", postUser);

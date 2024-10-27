@@ -23,7 +23,20 @@ namespace AnnouncementAPI.Controllers
             _producer = producer;
         }
 
-        // GET: api/ | get all announcements
+
+        [HttpGet("GetFilteringSettings")]
+        public async Task<ActionResult<DTOs.API.Public.GetFilteringSettings.Response>> GetFilteringSettings()
+        {
+            var categories = await _context.Categories.ToListAsync();
+            var subjects = await _context.Subjects.ToListAsync();
+
+            return Ok(new DTOs.API.Public.GetFilteringSettings.Response
+            {
+                Categories = categories.Select(e => e.ToCategoryDTO()),
+                Subjects = subjects.Select(e => e.ToSubjectDTO())
+            });
+        }
+
         [HttpPost("GetAnnouncements")]
         public async Task<ActionResult<DTOs.API.Public.GetAnnouncements.Response>> GetAnnouncements([FromBody] DTOs.API.Public.GetAnnouncements.Request request)
         {
@@ -65,7 +78,8 @@ namespace AnnouncementAPI.Controllers
 
             var toRet =
                 await query
-                    .Select(e => AnnouncementMapper(e))
+                    .Include(e => e.Creator)
+                    .Select(e => e.ToAnnouncementDTO())
                     .ToListAsync();
 
             return Ok(new DTOs.API.Public.GetAnnouncements.Response()
@@ -75,14 +89,14 @@ namespace AnnouncementAPI.Controllers
             });
         }
 
-        //GET api/{object} get announcement by any type
         [HttpPost("GetAnnouncement")]
         public async Task<ActionResult<DTOs.API.Public.GetAnnouncement.Response>> GetAnnouncement([FromBody] DTOs.API.Public.GetAnnouncement.Request id)
         {
             var announcement =
                 await _context.Announcements
+                    .Include(e => e.Creator)
                     //.Where(e => e.Id == id) //TODO 
-                    .Select(e => AnnouncementMapper(e))
+                    .Select(e => e.ToAnnouncementDTO())
                     .FirstOrDefaultAsync();
 
             if (announcement is null)
@@ -94,14 +108,7 @@ namespace AnnouncementAPI.Controllers
             });
         }
 
-        private static AnnouncementDTO AnnouncementMapper(Announcement entry) => new()
-        {
-            Id = entry.Id,
-            Title = entry.Title,
-            Abstract = entry.Abstract,
-            Body = entry.Body,
-            CreationDate = entry.CreationDate,
-        };
+
     }
 
 }

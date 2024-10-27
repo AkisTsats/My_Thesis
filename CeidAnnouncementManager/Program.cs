@@ -14,7 +14,7 @@ builder.RootComponents.Add<HeadOutlet>("head::after");
 
 builder.Services.AddScoped<CategoriesRepository>();
 builder.Services.AddScoped<SettingsRepository> ();
-builder.Services.AddScoped<PublicAnnouncementsRepository> ();
+builder.Services.AddScoped<PublicRepository> ();
 builder.Services.AddMudServices();
 
 builder.Services.AddTransient<CustomAuthorizationMessageHandler>();

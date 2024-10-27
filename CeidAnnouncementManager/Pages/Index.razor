@@ -1,7 +1,8 @@
 ﻿@page "/"
 @inject IJSRuntime JSRuntime
 @inject NavigationManager NavManager;
-@inject PublicAnnouncementsRepository _announcementsRepository;
+@inject SettingsRepository _settingsRepository;
+@inject PublicRepository _publicRepository;
 
 @using System.Text.Json
 @using System.Text.Json.Serialization;
@@ -17,11 +18,53 @@
 @attribute [AllowAnonymous]
 <PageTitle>Διαχείρηση Ανακοινώσεων του ΤΜΗΥΠ</PageTitle>
 
+<MudLayout>
+    <MudContainer Style="height: 100vh; display: flex; overflow: hidden;">
+        <MudPaper Elevation="1" Class="pa-4" Style="width: 300px; overflow-y: auto;">
+            <MudImage Class="justify-center ma-6" Src="icon-192.jpg" Width="210" Height="55" />
+
+            <MudText Typo="Typo.h6">Φίλτρα</MudText>
+
+            <MudTextField T="string" Label="Αναζήτηση" Variant="Variant.Outlined" Placeholder="Αναζήτηση στις ανακοινώσεις..." @bind-Value="_searchText" />
+
+            <MudSelect Class="mt-10" T="CategoryDTO" Label="Επιλέξτε κατηγορίες" MultiSelection="true" ToStringFunc="@CategoryConverter" @bind-Value="CategoryDTO.DEFAULT_NO_CATEGORY_CHOOSEN" @bind-SelectedValues="SelectedCategories" MultiSelectionTextFunc="@(new Func<List<string>, string>(GetMultiselectionTextForCategories))">
+                @foreach (var category in AllCategories)
+                {
+                    <MudSelectItem T="CategoryDTO" Value="@category">@category.CategoryName</MudSelectItem>
+                }
+            </MudSelect>
+            <MudSelect Class="mt-10" T="SubjectDTO" Label="Επιλέξτε μαθήματα" MultiSelection="true" ToStringFunc="@SubjectConverter" @bind-Value="SubjectDTO.DEFAULT_NO_SUBJECT_CHOOSEN" @bind-SelectedValues="SelectedSubjects" MultiSelectionTextFunc="@(new Func<List<string>, string>(GetMultiselectionTextForSubjects))">
+                @foreach (var subject in AllSubjects)
+                {
+                    <MudSelectItem T="SubjectDTO" Value="@subject">@subject.SubjectName</MudSelectItem>
+                }
+            </MudSelect>
+
+            <br />
+            <MudButton OnClick="ReloadAnnouncements">ΑΝΑΖΗΤΗΣΗ</MudButton>
+
+        </MudPaper>
+
+        <MudPaper Class="pa-4" Style="flex-grow: 1; overflow-y: auto;">
+            <MudStack Direction="row" JustifyContent="Justify.SpaceBetween">
+                @foreach (var announcement in _announcementDTOs)
+                {
+                    <MudPaper Class="pa-4 mt-2" Style="max-width: 800px;">
+                        <MudText Typo="Typo.h6">@announcement.Title</MudText>
+                        <MudText Typo="Typo.caption">Από @announcement.Author.FullName, ημερομηνία: @announcement.CreationDate.ToShortDateString()</MudText>
+                        <MudText Typo="Typo.subtitle2">@announcement.Abstract</MudText>
+                        <br />
+                        <MudButton OnClick="() => ShowAnnouncementInDetail(announcement.Id)" Variant="Variant.Text" Style="text-transform:none">...περισσότερα</MudButton>
+                    </MudPaper>
+                }
+                <MudPagination SelectedChanged="PageChanged" Count="@_totalNumOfPages" />
+            </MudStack>
+        </MudPaper>
+
+    </MudContainer>
+</MudLayout>
+@*
 <MudGrid Justify="Justify.Center" Class="d-flex" Spacing="2" Style="align-items: center">
-
-    <MudImage Src="icon-192.jpg" xs="12" Class="ma-6" Width="210" Height="55" />
-
-
     @foreach (var announcement in _announcementDTOs)
     {
         <MudItem xs="10" aling-center>
@@ -38,10 +81,10 @@
                     <MudText>@announcement.Author</MudText>
                     <MudText Typo="Typo.body2">@announcement.Abstract</MudText>
                 </MudCardContent>
-                @* @foreach (var tag in myVar.Tags)
+                 @foreach (var tag in myVar.Tags)
             {
             <MudChip Label="@tag" />
-            } *@
+            }
                 <MudCardActions>
                     <MudButton OnClick="() => ShowAnnouncementInDetail(announcement.Id)" Variant="Variant.Text">Λεπτομέρειες Ανακοίνωσης</MudButton>
                 </MudCardActions>
@@ -56,12 +99,12 @@
     </MudItem>
 </MudGrid>
 
-
+ *@
 @code {
 
     private int _onPage { get; set; } = 1;
     private int _totalNumOfPages { get; set; } = 1;
-    private int _pageSize { get; set; } = 2;
+    private int _pageSize { get; set; } = 5;
 
     private string _searchText { get; set; } = "";
     private ICollection<int> _searchInCategoriesIds { get; set; } = [];
@@ -70,9 +113,34 @@
     private ICollection<AnnouncementDTO> _announcementDTOs { get; set; } = [];
 
 
+    #region Categories picker
+    private IEnumerable<CategoryDTO> AllCategories { get; set; } = [];
+    private IEnumerable<CategoryDTO> SelectedCategories { get; set; } = [];
+
+    private string GetMultiselectionTextForCategories(List<string> selectedValues) => selectedValues.Count == 0 ? "Δεν έχουν επιλεχθεί κατηγορίες" : $"{string.Join(", ", selectedValues.Select(x => x))}";
+
+    Func<CategoryDTO, string> CategoryConverter = p => p?.CategoryName;
+    #endregion
+
+    #region Subject picker
+    private IEnumerable<SubjectDTO> AllSubjects { get; set; } = [];
+    private IEnumerable<SubjectDTO> SelectedSubjects { get; set; } = [];
+
+    private string GetMultiselectionTextForSubjects(List<string> selectedValues) => selectedValues.Count == 0 ? "Δεν έχουν επιλεχθεί Μαθήματα" : $"{string.Join(", ", selectedValues.Select(x => x))}";
+
+    Func<SubjectDTO, string> SubjectConverter = p => p?.SubjectName;
+    #endregion
+
+
     protected override async Task OnInitializedAsync()
     {
         await ReloadAnnouncements();
+
+        var settings = await _publicRepository.FetchFilteringSettings();
+
+        AllCategories = settings.Categories;
+        AllSubjects = settings.Subjects;
+
     }
 
     private async Task ReloadAnnouncements()
@@ -80,14 +148,14 @@
         var request = new DTOs.API.Public.GetAnnouncements.Request
             {
                 TextContains = string.IsNullOrWhiteSpace(_searchText) ? null : _searchText,
-                InCategoriesIds = _searchInCategoriesIds.Any() ? _searchInCategoriesIds : null,
-                InSubjectIds = _searchInSubjectsIds.Any() ? _searchInSubjectsIds : null,
+                InCategoriesIds = SelectedCategories.Any() ? SelectedCategories.Select(e => e.CategoryID) : null,
+                InSubjectIds = SelectedSubjects.Any() ? SelectedSubjects.Select(e => e.SubjectID) : null,
                 Limit = _pageSize,
                 Skip = (_onPage - 1) * _pageSize,
                 //TODO ordering
             };
 
-        var response = await _announcementsRepository.FetchMultiple(request);
+        var response = await _publicRepository.FetchMultiple(request);
 
         _announcementDTOs = response.Announcements.ToList();
         _totalNumOfPages = response.TotalCount / _pageSize;
@@ -98,7 +166,6 @@
         _onPage = i;
         await ReloadAnnouncements();
     }
-
 
     private void ShowAnnouncementInDetail(int id)
     {
