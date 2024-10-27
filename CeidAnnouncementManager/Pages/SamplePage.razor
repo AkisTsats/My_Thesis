@@ -1,0 +1,112 @@
+﻿@page "/samplePage"
+@inject IJSRuntime JSRuntime
+@inject HttpClient Http
+@inject NavigationManager NavManager;
+
+@using System.Text.Json
+@using System.Text.Json.Serialization;
+@using DTOs.Data;
+@using static DTOs.Common.Helpers;
+@using DTOs.API.Responses;
+
+@using Microsoft.AspNetCore.Authorization;
+@using Microsoft.AspNetCore.Components.Authorization
+@using Microsoft.AspNetCore.Components.WebAssembly.Authentication
+@using System.Security.Claims
+
+@inject AuthenticationStateProvider AuthenticationStateProvider
+@page "/announcements"
+@using MudBlazor
+
+<MudLayout>
+    <MudContainer Style="height: 100vh; display: flex; overflow: hidden;">
+        <!-- Left Filter Column -->
+        <MudPaper Elevation="1" Class="pa-4" Style="width: 300px; overflow-y: auto;">
+            <MudText Typo="Typo.h6">Filter Announcements</MudText>
+
+            <!-- Search Text for Subject and Body -->
+            <MudTextField T="string" Label="Search" Variant="Variant.Outlined" Placeholder="Search by subject or body..." />
+
+            <!-- Categories Multiselect Dropdown -->
+            <MudSelect T="string" Label="Categories" MultiSelection="true" Variant="Variant.Outlined">
+                <MudSelectItem T="int" Value="1">Category 1</MudSelectItem>
+                <MudSelectItem T="int" Value="2">Category 2</MudSelectItem>
+                <MudSelectItem T="int" Value="3">Category 3</MudSelectItem>
+            </MudSelect>
+
+            <!-- Subjects Multiselect Dropdown -->
+            <MudSelect T="string" Label="Subjects" MultiSelection="true" Variant="Variant.Outlined">
+                <MudSelectItem T="int" Value="1">Subject 1</MudSelectItem>
+                <MudSelectItem T="int" Value="2">Subject 2</MudSelectItem>
+                <MudSelectItem T="int" Value="3">Subject 3</MudSelectItem>
+            </MudSelect>
+        </MudPaper>
+
+        <!-- Main Body with Announcements -->
+        <MudPaper Class="pa-4" Style="flex-grow: 1; overflow-y: auto;">
+            <MudStack Direction="row" JustifyContent="Justify.SpaceBetween">
+                <MudText Typo="Typo.h6">Announcements</MudText>
+
+                <!-- Sort Button (Arrow Icon) -->
+                <MudIconButton Icon="@Icons.Material.Filled.ArrowUpward" OnClick="SortAnnouncements" Color="Color.Primary" />
+            </MudStack>
+
+            <!-- Announcement Items -->
+            @foreach (var announcement in Announcements)
+            {
+                <MudPaper Class="pa-4 mt-2" Style="max-width: 800px;">
+                    <MudText Typo="Typo.h6">@announcement.Title</MudText>
+                    <MudText Typo="Typo.subtitle2">@announcement.Abstract</MudText>
+                    <MudText Typo="Typo.caption">By @announcement.Author on @announcement.CreationDate.ToShortDateString()</MudText>
+
+                    <!-- Categories and Subjects Tags -->
+                    <MudStack Direction="row" Spacing="2">
+                        @foreach (var category in announcement.Categories)
+                        {
+                            <MudChip T="string" Color="Color.Secondary">@category</MudChip>
+                        }
+                        @foreach (var subject in announcement.Subjects)
+                        {
+                            <MudChip T="string" Color="Color.Info">@subject</MudChip>
+                        }
+                    </MudStack>
+                </MudPaper>
+            }
+        </MudPaper>
+    </MudContainer>
+</MudLayout>
+
+@code {
+    // Sample data for announcements
+    private List<Announcement> Announcements = new List<Announcement>
+    {
+        new Announcement
+        {
+            Title = "New Course Available",
+            Abstract = "Learn more about MudBlazor...",
+            CreationDate = DateTime.Now,
+            Author = "Admin",
+            Categories = new List<string> { "Education", "Blazor" },
+            Subjects = new List<string> { "MudBlazor", "UI Development" }
+        },
+        // Additional announcements...
+    };
+
+    private void SortAnnouncements()
+    {
+        // Sorting logic for announcements
+    }
+
+    public class Announcement
+    {
+        public string Title { get; set; }
+        public string Abstract { get; set; }
+        public DateTime CreationDate { get; set; }
+        public string Author { get; set; }
+        public List<string> Categories { get; set; } = new();
+        public List<string> Subjects { get; set; } = new();
+    }
+}
+
+
+}

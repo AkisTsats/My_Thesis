@@ -66,7 +66,7 @@ namespace AnnouncementAPI.Controllers
 
             var toRet = await userToRet.Select(u => new UserDTO
             {
-                UserID = u.Id,
+                Id = u.Id,
                 Name = u.FullName,
                 Surname = u.FirstName,
                 PrimaryEmail = u.Email

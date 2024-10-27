@@ -94,9 +94,8 @@
     public async Task PutOnAPI(int id)
     {
 
-        postBody.Author = "Admin";
         //postBody.UserID = 1;
-        postBody.Date = DateTime.Now;
+        postBody.CreationDate = DateTime.Now;
 
         var post = postBody.SerializeMethod<AnnouncementDTO>();
 

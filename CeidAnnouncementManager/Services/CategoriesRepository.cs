@@ -22,19 +22,19 @@ namespace CeidAnnouncementManager.Services
         const string BaseUrl = "https://localhost:5001";
 
 
-        public async Task<IEnumerable<CategoriesDTO>> FetchCategories()
+        public async Task<IEnumerable<CategoryDTO>> FetchCategories()
         { 
             //var response = await http.GetStringAsync(BaseUrl + "/api/Categories/GetCategories");
             //var annResponse = response.DeserializeMethod<List<CategoriesDTO>>();
 
-            return Enumerable.Empty<CategoriesDTO>();
+            return Enumerable.Empty<CategoryDTO>();
 
         }
 
-        public async Task<IEnumerable<CategoriesDTO>> FetchCategories(int id)
+        public async Task<IEnumerable<CategoryDTO>> FetchCategories(int id)
         {
             var response = await http.GetStringAsync(BaseUrl + $"/api/Categories/GetCategoriesByID/{id}");
-            var annResponse = response.DeserializeMethod<List<CategoriesDTO>>();
+            var annResponse = response.DeserializeMethod<List<CategoryDTO>>();
 
             return annResponse;
 

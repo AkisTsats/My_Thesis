@@ -1,5 +1,4 @@
 ﻿@page "/usersettings"
-@attribute [Authorize]
 @inject NavigationManager NavManager
 @inject HttpClient Http
 @inject SettingsRepository _settingsRepository;
@@ -26,16 +25,16 @@
         <MudTextField Label="Έτος εισαγωγής" @bind-Value="_myDTO.EnrollmentYear" Required="false"></MudTextField>
         <MudSwitch For="@(() => model.getByEmail)" Label="Parameter Label" Color="Color.Primary" />
         <MudButton Variant="Variant.Filled" Color="Color.Info" OnClick="Update">Save Settings</MudButton> 
-        <MudSelect Class="mt-10" T="CategoriesDTO" Label="Επιλέξτε κατηγορίες" MultiSelection="true" ToStringFunc="@CategoryConverter" @bind-Value="CategoriesDTO.DEFAULT_NO_CATEGORY_CHOOSEN" @bind-SelectedValues="SelectedCategories" MultiSelectionTextFunc="@(new Func<List<string>, string>(GetMultiselectionTextForCategories))">
+        <MudSelect Class="mt-10" T="CategoryDTO" Label="Επιλέξτε κατηγορίες" MultiSelection="true" ToStringFunc="@CategoryConverter" @bind-Value="CategoryDTO.DEFAULT_NO_CATEGORY_CHOOSEN" @bind-SelectedValues="SelectedCategories" MultiSelectionTextFunc="@(new Func<List<string>, string>(GetMultiselectionTextForCategories))">
             @foreach (var category in AllCategories)
             {
-                <MudSelectItem T="CategoriesDTO" Value="@category">@category.CategoryName</MudSelectItem>
+                <MudSelectItem T="CategoryDTO" Value="@category">@category.CategoryName</MudSelectItem>
             }
         </MudSelect>
-        <MudSelect Class="mt-10" T="SubjectsDTO" Label="Επιλέξτε μαθήματα" MultiSelection="true" ToStringFunc="@SubjectConverter" @bind-Value="SubjectsDTO.DEFAULT_NO_SUBJECT_CHOOSEN" @bind-SelectedValues="SelectedSubjects" MultiSelectionTextFunc="@(new Func<List<string>, string>(GetMultiselectionTextForSubjects))">
+        <MudSelect Class="mt-10" T="SubjectDTO" Label="Επιλέξτε μαθήματα" MultiSelection="true" ToStringFunc="@SubjectConverter" @bind-Value="SubjectDTO.DEFAULT_NO_SUBJECT_CHOOSEN" @bind-SelectedValues="SelectedSubjects" MultiSelectionTextFunc="@(new Func<List<string>, string>(GetMultiselectionTextForSubjects))">
             @foreach (var subject in AllSubjects)
             {
-                <MudSelectItem T="SubjectsDTO" Value="@subject">@subject.SubjectName</MudSelectItem>
+                <MudSelectItem T="SubjectDTO" Value="@subject">@subject.SubjectName</MudSelectItem>
             }
         </MudSelect>
      </MudForm>
@@ -44,21 +43,21 @@
     [Inject] private IDialogService DialogService { get; set; }
 
     #region Categories picker
-    private IEnumerable<CategoriesDTO> AllCategories { get; set; } = [];
-    private IEnumerable<CategoriesDTO> SelectedCategories { get; set; } = [];
+    private IEnumerable<CategoryDTO> AllCategories { get; set; } = [];
+    private IEnumerable<CategoryDTO> SelectedCategories { get; set; } = [];
 
     private string GetMultiselectionTextForCategories(List<string> selectedValues) => selectedValues.Count == 0 ? "Δεν έχουν επιλεχθεί κατηγορίες" : $"Επιλεγμένες Κατηγορίες: {string.Join(", ", selectedValues.Select(x => x))}";
 
-    Func<CategoriesDTO, string> CategoryConverter = p => p?.CategoryName;
+    Func<CategoryDTO, string> CategoryConverter = p => p?.CategoryName;
     #endregion
 
     #region Subject picker
-    private IEnumerable<SubjectsDTO> AllSubjects { get; set; } = [];
-    private IEnumerable<SubjectsDTO> SelectedSubjects { get; set; } = [];
+    private IEnumerable<SubjectDTO> AllSubjects { get; set; } = [];
+    private IEnumerable<SubjectDTO> SelectedSubjects { get; set; } = [];
 
     private string GetMultiselectionTextForSubjects(List<string> selectedValues) => selectedValues.Count == 0 ? "Δεν έχουν επιλεχθεί Μαθήματα" : $"Επιλεγμένες Μαθήματα: {string.Join(", ", selectedValues.Select(x => x))}";
 
-    Func<SubjectsDTO, string> SubjectConverter = p => p?.SubjectName;
+    Func<SubjectDTO, string> SubjectConverter = p => p?.SubjectName;
     #endregion
 
     protected override async Task OnInitializedAsync()
@@ -101,7 +100,7 @@
     {
         id = 1;
         var post = postUser.SerializeMethod<UserDTO>();
-        postUser.UserID = id;
+        postUser.Id = id;
         postUser.Name = _myDTO.Name;
         postUser.Surname = _myDTO.Surname;
         postUser.PrimaryEmail = _myDTO.PrimaryEmail;

@@ -69,7 +69,7 @@ namespace AnnouncementAPI.Controllers
                 Abstract = body.Abstract,
                 Title = body.Title,
                 Body = body.Body,
-                CreationDate = body.Date,
+                CreationDate = body.CreationDate,
                 //Files = body.Files.Select(f => new File
                 //{
                 //    FileName = f.FileName,
@@ -121,7 +121,7 @@ namespace AnnouncementAPI.Controllers
                     announcement.Title = body.Title;
                     announcement.Abstract = body.Abstract;
                     announcement.Body = body.Body;
-                    announcement.CreationDate = body.Date;
+                    announcement.CreationDate = body.CreationDate;
 
                     //_context.Announcements.Update(announcement);
 

@@ -9,8 +9,8 @@ namespace DTOs.API.Requests
 {
     public class SettingsForAnnouncementCreation
     {
-        public IEnumerable<CategoriesDTO> Categories { get; set; }
-        public IEnumerable<SubjectsDTO> Subjects { get; set; }
+        public IEnumerable<CategoryDTO> Categories { get; set; }
+        public IEnumerable<SubjectDTO> Subjects { get; set; }
         //public IEnumerable<GradesDTO> Grades { get; set; }
     }
 }

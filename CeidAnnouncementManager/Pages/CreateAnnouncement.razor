@@ -55,22 +55,16 @@
                     </ToolbarContent>
                 </MudExRichTextEdit>
                 @* <MudTextField T="string" Label="Κείμενο" @bind-Value="announcement.Body" Lines="30" Required="true" /> *@
-                @if (false)//TOADD check if he has permissions
-                {
-                    <div class="d-flex align-center justify-space-between mt-6">
-                        <MudCheckBox T="bool" Class="ml-n2" @bind-Checked="announcement.Alert" Label="SOS" />
-                    </div>
-                }
-                <MudSelect Class="mt-10" T="CategoriesDTO" Label="Επιλέξτε κατηγορίες" MultiSelection="true" ToStringFunc="@CategoryConverter" @bind-Value="CategoriesDTO.DEFAULT_NO_CATEGORY_CHOOSEN" @bind-SelectedValues="SelectedCategories" MultiSelectionTextFunc="@(new Func<List<string>, string>(GetMultiselectionTextForCategories))">
+                <MudSelect Class="mt-10" T="CategoryDTO" Label="Επιλέξτε κατηγορίες" MultiSelection="true" ToStringFunc="@CategoryConverter" @bind-Value="CategoryDTO.DEFAULT_NO_CATEGORY_CHOOSEN" @bind-SelectedValues="SelectedCategories" MultiSelectionTextFunc="@(new Func<List<string>, string>(GetMultiselectionTextForCategories))">
                     @foreach (var category in AllCategories)
                     {
-                        <MudSelectItem T="CategoriesDTO" Value="@category">@category.CategoryName</MudSelectItem>
+                        <MudSelectItem T="CategoryDTO" Value="@category">@category.CategoryName</MudSelectItem>
                     }
                 </MudSelect>
-                <MudSelect Class="mt-10" T="SubjectsDTO" Label="Επιλέξτε μαθήματα" MultiSelection="true" ToStringFunc="@SubjectConverter" @bind-Value="SubjectsDTO.DEFAULT_NO_SUBJECT_CHOOSEN" @bind-SelectedValues="SelectedSubjects" MultiSelectionTextFunc="@(new Func<List<string>, string>(GetMultiselectionTextForSubjects))">
+                <MudSelect Class="mt-10" T="SubjectDTO" Label="Επιλέξτε μαθήματα" MultiSelection="true" ToStringFunc="@SubjectConverter" @bind-Value="SubjectDTO.DEFAULT_NO_SUBJECT_CHOOSEN" @bind-SelectedValues="SelectedSubjects" MultiSelectionTextFunc="@(new Func<List<string>, string>(GetMultiselectionTextForSubjects))">
                     @foreach (var subject in AllSubjects)
                     {
-                        <MudSelectItem T="SubjectsDTO" Value="@subject">@subject.SubjectName</MudSelectItem>
+                        <MudSelectItem T="SubjectDTO" Value="@subject">@subject.SubjectName</MudSelectItem>
                     }
                 </MudSelect>
                 @* <MudButton Variant="Variant.Filled" Color="Color.Secondary" Class="mt-10 mb-auto" onchange="imageInput"> Ανέβασμα Αρχείου</MudButton> *@
@@ -84,21 +78,21 @@
 
 @code {
     #region Categories picker
-    private IEnumerable<CategoriesDTO> AllCategories { get; set; } = [];
-    private IEnumerable<CategoriesDTO> SelectedCategories { get; set; } = [];
+    private IEnumerable<CategoryDTO> AllCategories { get; set; } = [];
+    private IEnumerable<CategoryDTO> SelectedCategories { get; set; } = [];
 
     private string GetMultiselectionTextForCategories(List<string> selectedValues) => selectedValues.Count == 0 ? "Δεν έχουν επιλεχθεί κατηγορίες" : $"Επιλεγμένες Κατηγορίες: {string.Join(", ", selectedValues.Select(x => x))}";
 
-    Func<CategoriesDTO, string> CategoryConverter = p => p?.CategoryName;
+    Func<CategoryDTO, string> CategoryConverter = p => p?.CategoryName;
     #endregion
 
     #region Subject picker
-    private IEnumerable<SubjectsDTO> AllSubjects { get; set; } = [];
-    private IEnumerable<SubjectsDTO> SelectedSubjects { get; set; } = [];
+    private IEnumerable<SubjectDTO> AllSubjects { get; set; } = [];
+    private IEnumerable<SubjectDTO> SelectedSubjects { get; set; } = [];
 
     private string GetMultiselectionTextForSubjects(List<string> selectedValues) => selectedValues.Count == 0 ? "Δεν έχουν επιλεχθεί Μαθήματα" : $"Επιλεγμένες Μαθήματα: {string.Join(", ", selectedValues.Select(x => x))}";
 
-    Func<SubjectsDTO, string> SubjectConverter = p => p?.SubjectName;
+    Func<SubjectDTO, string> SubjectConverter = p => p?.SubjectName;
     #endregion
 
     private List<UploadResult> uploadResults = new();
@@ -166,9 +160,7 @@
 
     public async Task PostOnAPI()
     {
-        announcement.Author = "Admin";
-        announcement.UserID = 1;
-        announcement.Date = DateTime.Now;
+        announcement.CreationDate = DateTime.Now;
         announcement.Files = uploadResults;
 
         announcement.Body = await this.Editor.GetHtml();

@@ -9,7 +9,6 @@
 @using Microsoft.AspNetCore.Authorization;
 @inject NavigationManager UriHelper
 @inject IJSRuntime JSRuntime
-@attribute [Authorize]
 
 @page "/myannouncements"
 
@@ -39,7 +38,7 @@
         </MudItem>
         @foreach (var myVar in _myDTO)
         {
-            var annID = myVar.AnnID;
+            var annID = myVar.Id;
             <MudItem xs="10" aling-center>
                 <MudCard>
                     <MudCardHeader>
@@ -54,10 +53,10 @@
                         <MudText>@myVar.Author</MudText>
                         <MudText Typo="Typo.body2">@myVar.Abstract</MudText>
                     </MudCardContent>
-                    @foreach (var tag in myVar.Tags)
+@*                     @foreach (var tag in myVar.Tags)
                     {
-                        @* <MudChip Label="@tag" /> *@
-                    }
+                        <MudChip Label="@tag" />
+                    } *@
                     <MudCardActions>
                         <MudButton OnClick="() => NavigateTo(annID)" Variant="Variant.Text" Color="Color.Info">Read More</MudButton>
                     </MudCardActions>
@@ -76,11 +75,11 @@
     private int _selected =1;
     private string value { get; set; } = "Nothing selected";
     private int numOfPages = 1;
-    private int pageSize = 10;
+    private int pageSize = 2;
     private int id = 1;
 
-    private IEnumerable<CategoriesDTO> all;
-    private IEnumerable<CategoriesDTO> selected;
+    private IEnumerable<CategoryDTO> all;
+    private IEnumerable<CategoryDTO> selected;
     private IEnumerable<AnnouncementDTO>? _myDTO;
     private IEnumerable<AnnouncementDTO>? _allDTO;
     private IEnumerable<AnnouncementDTO>? _change;

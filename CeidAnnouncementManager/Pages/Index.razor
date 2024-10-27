@@ -1,10 +1,11 @@
 ﻿@page "/"
 @inject IJSRuntime JSRuntime
-@inject HttpClient Http
 @inject NavigationManager NavManager;
+@inject PublicAnnouncementsRepository _announcementsRepository;
 
 @using System.Text.Json
 @using System.Text.Json.Serialization;
+@using CeidAnnouncementManager.Services
 @using DTOs.Data;
 @using static DTOs.Common.Helpers;
 @using DTOs.API.Responses;
@@ -13,160 +14,94 @@
 @using Microsoft.AspNetCore.Components.Authorization
 @using Microsoft.AspNetCore.Components.WebAssembly.Authentication
 @using System.Security.Claims
-
-@inject AuthenticationStateProvider AuthenticationStateProvider
-
+@attribute [AllowAnonymous]
 <PageTitle>Διαχείρηση Ανακοινώσεων του ΤΜΗΥΠ</PageTitle>
 
 <MudGrid Justify="Justify.Center" Class="d-flex" Spacing="2" Style="align-items: center">
-    <MudImage Src="icon-192.jpg" Class="ma-6" Width="210" Height="55" />
-    @if (_myAnnouncementDtos != null)
-    {
-        @foreach (var myVar in _myAnnouncementDtos)
-        {
-            var annID = myVar.AnnID;
-            <MudItem xs="10" aling-center>
-                <MudCard>
-                    <MudCardHeader>
-                        <CardHeaderContent>
-                            <MudText Typo="Typo.h6">@myVar.Title</MudText>
-                        </CardHeaderContent>
-                        <CardHeaderActions>
-                            <MudText Typo="Typo.h6">@myVar.Date</MudText>
-                            @* <MudIconButton Icon="@Icons.Material.Filled.Settings"/> *@
-                        </CardHeaderActions>
-                    </MudCardHeader>
-                    <MudCardContent>
-                        <MudText>@myVar.Author</MudText>
-                        <MudText Typo="Typo.body2">@myVar.Abstract</MudText>
-                    </MudCardContent>
-                    @* @foreach (var tag in myVar.Tags)
-                    {
-                         <MudChip Label="@tag" /> 
-                    } *@
-                    <MudCardActions>
-                        <MudButton OnClick="() => NavigateTo(annID)" Variant="Variant.Text">Read More</MudButton>
-                    </MudCardActions>
-                </MudCard>
-            </MudItem>
-        }
 
-        <MudItem xs="5"></MudItem>
-        <MudItem xs="6">
-            <MudPagination SelectedChanged="PageChanged" Count="@numOfPages" />
+    <MudImage Src="icon-192.jpg" xs="12" Class="ma-6" Width="210" Height="55" />
+
+
+    @foreach (var announcement in _announcementDTOs)
+    {
+        <MudItem xs="10" aling-center>
+            <MudCard>
+                <MudCardHeader>
+                    <CardHeaderContent>
+                        <MudText Typo="Typo.h6">@announcement.Title</MudText>
+                    </CardHeaderContent>
+                    <CardHeaderActions>
+                        <MudText Typo="Typo.caption">Από @announcement.Author.FullName την @announcement.CreationDate.ToShortDateString()</MudText>
+                    </CardHeaderActions>
+                </MudCardHeader>
+                <MudCardContent>
+                    <MudText>@announcement.Author</MudText>
+                    <MudText Typo="Typo.body2">@announcement.Abstract</MudText>
+                </MudCardContent>
+                @* @foreach (var tag in myVar.Tags)
+            {
+            <MudChip Label="@tag" />
+            } *@
+                <MudCardActions>
+                    <MudButton OnClick="() => ShowAnnouncementInDetail(announcement.Id)" Variant="Variant.Text">Λεπτομέρειες Ανακοίνωσης</MudButton>
+                </MudCardActions>
+            </MudCard>
         </MudItem>
     }
+
+
+    <MudItem xs="5"></MudItem>
+    <MudItem xs="6">
+        <MudPagination SelectedChanged="PageChanged" Count="@_totalNumOfPages" />
+    </MudItem>
 </MudGrid>
+
 
 @code {
 
-    private bool isVisible;
-    public void ToggleOverlay(bool value)
-    {
-        isVisible = value;
-    }
+    private int _onPage { get; set; } = 1;
+    private int _totalNumOfPages { get; set; } = 1;
+    private int _pageSize { get; set; } = 2;
 
-    private int _selected = 1;
-    private int numOfPages = 1;
-    private int pageSize = 10;
+    private string _searchText { get; set; } = "";
+    private ICollection<int> _searchInCategoriesIds { get; set; } = [];
+    private ICollection<int> _searchInSubjectsIds { get; set; } = [];
 
-    public async Task<IEnumerable<AnnouncementDTO>> GetWebApiResponse()//TODO Move to Announcements repository
-    {
-        string s1 = pageSize.ToString();
-        string s2 = _selected.ToString();
-        var response = await Http.GetStringAsync("https://localhost:5001/api/Public/GetAnnouncements?" + "limit=" + s1 + "&skip=" + s2);
+    private ICollection<AnnouncementDTO> _announcementDTOs { get; set; } = [];
 
-        //string serializedString = System.Text.Json.JsonSerializer.Serialize(response);
-
-        Console.WriteLine(response);
-        //Console.WriteLine(serializedString);
-
-        var annResponse = response.DeserializeMethod<GetAnnouncementsByResponse>();
-
-        int count = annResponse.SumOfAnnouncements;
-
-        numOfPages = getPageCount(count);
-
-
-        var ann = annResponse.Announcements;
-
-        return ann;
-
-    }
-
-    private int getPageCount(int count)//TODO Move to Announcements repository
-    {
-        //count % pageSize == 0 ? numOfPages = (count/pageSize) : numOfPages = (count/pageSize) + 1;
-        if (count % pageSize == 0)
-        {
-            numOfPages = (count / pageSize);
-        }
-        else
-        {
-            numOfPages = (count / pageSize) + 1;
-        }
-
-        return numOfPages;
-    }
-
-    public async Task<IEnumerable<AnnouncementDTO>> FetchAnnouncementsResponse()
-    {
-        _allAnnouncementDtos = await GetWebApiResponse();
-        return _allAnnouncementDtos;
-    }
-
-
-
-    public async Task<IEnumerable<AnnouncementDTO>> PageChanged(int i)
-    {
-        _selected = i;
-        _change = await FetchAnnouncementsResponse();
-        _myAnnouncementDtos = _change;
-        return _change;
-    }
-
-
-    private void NavigateTo(int id)
-    {
-        var s = id.ToString();
-        NavManager.NavigateTo("showannouncement/" + s);
-    }
-
-    private IEnumerable<AnnouncementDTO> _myAnnouncementDtos;
-    private IEnumerable<AnnouncementDTO> _allAnnouncementDtos;
-    private IEnumerable<AnnouncementDTO> _change;
 
     protected override async Task OnInitializedAsync()
     {
-        await GetClaimsPrincipalData();
-        _myAnnouncementDtos = await FetchAnnouncementsResponse();
+        await ReloadAnnouncements();
     }
 
-    private void click(int id)
+    private async Task ReloadAnnouncements()
+    {
+        var request = new DTOs.API.Public.GetAnnouncements.Request
+            {
+                TextContains = string.IsNullOrWhiteSpace(_searchText) ? null : _searchText,
+                InCategoriesIds = _searchInCategoriesIds.Any() ? _searchInCategoriesIds : null,
+                InSubjectIds = _searchInSubjectsIds.Any() ? _searchInSubjectsIds : null,
+                Limit = _pageSize,
+                Skip = (_onPage - 1) * _pageSize,
+                //TODO ordering
+            };
+
+        var response = await _announcementsRepository.FetchMultiple(request);
+
+        _announcementDTOs = response.Announcements.ToList();
+        _totalNumOfPages = response.TotalCount / _pageSize;
+    }
+
+    public async Task PageChanged(int i)
+    {
+        _onPage = i;
+        await ReloadAnnouncements();
+    }
+
+
+    private void ShowAnnouncementInDetail(int id)
     {
         NavManager.NavigateTo($"showannouncement/{id}");
     }
-
-    private IEnumerable<Claim> claims = Enumerable.Empty<Claim>();
-
-    //protected override Task OnInitializedAsync() => GetClaimsPrincipalData();
-
-    private async Task GetClaimsPrincipalData()
-    {
-        var authState = await AuthenticationStateProvider.GetAuthenticationStateAsync();
-        var user = authState.User;
-        if (user.Identity?.IsAuthenticated ?? false)
-        {
-            claims = user.Claims;
-        }
-        foreach (var claim in claims)
-        {
-            if (claim.Type == "email")
-            {
-                var mail = claim.Value;
-                Console.WriteLine(mail);
-            }
-        }
-    }
-
 }

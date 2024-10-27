@@ -26,7 +26,7 @@ namespace AnnouncementAPI.Controllers
         }
 
         [HttpGet("GetCategories")]
-        public async Task<ActionResult<List<CategoriesDTO>>> GetCategories()
+        public async Task<ActionResult<List<CategoryDTO>>> GetCategories()
         {
             throw new NotSupportedException();
             //var categories = await _context.CList
@@ -41,7 +41,7 @@ namespace AnnouncementAPI.Controllers
         }
 
         [HttpGet("GetCategoriesByID/{id}")]
-        public async Task<ActionResult<List<CategoriesDTO>>> GetCategoriesByID(int id)
+        public async Task<ActionResult<List<CategoryDTO>>> GetCategoriesByID(int id)
         {
             throw new NotSupportedException();
             //var categories = await _context.categorieslistuser
@@ -58,7 +58,7 @@ namespace AnnouncementAPI.Controllers
         }
 
         [HttpPut("UpdateCategories/{id}")]
-        public async Task<ActionResult<List<CategoriesDTO>>> UpdateCategories(int id, IEnumerable<string> options)
+        public async Task<ActionResult<List<CategoryDTO>>> UpdateCategories(int id, IEnumerable<string> options)
         {
             throw new NotSupportedException();
             //if (options == null || !options.Any())

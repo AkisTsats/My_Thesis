@@ -24,8 +24,8 @@ namespace AnnouncementAPI.Controllers
         }
 
         // GET: api/ | get all announcements
-        [HttpGet("GetAnnouncements")]
-        public async Task<ActionResult<DTOs.API.Public.GetAnnouncements.Response>> GetAnnouncements([FromQuery] DTOs.API.Public.GetAnnouncements.Request request)
+        [HttpPost("GetAnnouncements")]
+        public async Task<ActionResult<DTOs.API.Public.GetAnnouncements.Response>> GetAnnouncements([FromBody] DTOs.API.Public.GetAnnouncements.Request request)
         {
             var query = _context.Announcements.AsQueryable();
 
@@ -76,12 +76,12 @@ namespace AnnouncementAPI.Controllers
         }
 
         //GET api/{object} get announcement by any type
-        [HttpGet("GetAnnouncement/")]
-        public async Task<ActionResult<DTOs.API.Public.GetAnnouncements.Response>> GetAnnouncement(int id)
+        [HttpPost("GetAnnouncement")]
+        public async Task<ActionResult<DTOs.API.Public.GetAnnouncement.Response>> GetAnnouncement([FromBody] DTOs.API.Public.GetAnnouncement.Request id)
         {
             var announcement =
                 await _context.Announcements
-                    .Where(e => e.Id == id)
+                    //.Where(e => e.Id == id) //TODO 
                     .Select(e => AnnouncementMapper(e))
                     .FirstOrDefaultAsync();
 
@@ -96,11 +96,11 @@ namespace AnnouncementAPI.Controllers
 
         private static AnnouncementDTO AnnouncementMapper(Announcement entry) => new()
         {
-            AnnID = entry.Id,
+            Id = entry.Id,
             Title = entry.Title,
             Abstract = entry.Abstract,
             Body = entry.Body,
-            Date = entry.CreationDate,
+            CreationDate = entry.CreationDate,
         };
     }
 

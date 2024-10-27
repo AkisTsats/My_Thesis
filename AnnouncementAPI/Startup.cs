@@ -32,6 +32,7 @@ using static System.Net.WebRequestMethods;
 using AnnouncementAPI.Helpers;
 using AnnouncementAPI.Mail;
 using DTOs.Data;
+using Microsoft.Extensions.Options;
 
 namespace AnnouncementAPI
 {
@@ -79,6 +80,7 @@ namespace AnnouncementAPI
                 {
                     {securityScheme, Array.Empty<string>()}
                 });
+                c.CustomSchemaIds(type => type.FullName.Replace("+", "."));
             });
 
             services.AddHostedService<ConsumerSingletonProcessorSendEmail>();

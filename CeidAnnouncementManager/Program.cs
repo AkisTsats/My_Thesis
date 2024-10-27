@@ -7,8 +7,6 @@ using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
 using MudBlazor.Services;
 
 
-
-
 var builder = WebAssemblyHostBuilder.CreateDefault(args);
 
 builder.RootComponents.Add<App>("#app");
@@ -16,6 +14,7 @@ builder.RootComponents.Add<HeadOutlet>("head::after");
 
 builder.Services.AddScoped<CategoriesRepository>();
 builder.Services.AddScoped<SettingsRepository> ();
+builder.Services.AddScoped<PublicAnnouncementsRepository> ();
 builder.Services.AddMudServices();
 
 builder.Services.AddTransient<CustomAuthorizationMessageHandler>();
@@ -64,7 +63,7 @@ public class CustomAuthorizationMessageHandler : AuthorizationMessageHandler
         : base(provider, navigation)
     {
         ConfigureHandler(
-            authorizedUrls: new[] { "https://localhost:5001/Announcement" });
+            authorizedUrls: new[] { "https://localhost:5001/" });
     }
 }
 

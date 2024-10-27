@@ -19,14 +19,14 @@ namespace AnnouncementAPI.Controllers
         public async Task<ActionResult<SettingsForAnnouncementCreation>> GetSettingsForAnnouncementCreation()
         {
             var categories = await _context.Categories
-                .Select(a => new CategoriesDTO(
+                .Select(a => new CategoryDTO(
                     a.Id,
                     a.Name
                     ))
                 .ToListAsync();
 
             var subjects = await _context.Subjects
-                .Select(a => new SubjectsDTO(
+                .Select(a => new SubjectDTO(
                     a.Id,
                     a.Name
                     ))
