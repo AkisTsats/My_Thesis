@@ -6,7 +6,8 @@
     <MudNavLink Href="/" Match="NavLinkMatch.All">Ανακοινώσεις</MudNavLink>
     <AuthorizeView>
         <Authorized>
-            <MudNavLink Href="/myannouncements" Match="NavLinkMatch.Prefix">Οι ανακοινώσεις μου</MudNavLink>
+            <MudNavLink Href="/AnnouncementsForMe" Match="NavLinkMatch.Prefix">Ανακοινώσεις για εμένα</MudNavLink>
+            <MudNavLink Href="/AnnouncementsCreatedByMe" Match="NavLinkMatch.Prefix">Δημιουργημένες από εμένα</MudNavLink>
             <MudNavLink Href="/createannouncement" Match="NavLinkMatch.Prefix">Δημιουργία ανακοίνωσης</MudNavLink>
             <MudNavLink Href="/usersettings" Match="NavLinkMatch.Prefix">Οι ρυθμίσεις μου</MudNavLink>
             @if (permissions.canEditAllAnn == true)

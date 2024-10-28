@@ -1,7 +1,9 @@
-﻿@page "/"
+﻿@page "/AnnouncementsCreatedByMe"
 @inject IJSRuntime JSRuntime
 @inject NavigationManager NavManager;
+@inject SettingsRepository _settingsRepository;
 @inject PublicRepository _publicRepository;
+@inject AnnouncementsRepository _announcementRepository;
 
 @using System.Text.Json
 @using System.Text.Json.Serialization;
@@ -14,7 +16,7 @@
 @using Microsoft.AspNetCore.Components.Authorization
 @using Microsoft.AspNetCore.Components.WebAssembly.Authentication
 @using System.Security.Claims
-@attribute [AllowAnonymous]
+@attribute [Authorize]
 <PageTitle>Διαχείρηση Ανακοινώσεων του ΤΜΗΥΠ</PageTitle>
 
 <MudLayout>
@@ -116,7 +118,7 @@
 
     private async Task ReloadAnnouncements()
     {
-        var request = new DTOs.API.Public.GetAnnouncements.Request
+        var request = new DTOs.API.Announcements.GetAnnouncementsCreatedByMe.Request
             {
                 TextContains = string.IsNullOrWhiteSpace(_searchText) ? null : _searchText,
                 InCategoriesIds = SelectedCategories.Any() ? SelectedCategories.Select(e => e.CategoryID) : null,
@@ -126,7 +128,7 @@
                 OrderByCreationDateDescending = true,
             };
 
-        var response = await _publicRepository.FetchMultiple(request);
+        var response = await _announcementRepository.FetchCreatedByMe(request);
 
         _announcementDTOs = response.Announcements.ToList();
         _totalNumOfPages = response.TotalCount / _pageSize;

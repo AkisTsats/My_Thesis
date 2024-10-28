@@ -33,6 +33,7 @@ using AnnouncementAPI.Helpers;
 using AnnouncementAPI.Mail;
 using DTOs.Data;
 using Microsoft.Extensions.Options;
+using AnnouncementAPI.Services;
 
 namespace AnnouncementAPI
 {
@@ -85,9 +86,12 @@ namespace AnnouncementAPI
 
             services.AddHostedService<ConsumerSingletonProcessorSendEmail>();
             services.AddScoped<ProducerOfMyObjectsEndpoint>();
-            services.AddSingleton<Channel<AnnouncementDTO>>(Channel.CreateUnbounded<AnnouncementDTO>());
+            services.AddSingleton(Channel.CreateUnbounded<AnnouncementDTO>());
             services.AddScoped<SendAnnouncement>();
+            services.AddScoped<UserProvider>();
+            services.AddScoped<AnnouncementService>();
             services.AddControllers();
+            services.AddHttpContextAccessor();
 
             services.AddDbContext<EFDataAccessLibrary.Data.MyDbContext>(options =>
             {

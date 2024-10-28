@@ -1,4 +1,5 @@
 ﻿using AnnouncementAPI.Helpers;
+using AnnouncementAPI.Services;
 using DTOs.Data;
 using EFDataAccessLibrary.Data;
 using Microsoft.AspNetCore.Mvc;
@@ -16,11 +17,12 @@ namespace AnnouncementAPI.Controllers
     {
         private readonly MyDbContext _context;
         private readonly ProducerOfMyObjectsEndpoint _producer;
-
-        public PublicController(MyDbContext? context, ProducerOfMyObjectsEndpoint? producer)
+        private readonly AnnouncementService _announcementService;
+        public PublicController(MyDbContext? context, ProducerOfMyObjectsEndpoint? producer, AnnouncementService announcementService)
         {
             _context = context;
             _producer = producer;
+            _announcementService = announcementService;
         }
 
 
@@ -40,37 +42,14 @@ namespace AnnouncementAPI.Controllers
         [HttpPost("GetAnnouncements")]
         public async Task<ActionResult<DTOs.API.Public.GetAnnouncements.Response>> GetAnnouncements([FromBody] DTOs.API.Public.GetAnnouncements.Request request)
         {
-            var query = _context.Announcements.AsQueryable();
-
-            if (request.TextContains is not null)
-            {
-                query = query.Where(a => a.Title.Contains(request.TextContains) || a.Body.Contains(request.TextContains));
-            }
-
-            if (request.InCategoriesIds is not null)
-            {
-                query = query.Where(a => a.RelatedToCategories.Any(b => request.InCategoriesIds.Contains(b.Id)));
-            }
-
-            if (request.InSubjectIds is not null)
-            {
-                query = query.Where(a => a.RelatedToSubjects.Any(b => request.InSubjectIds.Contains(b.Id)));
-            }
-
-            if (request.OrderByCreationDateAscending)
-            {
-                query = query.OrderBy(a => a.CreationDate);
-            }
-            else if (request.OrderByCreationDateDescending)
-            {
-                query = query.OrderByDescending(a => a.CreationDate);
-            }
-            else
-            {
-                query = query.OrderBy(a => a.Id);
-            }
-
-            //query = query.Where(e => true); // filter non published, soft deleted etc
+            var query = _announcementService.GetAnnouncementsQuery(
+                request.TextContains,
+                request.InCategoriesIds,
+                request.InSubjectIds,
+                request.OrderByCreationDateAscending,
+                request.OrderByCreationDateDescending,
+                includesForMapping: true
+                );
 
             var count = await query.CountAsync();
 
@@ -78,7 +57,6 @@ namespace AnnouncementAPI.Controllers
 
             var toRet =
                 await query
-                    .Include(e => e.Creator)
                     .Select(e => e.ToAnnouncementDTO())
                     .ToListAsync();
 
@@ -95,6 +73,8 @@ namespace AnnouncementAPI.Controllers
             var announcement =
                 await _context.Announcements
                     .Include(e => e.Creator)
+                    .Include(e => e.RelatedToSubjects)
+                    .Include(e => e.RelatedToCategories)
                     //.Where(e => e.Id == id) //TODO 
                     .Select(e => e.ToAnnouncementDTO())
                     .FirstOrDefaultAsync();

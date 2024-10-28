@@ -13,8 +13,10 @@ builder.RootComponents.Add<App>("#app");
 builder.RootComponents.Add<HeadOutlet>("head::after");
 
 builder.Services.AddScoped<CategoriesRepository>();
-builder.Services.AddScoped<SettingsRepository> ();
-builder.Services.AddScoped<PublicRepository> ();
+builder.Services.AddScoped<SettingsRepository>();
+builder.Services.AddScoped<PublicRepository>();
+builder.Services.AddScoped<UsersRepository>();
+builder.Services.AddScoped<AnnouncementsRepository>();
 builder.Services.AddMudServices();
 
 builder.Services.AddTransient<CustomAuthorizationMessageHandler>();

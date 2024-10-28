@@ -1,9 +1,12 @@
-﻿using DTOs.Data;
+﻿using AnnouncementAPI.Services;
+using DTOs.Data;
 using EFDataAccessLibrary.Data;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Linq;
+using System.Security.Claims;
 using System.Threading.Tasks;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
@@ -14,24 +17,25 @@ namespace AnnouncementAPI.Controllers
     [ApiController]
     public class UserController : ControllerBase
     {
-
         private readonly MyDbContext _context;
 
-        public UserController(MyDbContext context)
+        private UserProvider _userProvider;
+
+        public UserController(MyDbContext context, IHttpContextAccessor httpContextAccessor)
         {
             _context = context;
         }
 
         // GET: api/<UserController>
-        [HttpGet("GetUser")]
-        public async Task<ActionResult<UserDTO>> GetUserController()
+        [HttpGet("GetMe")]
+        public async Task<ActionResult<UserDTO>> GetMe()
         {
-            return await _context.Users
-                .Where(u => u.Id == 7)
-                .Select(u => new UserDTO
-                {
-                    FirstName = u.FullName
-                }).FirstOrDefaultAsync();
+            var user = await _userProvider.GetUser();
+
+            if (user is null)
+                return NotFound();
+
+            return user.ToUserDTO();
         }
 
         // GET: api/<UserController>

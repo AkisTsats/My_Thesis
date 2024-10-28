@@ -1,17 +1,15 @@
-﻿using DTOs.API.Responses;
+﻿using AnnouncementAPI.Helpers;
+using AnnouncementAPI.Services;
+using DTOs.API.Responses;
+using DTOs.Data;
 using EFDataAccessLibrary.Data;
-using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using DTOs.Data;
-using Microsoft.AspNetCore.Authorization;
-using System.Collections;
-using AnnouncementAPI.Helpers;
-using System.Threading.Channels;
 
 namespace AnnouncementAPI.Controllers
 {
@@ -20,44 +18,88 @@ namespace AnnouncementAPI.Controllers
     [ApiController]
     public class AnnouncementController : ControllerBase
     {
-
-
-        private static StatisticsDTO Statistics = new()
-        {
-            TodayAnnouncements = 1,
-            TodayPeakUsers = 12,
-            TotalAnnouncements = 430,
-            TotalUsers = 500
-        };
-
         private readonly MyDbContext _context;
         private readonly ProducerOfMyObjectsEndpoint _producer;
+        private readonly AnnouncementService _announcementService;
+        private readonly UserProvider _userProvider;
 
-        public AnnouncementController(MyDbContext? context, ProducerOfMyObjectsEndpoint? producer)
+        public AnnouncementController(MyDbContext? context, ProducerOfMyObjectsEndpoint? producer, AnnouncementService announcementService, UserProvider userProvider)
         {
             _context = context;
             _producer = producer;
+            _announcementService = announcementService;
+            _userProvider = userProvider;
         }
 
-        // GET: api/ | get all announcements
-        [HttpGet("GetAllAnnouncements")]
-        public async Task<ActionResult<List<Announcement>>> Get()
+        [HttpPost("GetAnnouncementsCreatedByMe")]
+        public async Task<ActionResult<DTOs.API.Announcements.GetAnnouncementsCreatedByMe.Response>> GetAnnouncementsCreatedByMe([FromBody] DTOs.API.Announcements.GetAnnouncementsCreatedByMe.Request request)
         {
-            return Ok(await _context.Announcements.ToListAsync());
+            var user = await _userProvider.GetUser();
 
-        }
+            var query = _announcementService.GetAnnouncementsQuery(
+                request.TextContains,
+                request.InCategoriesIds,
+                request.InSubjectIds,
+                request.OrderByCreationDateAscending,
+                request.OrderByCreationDateDescending,
+                includesForMapping: true,
+                allowUnpublished: true
+                );
 
-        // GET: api/ | get announcement by parameter
-        [HttpGet("GetStats")]
-        public async Task<ActionResult<StatisticsDTO>> getStats()
-        {
-            return new StatisticsDTO()
+            query = query.Where(a => a.Creator.Id == user.Id);
+
+            var count = await query.CountAsync();
+
+            query = query.Skip(request.Skip).Take(request.Limit);
+
+            var toRet =
+                await query
+                    .Select(e => e.ToAnnouncementDTO())
+                    .ToListAsync();
+
+            return Ok(new DTOs.API.Public.GetAnnouncements.Response()
             {
-                TodayAnnouncements = 1,
-                TodayPeakUsers = 12,
-                TotalAnnouncements = 430,
-                TotalUsers = 500
-            };
+                Announcements = toRet,
+                TotalCount = count
+            });
+        }
+
+        [HttpPost("GetAnnouncementsForMe")]
+        public async Task<ActionResult<DTOs.API.Announcements.GetAnnouncementsForMe.Response>> GetAnnouncementsForMe([FromBody] DTOs.API.Announcements.GetAnnouncementsForMe.Request request)
+        {
+            var user = await _userProvider.GetUser(includeSubjectsAndCategories: true);
+
+            var announcementsIdsSelectedFromCategories = user.SelectedCategories.SelectMany(c => c.RelatesToAnnouncements.Select(a => a.Id)).ToList();
+            var announcementsIdsSelectedFromSubjects = user.SelectedSubjects.SelectMany(c => c.RelatesToAnnouncements.Select(a => a.Id)).ToList();
+            var announcementsIdsSelectedFromAcademicYears = user.SelectedAcademicYears.SelectMany(c => c.RelatesToAnnouncements.Select(a => a.Id)).ToList();
+
+            var query = _announcementService.GetAnnouncementsQuery(
+                request.TextContains,
+                request.InCategoriesIds,
+                request.InSubjectIds,
+                request.OrderByCreationDateAscending,
+                request.OrderByCreationDateDescending,
+                includesForMapping: true
+                );
+
+            query = query
+                .Where(a => announcementsIdsSelectedFromCategories.Contains(a.Id) || announcementsIdsSelectedFromSubjects.Contains(a.Id))
+                .Where(a => a.RelatesToAcademicYears.Count() == 0 || announcementsIdsSelectedFromAcademicYears.Contains(a.Id));
+
+            var count = await query.CountAsync();
+
+            query = query.Skip(request.Skip).Take(request.Limit);
+
+            var toRet =
+                await query
+                    .Select(e => e.ToAnnouncementDTO())
+                    .ToListAsync();
+
+            return Ok(new DTOs.API.Public.GetAnnouncements.Response()
+            {
+                Announcements = toRet,
+                TotalCount = count
+            });
         }
 
         // POST: api/CreateAnnouncement

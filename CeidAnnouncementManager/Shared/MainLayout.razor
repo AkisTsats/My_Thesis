@@ -5,23 +5,24 @@
 <MudDialogProvider />
 <MudSnackbarProvider />
 
-
 <MudLayout>
-
     <MudAppBar Elevation="_themeManager.AppBarElevation">
         <MudThemeManagerButton OnClick="@((e) => OpenThemeManager(true))" />
         <MudThemeManager Open="_themeManagerOpen" OpenChanged="OpenThemeManager" Theme="_themeManager" ThemeChanged="UpdateTheme" />
         <MudIconButton Icon="@Icons.Material.Filled.Menu" Edge="Edge.Start" OnClick="@((e) => DrawerToggle())"/>
         <MudText Typo="Typo.h5">Διαχείριση Ανακοινώσεων ΤΜΗΥΠ</MudText>
     </MudAppBar>
+
     <MudDrawer @bind-Open="_drawerOpen" ClipMode="_themeManager.DrawerClipMode" Elevation="_themeManager.DrawerElevation">
         <NavMenu/>
         <LoginDisplay/>
     </MudDrawer>
+
     <MudMainContent>
         @Body
     </MudMainContent>
 </MudLayout>
+
 @code {
     bool _drawerOpen = false;
 

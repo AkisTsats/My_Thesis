@@ -43,5 +43,8 @@ namespace EFDataAccessLibrary.Data
 
         [InverseProperty(nameof(Category.SelectedByUsers))]
         public ICollection<Category> SelectedCategories { get; set; }
+
+        [InverseProperty(nameof(AcademicYears.SelectedByUsers))]
+        public ICollection<AcademicYears> SelectedAcademicYears { get; set; }
     }
 }

@@ -2,6 +2,8 @@
 @using System.Text.Json.Serialization;
 @inject HttpClient httpClient
 
+@page "/admiSettings"
+
 <MudTable Items="@Elements" MultiSelection="true" T="Element" SelectedItemsChanged="OnSelectedItemsChanged" Comparer="Comparer">
     <HeaderContent>
         <MudTh>Όνομα</MudTh>

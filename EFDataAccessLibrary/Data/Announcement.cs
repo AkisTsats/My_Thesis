@@ -18,6 +18,8 @@ namespace EFDataAccessLibrary.Data
         public string Body { get; set; }
         public DateTime CreationDate { get; set; }
 
+        public bool IsPublished { get; set; }
+
         public User Creator { get; set; }
 
         public Resource? PrimaryResource { get; set; }
@@ -30,6 +32,9 @@ namespace EFDataAccessLibrary.Data
 
         [InverseProperty(nameof(Subject.RelatesToAnnouncements))]
         public ICollection<Subject> RelatedToSubjects { get; set; }
+
+        [InverseProperty(nameof(AcademicYears.RelatesToAnnouncements))]
+        public ICollection<AcademicYears> RelatesToAcademicYears { get; set; }
     }
 
 }

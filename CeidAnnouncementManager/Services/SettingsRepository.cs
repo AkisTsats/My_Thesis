@@ -1,13 +1,5 @@
-﻿using System.Net.NetworkInformation;
-using System.Net.Http;
-using System.Text.Json;
-using System.Text.Json.Serialization;
-using DTOs.Data;
+﻿using DTOs.API.Requests;
 using static DTOs.Common.Helpers;
-using DTOs.API.Responses;
-using static System.Net.WebRequestMethods;
-using System;
-using DTOs.API.Requests;
 
 namespace CeidAnnouncementManager.Services
 {
