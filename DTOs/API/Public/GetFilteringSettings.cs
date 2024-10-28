@@ -6,5 +6,6 @@ namespace DTOs.API.Public.GetFilteringSettings
     {
         public IEnumerable<CategoryDTO> Categories { get; set; }
         public IEnumerable<SubjectDTO> Subjects { get; set; }
+        public IEnumerable<AcademicYearDTO> AcademicYears { get; set; }
     }
 }

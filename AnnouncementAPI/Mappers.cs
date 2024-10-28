@@ -12,7 +12,7 @@ namespace AnnouncementAPI
             Title = entry.Title,
             Abstract = entry.Abstract,
             Body = entry.Body,
-            CreationDate = entry.CreationDate,
+            CreationDate = entry.CreatedTs,
             Author = entry.Creator?.ToUserPublicDTO(),
             Categories = entry.RelatedToCategories.Select(ToCategoryDTO),
             Subjects = entry.RelatedToSubjects.Select(ToSubjectDTO),
@@ -28,6 +28,11 @@ namespace AnnouncementAPI
 
         public static CategoryDTO ToCategoryDTO(this Category entry) => new(entry.Id, entry.Name);
         public static SubjectDTO ToSubjectDTO(this Subject entry) => new(entry.Id, entry.Name);
+        public static AcademicYearDTO ToAcademicYearDTO(this AcademicYears entry) => new()
+        {
+            Id = entry.Id,
+            Year = entry.Year
+        };
 
         public static UserDTO ToUserDTO(this User entry) => new()
         {
@@ -37,6 +42,7 @@ namespace AnnouncementAPI
             LastName = entry.LastName,
             CreatedTs = entry.CreatedTs,
             Email = entry.Email,
+            Role = entry.Role,
             //TODO: Add other properties
         };
     }

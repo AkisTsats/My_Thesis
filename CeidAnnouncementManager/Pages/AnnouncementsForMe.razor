@@ -121,8 +121,8 @@
         var request = new DTOs.API.Announcements.GetAnnouncementsForMe.Request
             {
                 TextContains = string.IsNullOrWhiteSpace(_searchText) ? null : _searchText,
-                InCategoriesIds = SelectedCategories.Any() ? SelectedCategories.Select(e => e.CategoryID) : null,
-                InSubjectIds = SelectedSubjects.Any() ? SelectedSubjects.Select(e => e.SubjectID) : null,
+                InCategoriesIds = SelectedCategories.Any() ? SelectedCategories.Select(e => e.Id) : null,
+                InSubjectIds = SelectedSubjects.Any() ? SelectedSubjects.Select(e => e.Id) : null,
                 Limit = _pageSize,
                 Skip = (_onPage - 1) * _pageSize,
                 OrderByCreationDateDescending = true,

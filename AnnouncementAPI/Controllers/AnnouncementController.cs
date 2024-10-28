@@ -1,6 +1,6 @@
 ﻿using AnnouncementAPI.Helpers;
 using AnnouncementAPI.Services;
-using DTOs.API.Responses;
+using Common;
 using DTOs.Data;
 using EFDataAccessLibrary.Data;
 using Microsoft.AspNetCore.Authorization;
@@ -104,172 +104,117 @@ namespace AnnouncementAPI.Controllers
 
         // POST: api/CreateAnnouncement
         [HttpPost("CreateAnnouncement")]
-        public async Task<ActionResult<AnnouncementDTO>> CreateAnnouncement(AnnouncementDTO body)
+        public async Task<ActionResult<DTOs.API.Announcements.CreateAnnouncement.Response>> CreateAnnouncement([FromBody] DTOs.API.Announcements.CreateAnnouncement.Request request)
         {
-            var ann = new Announcement
-            {
-                Abstract = body.Abstract,
-                Title = body.Title,
-                Body = body.Body,
-                CreationDate = body.CreationDate,
-                //Files = body.Files.Select(f => new File
-                //{
-                //    FileName = f.FileName,
-                //    ContentType = f.ContentType,
-                //    Path = f.Path,
-                //    IsPrimaryImage = f.IsPrimaryImage
-                //}).ToList(),
-            };
+            var user = await _userProvider.GetUser();
 
-            foreach (var file in body.Files)
+            Common.Common.RoleToPermissionMapping.TryGetValue(user.Role, out var permissions);
+
+            if (!permissions.HasFlag(Permissions.ManageAnnouncements))
             {
-                var newFile = new Resource
-                {
-                    //Announcement = ann,
-                    //FileName = file.FileName,
-                    //ContentType = file.ContentType,
-                    //Path = file.Path,
-                    //IsPrimaryImage = true //.IsPrimaryImage;
-                };
-                await _context.Resources.AddAsync(newFile);
+                return Unauthorized();
             }
 
-            await _context.Announcements.AddAsync(ann);
+            var providedAnnouncement = request.Announcement;
+
+            var categories = await _context.Categories.Where(c => providedAnnouncement.Categories.Select(e => e.Id).Contains(c.Id)).ToListAsync();
+            var subjects = await _context.Subjects.Where(s => providedAnnouncement.Subjects.Select(e => e.Id).Contains(s.Id)).ToListAsync();
+            var academicYears = await _context.AcademicYears.Where(ay => providedAnnouncement.AcademicYears.Select(e => e.Id).Contains(ay.Id)).ToListAsync();
+
+            var announcement = new Announcement
+            {
+                CreatedTs = DateTime.UtcNow,
+                Title = providedAnnouncement.Title,
+                Abstract = providedAnnouncement.Abstract,
+                Body = providedAnnouncement.Body,
+                IsPublished = providedAnnouncement.IsPublished,
+                Creator = user,
+
+                //TODO resources
+
+                RelatedToCategories = categories,
+                RelatedToSubjects = subjects,
+                RelatesToAcademicYears = academicYears,
+            };
+
+            await _context.AddAsync(announcement);
 
             await _context.SaveChangesAsync();
 
-            //await _producer.myEndpoint(body);
-
-
-            //_context.Announcements.Add(ann);
-            return Ok();
+            return Ok(new DTOs.API.Announcements.CreateAnnouncement.Response()
+            {
+                Announcement = announcement.ToAnnouncementDTO()
+            });
         }
 
         // PUT api/UpdateAnnouncement
-        [HttpPut("UpdateAnnouncementByID/{id}")]
-        public async Task<ActionResult<AnnouncementDTO>> UpdateAnnouncement(int id, AnnouncementDTO? body)
+        [HttpPut("UpdateAnnouncement")]
+        public async Task<ActionResult<DTOs.API.Announcements.UpdateAnnouncement.Response>> UpdateAnnouncement([FromBody] DTOs.API.Announcements.UpdateAnnouncement.Request request)
         {
-            var announcement = await _context.Announcements.FindAsync(id);
+            var user = await _userProvider.GetUser();
 
-            if (announcement == null)
-            {
+            Common.Common.RoleToPermissionMapping.TryGetValue(user.Role, out var permissions);
+
+            if (!permissions.HasFlag(Permissions.ManageAnnouncements))
+                return Unauthorized();
+
+            var existingAnnouncement = await _context.Announcements.AsTracking().SingleOrDefaultAsync(e => e.Id == request.Announcement.Id);
+
+            if (existingAnnouncement is null)
                 return NotFound();
-            }
-            else
+
+            if (user.Id != existingAnnouncement.Creator.Id && !permissions.HasFlag(Permissions.Admin))
+                return Unauthorized();
+
+            var providedAnnouncement = request.Announcement;
+
+            var categories = await _context.Categories.Where(c => providedAnnouncement.Categories.Select(e => e.Id).Contains(c.Id)).ToListAsync();
+            var subjects = await _context.Subjects.Where(s => providedAnnouncement.Subjects.Select(e => e.Id).Contains(s.Id)).ToListAsync();
+            var academicYears = await _context.AcademicYears.Where(ay => providedAnnouncement.AcademicYears.Select(e => e.Id).Contains(ay.Id)).ToListAsync();
+
             {
-                try
-                {
-                    //_context.Announcements.Remove(announcement.Title);
-                    announcement.Title = body.Title;
-                    announcement.Abstract = body.Abstract;
-                    announcement.Body = body.Body;
-                    announcement.CreationDate = body.CreationDate;
+                existingAnnouncement.Title = providedAnnouncement.Title;
+                existingAnnouncement.Abstract = providedAnnouncement.Abstract;
+                existingAnnouncement.Body = providedAnnouncement.Body;
+                existingAnnouncement.IsPublished = providedAnnouncement.IsPublished;
 
-                    //_context.Announcements.Update(announcement);
-
-                    await _context.SaveChangesAsync();
-                    return NoContent();
-                }
-                catch (Exception ex)
-                {
-                    Console.WriteLine($"Error occured {ex}");
-                    return BadRequest(ex.Message);
-                }
-
+                existingAnnouncement.RelatedToCategories = categories;
+                existingAnnouncement.RelatedToSubjects = subjects;
+                existingAnnouncement.RelatesToAcademicYears = academicYears;
             }
-        }
-
-        //GET api/{object} get announcement by any type
-        [HttpGet("GetAnnouncementByObj/")]
-        public async Task<ActionResult<GetAnnouncementsByResponse>> GetAnnouncementByObj(int? id, string? title, DateTime? date, string? category, int? limit, int? skip)
-        {
-            //TODO validation
-            throw new NotImplementedException();
-            //var announcementsList = _context.Announcements.Where(_ => true);
-
-            //if (id is not null)
-            //{
-            //    announcementsList = announcementsList.Where(a => a.Id == id);
-            //}
-            //if (title is not null)
-            //{
-            //    announcementsList = announcementsList.Where(a => a.Title.Contains(title));
-            //}
-            //if (date is not null)
-            //{
-            //    announcementsList = announcementsList.Where(a => a.CreationDate == date);
-            //}
-
-            //int count = announcementsList.Count();
-
-            //if ((limit is not null) && (skip is not null))
-            //{
-            //    int s = skip.Value;
-            //    int l = limit.Value;
-            //    announcementsList = announcementsList.OrderBy(i => i.Id).Skip((s - 1) * l).Take(l);
-            //}
-
-            //if (category is not null)
-            //{
-            //    var categoryId = _context.Categories.Where(a => a.Name == category).Select(b => b.Id).First();
-
-            //    var filteredAnnouncementsList = _context.Categories
-            //        .Where(a => a.Id == categoryId).Select(b => b.);
-
-            //    var filteredList = filteredAnnouncementsList.Select(a => new AnnouncementDTO()
-            //    {
-            //        AnnID = a.Id,
-            //        Abstract = a.Abstract,
-            //        Alert = a.Alert,
-            //        Body = a.Body,
-            //        Date = a.CreationDate,
-            //        Title = a.Title,
-            //    }).ToListAsync();
-
-            //    var filteredRet = new GetAnnouncementsByResponse
-            //    {
-            //        Announcements = await filteredList,
-            //        SumOfAnnouncements = count,
-            //    };
-            //    return filteredRet;
-            //}
-
-            //var listToReturn = announcementsList.Select(a => new AnnouncementDTO
-            //{
-            //    AnnID = a.Id,
-            //    Abstract = a.Abstract,
-            //    Alert = a.Alert,
-            //    Body = a.Body,
-            //    Date = a.CreationDate,
-            //    Title = a.Title,
-            //}).ToListAsync();
-
-            //var toReturn = new GetAnnouncementsByResponse
-            //{
-            //    Announcements = await listToReturn,
-            //    SumOfAnnouncements = count,
-            //};
-            //return toReturn;
-        }
-
-
-
-        // DELETE api/<controller>/5
-        [HttpDelete("DeleteAnnouncementByID/{id}")]
-        public async Task<ActionResult<List<AnnouncementDTO>>> DeleteAnnouncement(int id)
-        {
-            var announcement = await _context.Announcements.SingleOrDefaultAsync(a => a.Id == id);
-
-            if (announcement == null)
-            {
-                return BadRequest("Announcement not found");
-            }
-
-            _context.Announcements.Remove(announcement);
 
             await _context.SaveChangesAsync();
 
-            return Ok(_context.Announcements);
+            return Ok(new DTOs.API.Announcements.UpdateAnnouncement.Response()
+            {
+                Announcement = existingAnnouncement.ToAnnouncementDTO()
+            });
+        }
+
+        // DELETE api/<controller>/5
+        [HttpDelete("DeleteAnnouncementByID/{id}")]
+        public async Task<ActionResult<AnnouncementDTO>> DeleteAnnouncement(int id)
+        {
+            var user = await _userProvider.GetUser();
+
+            Common.Common.RoleToPermissionMapping.TryGetValue(user.Role, out var permissions);
+
+            if (!permissions.HasFlag(Permissions.ManageAnnouncements))
+                return Unauthorized();
+
+            var existingAnnouncement = await _context.Announcements.AsTracking().SingleOrDefaultAsync(e => e.Id == request.Announcement.Id);
+
+            if (existingAnnouncement is null)
+                return NotFound();
+
+            if (user.Id != existingAnnouncement.Creator.Id && !permissions.HasFlag(Permissions.Admin))
+                return Unauthorized();
+
+            _context.Announcements.Remove(existingAnnouncement);
+
+            await _context.SaveChangesAsync();
+
+            return Ok(existingAnnouncement);
         }
     }
 }

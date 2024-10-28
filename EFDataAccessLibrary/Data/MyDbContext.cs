@@ -29,5 +29,6 @@ namespace EFDataAccessLibrary.Data
         public DbSet<Resource> Resources { get; set; }
         public DbSet<Subject> Subjects { get; set; }
         public DbSet<User> Users { get; set; }
+        public DbSet<AcademicYears> AcademicYears { get; set; }
     }
 }

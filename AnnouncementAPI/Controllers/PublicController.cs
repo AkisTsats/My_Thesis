@@ -1,10 +1,8 @@
 ﻿using AnnouncementAPI.Helpers;
 using AnnouncementAPI.Services;
-using DTOs.Data;
 using EFDataAccessLibrary.Data;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -31,11 +29,13 @@ namespace AnnouncementAPI.Controllers
         {
             var categories = await _context.Categories.ToListAsync();
             var subjects = await _context.Subjects.ToListAsync();
+            var academicYears = await _context.AcademicYears.ToListAsync();
 
             return Ok(new DTOs.API.Public.GetFilteringSettings.Response
             {
                 Categories = categories.Select(e => e.ToCategoryDTO()),
-                Subjects = subjects.Select(e => e.ToSubjectDTO())
+                Subjects = subjects.Select(e => e.ToSubjectDTO()),
+                AcademicYears = academicYears.Select(e => e.ToAcademicYearDTO())
             });
         }
 

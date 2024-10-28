@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using DTOs.Data;
+﻿using DTOs.Data;
 
 namespace DTOs.API.Requests
 {
@@ -11,6 +6,6 @@ namespace DTOs.API.Requests
     {
         public IEnumerable<CategoryDTO> Categories { get; set; }
         public IEnumerable<SubjectDTO> Subjects { get; set; }
-        //public IEnumerable<GradesDTO> Grades { get; set; }
+        public IEnumerable<AcademicYearDTO> AcademicYears { get; set; }
     }
 }

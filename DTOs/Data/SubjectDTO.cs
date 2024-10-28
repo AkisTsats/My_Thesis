@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace DTOs.Data
 {
-    public record SubjectDTO(int SubjectID, string SubjectName)
+    public record SubjectDTO(int Id, string SubjectName)
     {
         public static SubjectDTO? DEFAULT_NO_SUBJECT_CHOOSEN = new(0, "Δεν έχει επιλεχθεί μάθημα");
     }

@@ -6,10 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
-using System.Net;
 using System.Threading.Tasks;
-using Microsoft.EntityFrameworkCore;
 
 namespace AnnouncementAPI.Controllers
 {
@@ -26,7 +23,7 @@ namespace AnnouncementAPI.Controllers
         }
 
         [HttpPost("UploadService")]
-        public async Task<ActionResult<List<UploadResult>>> UploadService(List<IFormFile> files,[FromQuery]bool? isImage)
+        public async Task<ActionResult<List<UploadResult>>> UploadService(List<IFormFile> files, [FromQuery] bool? isImage)
         {
             List<UploadResult> uploadResults = new List<UploadResult>();
             try

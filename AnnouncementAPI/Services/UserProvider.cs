@@ -24,7 +24,7 @@ namespace AnnouncementAPI.Services
             return userEmail;
         }
 
-        public async Task<User> GetUser(bool includeSubjectsAndCategories = false)
+        public async Task<User> GetUser(bool includeSubjectsAndCategories = false, bool tracking = false)
         {
             var query =
                 _context.Users
@@ -38,6 +38,11 @@ namespace AnnouncementAPI.Services
                 query = query.Include(u => u.SelectedCategories).ThenInclude(e => e.RelatesToAnnouncements);
                 query = query.Include(u => u.SelectedAcademicYears);
                 query = query.Include(u => u.SelectedAcademicYears).ThenInclude(e => e.RelatesToAnnouncements);
+            }
+
+            if (tracking)
+            {
+                query = query.AsTracking();
             }
 
             return await query

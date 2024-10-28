@@ -1,23 +1,24 @@
-﻿@using DTOs.Data;
-@using Microsoft.AspNetCore.Components.Authorization
+﻿@inject UsersRepository _usersRepository
 
+@using CeidAnnouncementManager.Services
+@using Common
+@using DTOs.Data;
+@using Microsoft.AspNetCore.Components.Authorization
 
 <MudNavMenu>
     <MudNavLink Href="/" Match="NavLinkMatch.All">Ανακοινώσεις</MudNavLink>
     <AuthorizeView>
         <Authorized>
-            <MudNavLink Href="/AnnouncementsForMe" Match="NavLinkMatch.Prefix">Ανακοινώσεις για εμένα</MudNavLink>
-            <MudNavLink Href="/AnnouncementsCreatedByMe" Match="NavLinkMatch.Prefix">Δημιουργημένες από εμένα</MudNavLink>
-            <MudNavLink Href="/createannouncement" Match="NavLinkMatch.Prefix">Δημιουργία ανακοίνωσης</MudNavLink>
+            @if (_permissions.HasFlag(Permissions.ReceivesAnnouncements))
+            {
+                <MudNavLink Href="/AnnouncementsForMe" Match="NavLinkMatch.Prefix">Ανακοινώσεις για εμένα</MudNavLink>
+            }
+            @if (_permissions.HasFlag(Permissions.ManageAnnouncements))
+            {
+                <MudNavLink Href="/AnnouncementsCreatedByMe" Match="NavLinkMatch.Prefix">Δημιουργημένες από εμένα</MudNavLink>
+                <MudNavLink Href="/createannouncement" Match="NavLinkMatch.Prefix">Δημιουργία ανακοίνωσης</MudNavLink>
+            }
             <MudNavLink Href="/usersettings" Match="NavLinkMatch.Prefix">Οι ρυθμίσεις μου</MudNavLink>
-            @if (permissions.canEditAllAnn == true)
-            {
-                <MudNavLink Href="/announcementsformoderation" Match="NavLinkMatch.Prefix">Moderation</MudNavLink>
-            }
-            @if (permissions.canSeeStats == true)
-            {
-                <MudNavLink Href="/statistics" Match="NavLinkMatch.Prefix">Stats</MudNavLink>
-            }
         </Authorized>
     </AuthorizeView>
 </MudNavMenu>
@@ -26,100 +27,15 @@
 
 @code {
 
+    private Permissions _permissions = Permissions.NoPermissions;
 
-    private PermissionsDTO permissions = new DTOs.Data.PermissionsDTO
-        {
-            //Προσομοίωση φοιτητή
-            canAcceptAnn = false,
-            canAddCategories = true,
-            canAddSubjects = true,
-            canSeeStats = false,
-            canDeleteAllAnn = false,
-            canDeleteMyAnn = true,
-            canEditAllAnn = false,
-            canEditMyAnn = true,
-            canEditMySubjects = true,
-            canEditMyYears = true,
-            canEditNotifications = true,
-            canPostAnn = true,
-            canPostInfo = true,
-            canSeeAllAnn = false,
-            canSeeMyAnn = true,
-            canSeePubAnn = true,
-            selectCategory = false,
-            selectSubject = false,
-            SOS = false,
-        };
+    protected override async Task OnInitializedAsync()
+    {
+        var user = await _usersRepository.GetMe();
 
-    private PermissionsDTO permissions4 = new DTOs.Data.PermissionsDTO
+        if (!Common.RoleToPermissionMapping.TryGetValue(user.Role, out _permissions))
         {
-            //Προσομοίωση Ελεγκτή-φοιτητή
-            canAcceptAnn = true,
-            canAddCategories = true,
-            canAddSubjects = true,
-            canSeeStats = false,
-            canDeleteAllAnn = false,
-            canDeleteMyAnn = true,
-            canEditAllAnn = true,
-            canEditMyAnn = true,
-            canEditMySubjects = true,
-            canEditMyYears = true,
-            canEditNotifications = true,
-            canPostAnn = true,
-            canPostInfo = true,
-            canSeeAllAnn = true,
-            canSeeMyAnn = true,
-            canSeePubAnn = true,
-            selectCategory = false,
-            selectSubject = false,
-            SOS = true,
-        };
-
-    private PermissionsDTO permissions2 = new DTOs.Data.PermissionsDTO
-        {
-            //Προσομοίωση καθηγητή
-            canAcceptAnn = false,
-            canAddCategories = true,
-            canAddSubjects = true,
-            canSeeStats = false,
-            canDeleteAllAnn = false,
-            canDeleteMyAnn = true,
-            canEditAllAnn = false,
-            canEditMyAnn = true,
-            canEditMySubjects = false,
-            canEditMyYears = false,
-            canEditNotifications = false,
-            canPostAnn = true,
-            canPostInfo = true,
-            canSeeAllAnn = false,
-            canSeeMyAnn = true,
-            canSeePubAnn = true,
-            selectCategory = true,
-            selectSubject = true,
-            SOS = true,
-        };
-
-    private PermissionsDTO permissions3 = new DTOs.Data.PermissionsDTO
-        {
-            //Προσομοίωση διαχειριστή
-            canAcceptAnn = true,
-            canAddCategories = true,
-            canAddSubjects = true,
-            canSeeStats = true,
-            canDeleteAllAnn = true,
-            canDeleteMyAnn = true,
-            canEditAllAnn = true,
-            canEditMyAnn = true,
-            canEditMySubjects = true,
-            canEditMyYears = true,
-            canEditNotifications = true,
-            canPostAnn = true,
-            canPostInfo = true,
-            canSeeAllAnn = true,
-            canSeeMyAnn = true,
-            canSeePubAnn = true,
-            selectCategory = true,
-            selectSubject = true,
-            SOS = true,
-        };
+            _permissions = Permissions.NoPermissions;
+        }
+    }
 }

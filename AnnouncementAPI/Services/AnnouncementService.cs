@@ -44,11 +44,11 @@ namespace AnnouncementAPI.Services
 
             if (orderByCreationDateAscending)
             {
-                query = query.OrderBy(a => a.CreationDate);
+                query = query.OrderBy(a => a.CreatedTs);
             }
             else if (orderByCreationDateDescending)
             {
-                query = query.OrderByDescending(a => a.CreationDate);
+                query = query.OrderByDescending(a => a.CreatedTs);
             }
             else
             {

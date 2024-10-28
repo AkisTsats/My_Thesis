@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Common;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
@@ -20,7 +21,7 @@ namespace DTOs.Data
 
         //TODO
         public string SecondaryEmail { get; set; }
-        public string Role { get; set; }
+        public UserRole Role { get; set; }
         public string PhoneNumber { get; set; }
         public int CurrentYear { get; set; }
     }

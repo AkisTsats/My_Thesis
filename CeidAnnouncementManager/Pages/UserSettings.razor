@@ -15,31 +15,31 @@
 
 <MudText Typo="Typo.h3">Οι Ρυθμίσεις μου</MudText>
 
-    <MudForm Model="@_myDTO" Class="pa-md-6 mx-lg-auto">
-        <MudTextField Label="Όνομα" @bind-Value="_myDTO.FirstName" Disabled ></MudTextField>
-        <MudTextField Label="Επώνυμο" @bind-Value="_myDTO.LastName" Disabled></MudTextField>
-        <MudTextField Label="Βασική διέυθυνση ηλ. ταχυδρομείου" @bind-Value="_myDTO.Email" Disabled></MudTextField>
-        <MudTextField Label="Προσθήκη τηλεφώνου" @bind-Value="_myDTO.PhoneNumber" Required="false"></MudTextField>
-        <MudTextField Label="Προσθήκη εναλλακτικού ηλ. ταχυδροείου" @bind-Value="_myDTO.SecondaryEmail" Required="false"></MudTextField>
-        <MudTextField Label="Τρέχον έτος" @bind-Value="_myDTO.CurrentYear" Required="false"></MudTextField>
-        <MudTextField Label="Έτος εισαγωγής" @bind-Value="_myDTO.EnrollmentYear" Required="false"></MudTextField>
-        <MudSwitch For="@(() => model.getByEmail)" Label="Parameter Label" Color="Color.Primary" />
-        <MudButton Variant="Variant.Filled" Color="Color.Info" OnClick="Update">Save Settings</MudButton> 
-        <MudSelect Class="mt-10" T="CategoryDTO" Label="Επιλέξτε κατηγορίες" MultiSelection="true" ToStringFunc="@CategoryConverter" @bind-Value="CategoryDTO.DEFAULT_NO_CATEGORY_CHOOSEN" @bind-SelectedValues="SelectedCategories" MultiSelectionTextFunc="@(new Func<List<string>, string>(GetMultiselectionTextForCategories))">
-            @foreach (var category in AllCategories)
-            {
-                <MudSelectItem T="CategoryDTO" Value="@category">@category.CategoryName</MudSelectItem>
-            }
-        </MudSelect>
-        <MudSelect Class="mt-10" T="SubjectDTO" Label="Επιλέξτε μαθήματα" MultiSelection="true" ToStringFunc="@SubjectConverter" @bind-Value="SubjectDTO.DEFAULT_NO_SUBJECT_CHOOSEN" @bind-SelectedValues="SelectedSubjects" MultiSelectionTextFunc="@(new Func<List<string>, string>(GetMultiselectionTextForSubjects))">
-            @foreach (var subject in AllSubjects)
-            {
-                <MudSelectItem T="SubjectDTO" Value="@subject">@subject.SubjectName</MudSelectItem>
-            }
-        </MudSelect>
-     </MudForm>
+<MudForm Model="@_myDTO" Class="pa-md-6 mx-lg-auto">
+    <MudTextField Label="Όνομα" @bind-Value="_myDTO.FirstName" Disabled></MudTextField>
+    <MudTextField Label="Επώνυμο" @bind-Value="_myDTO.LastName" Disabled></MudTextField>
+    <MudTextField Label="Βασική διέυθυνση ηλ. ταχυδρομείου" @bind-Value="_myDTO.Email" Disabled></MudTextField>
+    <MudTextField Label="Προσθήκη τηλεφώνου" @bind-Value="_myDTO.PhoneNumber" Required="false"></MudTextField>
+    <MudTextField Label="Προσθήκη εναλλακτικού ηλ. ταχυδροείου" @bind-Value="_myDTO.SecondaryEmail" Required="false"></MudTextField>
+    <MudTextField Label="Τρέχον έτος" @bind-Value="_myDTO.CurrentYear" Required="false"></MudTextField>
+    <MudTextField Label="Έτος εισαγωγής" @bind-Value="_myDTO.EnrollmentYear" Required="false"></MudTextField>
+    <MudSwitch For="@(() => model.getByEmail)" Label="Parameter Label" Color="Color.Primary" />
+    <MudButton Variant="Variant.Filled" Color="Color.Info" OnClick="Update">Save Settings</MudButton>
+    <MudSelect Class="mt-10" T="CategoryDTO" Label="Επιλέξτε κατηγορίες" MultiSelection="true" ToStringFunc="@CategoryConverter" @bind-Value="CategoryDTO.DEFAULT_NO_CATEGORY_CHOOSEN" @bind-SelectedValues="SelectedCategories" MultiSelectionTextFunc="@(new Func<List<string>, string>(GetMultiselectionTextForCategories))">
+        @foreach (var category in AllCategories)
+        {
+            <MudSelectItem T="CategoryDTO" Value="@category">@category.CategoryName</MudSelectItem>
+        }
+    </MudSelect>
+    <MudSelect Class="mt-10" T="SubjectDTO" Label="Επιλέξτε μαθήματα" MultiSelection="true" ToStringFunc="@SubjectConverter" @bind-Value="SubjectDTO.DEFAULT_NO_SUBJECT_CHOOSEN" @bind-SelectedValues="SelectedSubjects" MultiSelectionTextFunc="@(new Func<List<string>, string>(GetMultiselectionTextForSubjects))">
+        @foreach (var subject in AllSubjects)
+        {
+            <MudSelectItem T="SubjectDTO" Value="@subject">@subject.SubjectName</MudSelectItem>
+        }
+    </MudSelect>
+</MudForm>
 
- @code {
+@code {
     [Inject] private IDialogService DialogService { get; set; }
 
     #region Categories picker
@@ -67,7 +67,7 @@
         try
         {
             var settings = await _settingsRepository.FetchSettingsForCreateAnnouncement();
-            
+
             AllCategories = settings.Categories;
             AllSubjects = settings.Subjects;
         }
@@ -104,7 +104,7 @@
         postUser.FirstName = _myDTO.FirstName;
         postUser.LastName = _myDTO.LastName;
         postUser.Email = _myDTO.Email;
-        postUser.Role = "admin";
+        postUser.Role = _myDTO.Role;
 
         var response = await Http.PutAsJsonAsync("https://localhost:5001/api/User/UpdateUserByID/1", postUser);
 

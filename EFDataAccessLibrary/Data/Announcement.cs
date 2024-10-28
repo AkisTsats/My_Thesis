@@ -16,7 +16,6 @@ namespace EFDataAccessLibrary.Data
         public string Title { get; set; }
         public string Abstract { get; set; }
         public string Body { get; set; }
-        public DateTime CreationDate { get; set; }
 
         public bool IsPublished { get; set; }
 
