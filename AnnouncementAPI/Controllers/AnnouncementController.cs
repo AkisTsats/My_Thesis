@@ -202,7 +202,7 @@ namespace AnnouncementAPI.Controllers
             if (!permissions.HasFlag(Permissions.ManageAnnouncements))
                 return Unauthorized();
 
-            var existingAnnouncement = await _context.Announcements.AsTracking().SingleOrDefaultAsync(e => e.Id == request.Announcement.Id);
+            var existingAnnouncement = await _context.Announcements.AsTracking().SingleOrDefaultAsync(e => e.Id == id);
 
             if (existingAnnouncement is null)
                 return NotFound();

@@ -25,7 +25,6 @@ namespace AnnouncementAPI.Controllers
             _userProvider = userProvider;
         }
 
-        // GET: api/<UserController>
         [HttpGet("GetMe")]
         public async Task<ActionResult<UserDTO>> GetMe()
         {

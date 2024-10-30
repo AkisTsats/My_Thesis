@@ -6,24 +6,32 @@
 @using Microsoft.AspNetCore.Components.Authorization
 
 <MudNavMenu>
-    <MudNavLink Href="/" Match="NavLinkMatch.All">Ανακοινώσεις</MudNavLink>
+    <MudNavLink Href="/" Match="NavLinkMatch.All" Class="menu-item">Ανακοινώσεις</MudNavLink>
     <AuthorizeView>
         <Authorized>
             @if (_permissions.HasFlag(Permissions.ReceivesAnnouncements))
             {
-                <MudNavLink Href="/AnnouncementsForMe" Match="NavLinkMatch.Prefix">Ανακοινώσεις για εμένα</MudNavLink>
+                <MudNavLink Href="/AnnouncementsForMe" Match="NavLinkMatch.Prefix" Class="menu-item">Ανακοινώσεις για εμένα</MudNavLink>
             }
             @if (_permissions.HasFlag(Permissions.ManageAnnouncements))
             {
-                <MudNavLink Href="/AnnouncementsCreatedByMe" Match="NavLinkMatch.Prefix">Δημιουργημένες από εμένα</MudNavLink>
-                <MudNavLink Href="/createannouncement" Match="NavLinkMatch.Prefix">Δημιουργία ανακοίνωσης</MudNavLink>
+                <MudNavLink Href="/AnnouncementsCreatedByMe" Match="NavLinkMatch.Prefix" Class="menu-item">Δημιουργημένες από εμένα</MudNavLink>
+                <MudNavLink Href="/createannouncement" Match="NavLinkMatch.Prefix" Class="menu-item">Δημιουργία ανακοίνωσης</MudNavLink>
             }
-            <MudNavLink Href="/usersettings" Match="NavLinkMatch.Prefix">Οι ρυθμίσεις μου</MudNavLink>
+            <MudNavLink Href="/usersettings" Match="NavLinkMatch.Prefix" Class="menu-item">Οι ρυθμίσεις μου</MudNavLink>
         </Authorized>
     </AuthorizeView>
 </MudNavMenu>
 
-
+<style>
+    .menu-item {
+        color: #FFF;
+    }
+    .menu-item :hover {
+        color: #000 !important;
+        font-weight: bold;
+    }
+</style>
 
 @code {
 

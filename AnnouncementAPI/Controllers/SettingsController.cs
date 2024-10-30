@@ -15,13 +15,18 @@ namespace AnnouncementAPI.Controllers
         ) : ControllerBase
     {
 
-        [HttpPost("GetMySettings")]
-        public async Task<ActionResult<DTOs.API.Public.GetMySettings.Response>> GetMySettings()
+        [HttpGet("GetMySettings")]
+        public async Task<ActionResult<DTOs.API.Settings.GetMySettings.Response>> GetMySettings()
         {
             var user = await _userProvider.GetUser(includeSubjectsAndCategories: true);
 
-            return Ok(new DTOs.API.Public.GetMySettings.Response
+            return Ok(new DTOs.API.Settings.GetMySettings.Response
             {
+                PauseNotificationUntilDate = user.PauseNotificationsUntil,
+                ReceiveNotificationsByEmail = user.NotificationSettingsDeserialized?.NotifyByEmail ?? false,
+                ReceiveNotificationsInEmails = user.NotificationSettingsDeserialized?.NotifyEmails ?? [],
+                ReceiveNotificationsByPhone = user.NotificationSettingsDeserialized?.NotifyByPhone ?? false,
+                ReceiveNotificationsInPhones = user.NotificationSettingsDeserialized?.NotifyPhoneNumbers ?? [],
                 Categories = user.SelectedCategories.Select(e => e.ToCategoryDTO()),
                 Subjects = user.SelectedSubjects.Select(e => e.ToSubjectDTO()),
                 AcademicYears = user.SelectedAcademicYears.Select(e => e.ToAcademicYearDTO())
@@ -29,7 +34,7 @@ namespace AnnouncementAPI.Controllers
         }
 
         [HttpPost("UpdateMySettings")]
-        public async Task<ActionResult<DTOs.API.Public.UpdateMySettings.Response>> UpdateMySettings([FromBody] DTOs.API.Public.UpdateMySettings.Request request)
+        public async Task<ActionResult<DTOs.API.Settings.UpdateMySettings.Response>> UpdateMySettings([FromBody] DTOs.API.Settings.UpdateMySettings.Request request)
         {
             var user = await _userProvider.GetUser(includeSubjectsAndCategories: true, tracking: true);
 
@@ -41,10 +46,27 @@ namespace AnnouncementAPI.Controllers
             user.SelectedSubjects = subjects;
             user.SelectedAcademicYears = academicYears;
 
+            var notificationSettings = user.NotificationSettingsDeserialized;
+            notificationSettings = notificationSettings with
+            {
+                NotifyByPhone = request.ReceiveNotificationsByPhone,
+                NotifyByEmail = request.ReceiveNotificationsByEmail,
+                NotifyPhoneNumbers = request.ReceiveNotificationsInPhones,
+                NotifyEmails = request.ReceiveNotificationsInEmails
+            };
+            user.NotificationSettingsDeserialized = notificationSettings;
+
+            user.PauseNotificationsUntil = request.PauseNotificationUntilDate;
+
             await _context.SaveChangesAsync();
 
-            return Ok(new DTOs.API.Public.GetMySettings.Response
+            return Ok(new DTOs.API.Settings.GetMySettings.Response
             {
+                PauseNotificationUntilDate = user.PauseNotificationsUntil,
+                ReceiveNotificationsByEmail = user.NotificationSettingsDeserialized.NotifyByEmail,
+                ReceiveNotificationsInEmails = user.NotificationSettingsDeserialized.NotifyEmails,
+                ReceiveNotificationsByPhone = user.NotificationSettingsDeserialized.NotifyByPhone,
+                ReceiveNotificationsInPhones = user.NotificationSettingsDeserialized.NotifyPhoneNumbers,
                 Categories = user.SelectedCategories.Select(e => e.ToCategoryDTO()),
                 Subjects = user.SelectedSubjects.Select(e => e.ToSubjectDTO()),
                 AcademicYears = user.SelectedAcademicYears.Select(e => e.ToAcademicYearDTO())

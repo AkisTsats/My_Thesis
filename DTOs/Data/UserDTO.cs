@@ -17,7 +17,7 @@ namespace DTOs.Data
         public string FirstName { get; set; }
         public string LastName { get; set; }
         public string Email { get; set; }
-        public int? EnrollmentYear { get; set; }
+        public int EnrollmentYear { get; set; }
 
         //TODO
         public string SecondaryEmail { get; set; }

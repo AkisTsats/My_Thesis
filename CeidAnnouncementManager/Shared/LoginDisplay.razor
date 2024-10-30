@@ -5,10 +5,10 @@
 
 <AuthorizeView>
     <Authorized>
-        <MudNavLink Href="http://localhost:8080/realms/Test/account/#/personal-info" Match="NavLinkMatch.Prefix">Συνδεμένος ως: @context.User.Identity?.Name</MudNavLink>
-        <MudNavLink @onclick='_ => Navigation.NavigateToLogout("authentication/logout")' Match="NavLinkMatch.Prefix">Αποσύνδεση</MudNavLink>
+        <MudNavLink Href="http://localhost:8080/realms/Test/account/#/personal-info" Match="NavLinkMatch.Prefix" Class="menu-item">Συνδεμένος ως: @context.User.Identity?.Name</MudNavLink>
+        <MudNavLink @onclick='_ => Navigation.NavigateToLogout("authentication/logout")' Match="NavLinkMatch.Prefix" Class="menu-item">Αποσύνδεση</MudNavLink>
     </Authorized>
     <NotAuthorized>
-        <MudNavLink @onclick='_ => Navigation.NavigateTo("authentication/login")' Match="NavLinkMatch.Prefix">Σύνδεση</MudNavLink>
+        <MudNavLink @onclick='_ => Navigation.NavigateTo("authentication/login")' Match="NavLinkMatch.Prefix" Class="menu-item">Σύνδεση</MudNavLink>
     </NotAuthorized>
 </AuthorizeView>

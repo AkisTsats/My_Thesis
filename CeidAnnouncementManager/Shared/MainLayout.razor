@@ -7,7 +7,7 @@
 
 <MudLayout>
     <MudAppBar Elevation="_themeManager.AppBarElevation">
-        <MudThemeManagerButton OnClick="@((e) => OpenThemeManager(true))" />
+        @* <MudThemeManagerButton OnClick="@((e) => OpenThemeManager(true))" /> *@
         <MudThemeManager Open="_themeManagerOpen" OpenChanged="OpenThemeManager" Theme="_themeManager" ThemeChanged="UpdateTheme" />
         <MudIconButton Icon="@Icons.Material.Filled.Menu" Edge="Edge.Start" OnClick="@((e) => DrawerToggle())"/>
         <MudText Typo="Typo.h5">Διαχείριση Ανακοινώσεων ΤΜΗΥΠ</MudText>
@@ -54,10 +54,14 @@
         {
             PaletteLight = new()
             {
-                //perfection
-                // Background = Colors.Pink.Lighten5,
-                // Primary = Colors.Red.Default,
-                // TextPrimary = Colors.Green.Default,
+                //Ceid custom colors
+                Primary = "#2e5f73",
+                DrawerBackground = "#2e5f73",
+                AppbarBackground = "#2e5f73",
+                DrawerText = Colors.Shades.White,
+                AppbarText = Colors.Shades.White,
+                Background = Colors.Shades.White,
+                DrawerIcon = Colors.Shades.White,
             },
 
         };

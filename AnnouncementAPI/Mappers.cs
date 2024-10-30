@@ -43,6 +43,8 @@ namespace AnnouncementAPI
             CreatedTs = entry.CreatedTs,
             Email = entry.Email,
             Role = entry.Role,
+            //EnrollmentYear = entry?.EnrollmentYear,
+            //NotifyByEmail = entry?.NotificationSettingsDeserialized?.NotifyByEmail
             //TODO: Add other properties
         };
     }

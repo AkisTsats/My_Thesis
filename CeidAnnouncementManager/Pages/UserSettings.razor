@@ -1,7 +1,9 @@
 ﻿@page "/usersettings"
 @inject NavigationManager NavManager
 @inject HttpClient Http
+@inject PublicRepository _publicRepository;
 @inject SettingsRepository _settingsRepository;
+@inject UsersRepository _userRepository;
 @inject NavigationManager UriHelper
 @inject HttpClient Http
 
@@ -13,30 +15,40 @@
 
 <PageTitle>Οι Ρυθμίσεις μου</PageTitle>
 
-<MudText Typo="Typo.h3">Οι Ρυθμίσεις μου</MudText>
+<MudText Typo="Typo.h3">Ρυθμίσεις</MudText>
 
-<MudForm Model="@_myDTO" Class="pa-md-6 mx-lg-auto">
-    <MudTextField Label="Όνομα" @bind-Value="_myDTO.FirstName" Disabled></MudTextField>
-    <MudTextField Label="Επώνυμο" @bind-Value="_myDTO.LastName" Disabled></MudTextField>
-    <MudTextField Label="Βασική διέυθυνση ηλ. ταχυδρομείου" @bind-Value="_myDTO.Email" Disabled></MudTextField>
-    <MudTextField Label="Προσθήκη τηλεφώνου" @bind-Value="_myDTO.PhoneNumber" Required="false"></MudTextField>
-    <MudTextField Label="Προσθήκη εναλλακτικού ηλ. ταχυδροείου" @bind-Value="_myDTO.SecondaryEmail" Required="false"></MudTextField>
-    <MudTextField Label="Τρέχον έτος" @bind-Value="_myDTO.CurrentYear" Required="false"></MudTextField>
-    <MudTextField Label="Έτος εισαγωγής" @bind-Value="_myDTO.EnrollmentYear" Required="false"></MudTextField>
-    <MudSwitch For="@(() => model.getByEmail)" Label="Parameter Label" Color="Color.Primary" />
-    <MudButton Variant="Variant.Filled" Color="Color.Info" OnClick="Update">Save Settings</MudButton>
-    <MudSelect Class="mt-10" T="CategoryDTO" Label="Επιλέξτε κατηγορίες" MultiSelection="true" ToStringFunc="@CategoryConverter" @bind-Value="CategoryDTO.DEFAULT_NO_CATEGORY_CHOOSEN" @bind-SelectedValues="SelectedCategories" MultiSelectionTextFunc="@(new Func<List<string>, string>(GetMultiselectionTextForCategories))">
+<MudForm Class="pa-md-6 mx-lg-auto">
+    <MudTextField Label="Όνομα" @bind-Value="@_user.FirstName" Disabled></MudTextField>
+    <MudTextField Label="Επώνυμο" @bind-Value="_user.LastName" Disabled></MudTextField>
+    <MudTextField Label="Έτος εισαγωγής" @bind-Value="_user.EnrollmentYear" Disabled></MudTextField>
+    <MudTextField Label="Διέυθυνση email" @bind-Value="_user.Email" Disabled></MudTextField>
+    <MudCheckBox Label="Ενημέρωση μέσω email" @bind-Value="ReceiveNotificationsByEmail"></MudCheckBox>
+    <MudTextField Label="Εναλακτικό email 1" @bind-Value="AlternativeEmail1" Required="false"></MudTextField>
+    <MudTextField Label="Εναλακτικό email 2" @bind-Value="AlternativeEmail2" Required="false"></MudTextField>
+    <MudCheckBox Label="Ενημέρωση μέσω τηλεφώνου" @bind-Value="ReceiveNotificationsByPhone"></MudCheckBox>
+    <MudTextField Label="Τηλέφωνο επικοινωνίας" @bind-Value="AlternativePhone1" Required="false"></MudTextField>
+    <MudTextField Label="Εναλακτικό τηλεφωνο επικοινωνίας" @bind-Value="AlternativePhone2" Required="false"></MudTextField>
+    <MudDatePicker Label="Παύση ειδοποιήσεων μέχρι" Editable="true" @bind-Date="PauseNotificationUntilDate" Placeholder="Επιλέξτε ημερομηνία" />
+    <MudSelect Class="mt-10" T="CategoryDTO" Label="Κατηγορίες ενδιαφέροντος" MultiSelection="true" ToStringFunc="@CategoryConverter" @bind-Value="CategoryDTO.DEFAULT_NO_CATEGORY_CHOOSEN" @bind-SelectedValues="SelectedCategories" MultiSelectionTextFunc="@(new Func<List<string>, string>(GetMultiselectionTextForCategories))">
         @foreach (var category in AllCategories)
         {
             <MudSelectItem T="CategoryDTO" Value="@category">@category.CategoryName</MudSelectItem>
         }
     </MudSelect>
-    <MudSelect Class="mt-10" T="SubjectDTO" Label="Επιλέξτε μαθήματα" MultiSelection="true" ToStringFunc="@SubjectConverter" @bind-Value="SubjectDTO.DEFAULT_NO_SUBJECT_CHOOSEN" @bind-SelectedValues="SelectedSubjects" MultiSelectionTextFunc="@(new Func<List<string>, string>(GetMultiselectionTextForSubjects))">
+    <MudSelect Class="mt-10" T="SubjectDTO" Label="Μαθήματα ενδιαφέροντος" MultiSelection="true" ToStringFunc="@SubjectConverter" @bind-Value="SubjectDTO.DEFAULT_NO_SUBJECT_CHOOSEN" @bind-SelectedValues="SelectedSubjects" MultiSelectionTextFunc="@(new Func<List<string>, string>(GetMultiselectionTextForSubjects))">
         @foreach (var subject in AllSubjects)
         {
             <MudSelectItem T="SubjectDTO" Value="@subject">@subject.SubjectName</MudSelectItem>
         }
     </MudSelect>
+    <MudSelect Class="mt-10" T="AcademicYearDTO" Label="Ακαδημαικά έτη ενδιαφέροντος" MultiSelection="true" ToStringFunc="@AcademicYearConverter" @bind-SelectedValues="SelectedAcademicYears" MultiSelectionTextFunc="@(new Func<List<string>, string>(GetMultiselectionTextForAcademicYears))">
+        @foreach (var year in AllAcademicYears)
+        {
+            <MudSelectItem T="AcademicYearDTO" Value="@year">@year.Year</MudSelectItem>
+        }
+    </MudSelect>
+
+    <MudButton Variant="Variant.Filled" Color="Color.Primary" OnClick="Update">ΑΠΟΘΗΚΕΥΣΗ</MudButton>
 </MudForm>
 
 @code {
@@ -46,7 +58,7 @@
     private IEnumerable<CategoryDTO> AllCategories { get; set; } = [];
     private IEnumerable<CategoryDTO> SelectedCategories { get; set; } = [];
 
-    private string GetMultiselectionTextForCategories(List<string> selectedValues) => selectedValues.Count == 0 ? "Δεν έχουν επιλεχθεί κατηγορίες" : $"Επιλεγμένες Κατηγορίες: {string.Join(", ", selectedValues.Select(x => x))}";
+    private string GetMultiselectionTextForCategories(List<string> selectedValues) => selectedValues.Count == 0 ? "Δεν έχουν επιλεχθεί κατηγορίες" : $"{string.Join(", ", selectedValues.Select(x => x))}";
 
     Func<CategoryDTO, string> CategoryConverter = p => p?.CategoryName;
     #endregion
@@ -55,72 +67,81 @@
     private IEnumerable<SubjectDTO> AllSubjects { get; set; } = [];
     private IEnumerable<SubjectDTO> SelectedSubjects { get; set; } = [];
 
-    private string GetMultiselectionTextForSubjects(List<string> selectedValues) => selectedValues.Count == 0 ? "Δεν έχουν επιλεχθεί Μαθήματα" : $"Επιλεγμένες Μαθήματα: {string.Join(", ", selectedValues.Select(x => x))}";
+    private string GetMultiselectionTextForSubjects(List<string> selectedValues) => selectedValues.Count == 0 ? "Δεν έχουν επιλεχθεί Μαθήματα" : $"{string.Join(", ", selectedValues.Select(x => x))}";
 
     Func<SubjectDTO, string> SubjectConverter = p => p?.SubjectName;
     #endregion
 
+    #region Academic years picker
+    private IEnumerable<AcademicYearDTO> AllAcademicYears { get; set; } = [];
+    private IEnumerable<AcademicYearDTO> SelectedAcademicYears { get; set; } = [];
+
+    private string GetMultiselectionTextForAcademicYears(List<string> selectedValues) => selectedValues.Count == 0 ? "Δεν έχουν επιλεχθεί έτη" : $"{string.Join(", ", selectedValues.Select(x => x))}";
+
+    Func<AcademicYearDTO, string> AcademicYearConverter = p => $"{p?.Year}";
+    #endregion
+
+    private UserDTO _user { get; set; }
+
+    private DateTime? PauseNotificationUntilDate { get; set; }
+    private bool ReceiveNotificationsByEmail { get; set; }
+    private string AlternativeEmail1 { get; set; }
+    private string AlternativeEmail2 { get; set; }
+    private bool ReceiveNotificationsByPhone { get; set; }
+    private string AlternativePhone1 { get; set; }
+    private string AlternativePhone2 { get; set; }
+
     protected override async Task OnInitializedAsync()
     {
-        _myDTO = await PrintWebApiResponse();
-
-        try
-        {
-            var settings = await _settingsRepository.FetchSettingsForCreateAnnouncement();
-
-            AllCategories = settings.Categories;
-            AllSubjects = settings.Subjects;
-        }
-        catch (Exception ex)
-        {
-            Console.WriteLine($"Error fetching categories: {ex}");
-        }
+        await ReloadSettings();
     }
 
-    [Parameter]
-    public int id { get; set; }
-
-    private UserDTO _myDTO;
-    UserDTO postUser = new UserDTO();
-
-    public async Task<UserDTO> PrintWebApiResponse()
+    async Task ReloadSettings()
     {
-        var response = await Http.GetStringAsync($"https://localhost:5001/api/User/GetUserBy?1");
-        //string serializedString = System.Text.Json.JsonSerializer.Serialize(response);
+        var systemSettings = await _publicRepository.FetchFilteringSettings();
 
-        Console.WriteLine(response);
+        _user = await _userRepository.GetMe();
 
-        var apiResponse = response.DeserializeMethod<UserDTO>();
+        var settings = await _settingsRepository.FetchMySettings();
 
-        return apiResponse;
+        AllCategories = systemSettings.Categories;
+        SelectedCategories = settings.Categories;
 
+        AllSubjects = systemSettings.Subjects;
+        SelectedSubjects = settings.Subjects;
+
+        AllAcademicYears = systemSettings.AcademicYears;
+        SelectedAcademicYears = settings.AcademicYears;
+
+        PauseNotificationUntilDate = settings.PauseNotificationUntilDate;
+
+        ReceiveNotificationsByEmail = settings.ReceiveNotificationsByEmail;
+        AlternativeEmail1 = settings.ReceiveNotificationsInEmails?.FirstOrDefault() ?? "";
+        AlternativeEmail2 = settings.ReceiveNotificationsInEmails?.Skip(1).FirstOrDefault() ?? "";
+
+        ReceiveNotificationsByPhone = settings.ReceiveNotificationsByPhone;
+        AlternativePhone1 = settings.ReceiveNotificationsInPhones?.FirstOrDefault() ?? "";
+        AlternativePhone2 = settings.ReceiveNotificationsInPhones?.Skip(1).FirstOrDefault() ?? "";
     }
 
     async Task Update()
     {
-        id = 1;
-        var post = postUser.SerializeMethod<UserDTO>();
-        postUser.Id = id;
-        postUser.FirstName = _myDTO.FirstName;
-        postUser.LastName = _myDTO.LastName;
-        postUser.Email = _myDTO.Email;
-        postUser.Role = _myDTO.Role;
+        var request = new DTOs.API.Settings.UpdateMySettings.Request
+            {
+                Subjects = SelectedSubjects,
+                Categories = SelectedCategories,
+                AcademicYears = SelectedAcademicYears,
 
-        var response = await Http.PutAsJsonAsync("https://localhost:5001/api/User/UpdateUserByID/1", postUser);
+                PauseNotificationUntilDate = PauseNotificationUntilDate,
 
-        var result = await response.Content.ReadFromJsonAsync<List<string>>();
+                ReceiveNotificationsByEmail = ReceiveNotificationsByEmail,
+                ReceiveNotificationsInEmails = [AlternativeEmail1, AlternativeEmail2],
+                ReceiveNotificationsByPhone = ReceiveNotificationsByPhone,
+                ReceiveNotificationsInPhones = [AlternativePhone1, AlternativePhone2],
+            };
 
+        var response = await _settingsRepository.UpdateMySettings(request);
+
+        await ReloadSettings();
     }
-
-    #region Toggle Buttons
-    DisplayNameLabelClass model = new();
-
-    public class DisplayNameLabelClass
-    {
-        [Label("Λήψη ειδοποιήσεων στο email")]
-        public bool getByEmail { get; set; }
-        [Label("Boolean LabelAttribute")]
-        public bool getBySMS { get; set; }
-    }
-    #endregion
 }

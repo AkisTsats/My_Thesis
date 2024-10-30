@@ -8,10 +8,10 @@ using System.ComponentModel.DataAnnotations.Schema;
 namespace EFDataAccessLibrary.Data
 {
     public record NotificationSettings(
-        bool NotifyByEmail,
-        IEnumerable<string> NotifyEmails,
-        bool NotifyByPhone,
-        IEnumerable<string> NotifyPhoneNumbers
+        bool NotifyByEmail = false,
+        IEnumerable<string> NotifyEmails = null,
+        bool NotifyByPhone = false,
+        IEnumerable<string> NotifyPhoneNumbers = null
         );
 
     public class User
@@ -35,7 +35,7 @@ namespace EFDataAccessLibrary.Data
         [NotMapped]
         public NotificationSettings NotificationSettingsDeserialized
         {
-            get => System.Text.Json.JsonSerializer.Deserialize<NotificationSettings>(NotificationSettings);
+            get => NotificationSettings is null ? new NotificationSettings() : System.Text.Json.JsonSerializer.Deserialize<NotificationSettings>(NotificationSettings);
             set => NotificationSettings = System.Text.Json.JsonSerializer.Serialize(value);
         }
 
