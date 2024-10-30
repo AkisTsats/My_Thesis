@@ -6,11 +6,12 @@ using System.Threading.Tasks;
 
 namespace DTOs.Common
 {
-    public class UploadResult
+    public class ResourceDTO
     {
+        public int Id { get; set; }
+        public string Url { get; set; }
         public string? FileName { get; set; }
         public string? ContentType { get; set; }
-        public string? Path { get; set; }
-        public bool? IsPrimaryImage { get; set; }
+        public string? ContentDisposition { get; set; }
     }
 }

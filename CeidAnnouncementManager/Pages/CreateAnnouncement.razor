@@ -67,6 +67,12 @@
                         <MudSelectItem T="SubjectDTO" Value="@subject">@subject.SubjectName</MudSelectItem>
                     }
                 </MudSelect>
+                <MudSelect Class="mt-10" T="AcademicYearDTO" Label="Ακαδημαικά έτη" MultiSelection="true" ToStringFunc="@AcademicYearConverter" @bind-SelectedValues="SelectedAcademicYears" MultiSelectionTextFunc="@(new Func<List<string>, string>(GetMultiselectionTextForAcademicYears))">
+                    @foreach (var year in AllAcademicYears)
+                    {
+                        <MudSelectItem T="AcademicYearDTO" Value="@year">@year.Year</MudSelectItem>
+                    }
+                </MudSelect>
                 @* <MudButton Variant="Variant.Filled" Color="Color.Secondary" Class="mt-10 mb-auto" onchange="imageInput"> Ανέβασμα Αρχείου</MudButton> *@
                 <InputFile OnChange="OnImageUpload" Ανέβασμα Αρχείου />
                 <MudSpacer />
@@ -95,7 +101,16 @@
     Func<SubjectDTO, string> SubjectConverter = p => p?.SubjectName;
     #endregion
 
-    private List<UploadResult> uploadResults = new();
+    #region Academic years picker
+    private IEnumerable<AcademicYearDTO> AllAcademicYears { get; set; } = [];
+    private IEnumerable<AcademicYearDTO> SelectedAcademicYears { get; set; } = [];
+
+    private string GetMultiselectionTextForAcademicYears(List<string> selectedValues) => selectedValues.Count == 0 ? "Δεν έχουν επιλεχθεί έτη" : $"{string.Join(", ", selectedValues.Select(x => x))}";
+
+    Func<AcademicYearDTO, string> AcademicYearConverter = p => $"{p?.Year}";
+    #endregion
+
+    private List<ResourceDTO> uploadResults = new();
 
     MudExRichTextEdit Editor;
     protected override async Task OnInitializedAsync()
@@ -178,9 +193,9 @@
         var fileToUpload = content;
         var response = await Http.PostAsync("https://localhost:5001/api/FileUpload/UploadService", content);
 
-        var result = await response.Content.ReadFromJsonAsync<List<UploadResult>>();
+        var result = await response.Content.ReadFromJsonAsync<List<ResourceDTO>>();
 
-        var imageUrl = result[0]?.Path;
+        var imageUrl = result.FirstOrDefault()?.Url;
         await this.Editor.InsertImage(imageUrl);
         StateHasChanged();
     }

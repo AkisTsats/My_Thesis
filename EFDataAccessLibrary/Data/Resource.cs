@@ -18,6 +18,7 @@ namespace EFDataAccessLibrary.Data
         public string Name { get; set; }
         public string? ContentType { get; set; }
         public string? FilePath { get; set; }
+        public string? ContentDisposition { get; set; }
 
         public Announcement? RelatesToAnnouncement { get; set; }
     }

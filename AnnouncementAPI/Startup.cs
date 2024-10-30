@@ -128,11 +128,6 @@ namespace AnnouncementAPI
             {
                 endpoints.MapControllers();
             });
-
-           
-
-
-
         }
     }
 }

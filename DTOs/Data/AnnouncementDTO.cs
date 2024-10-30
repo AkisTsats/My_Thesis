@@ -15,7 +15,7 @@ namespace DTOs.Data
         public IEnumerable<SubjectDTO> Subjects { get; set; } = [];
         public IEnumerable<AcademicYearDTO> AcademicYears { get; set; } = [];
 
-        public List<UploadResult> Files { get; set; } //TODO
+        public List<ResourceDTO> Files { get; set; } //TODO
     }
 
 }

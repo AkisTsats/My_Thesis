@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace AnnouncementAPI.Controllers
@@ -17,43 +18,64 @@ namespace AnnouncementAPI.Controllers
         private readonly MyDbContext _context;
         private readonly IWebHostEnvironment _env;
 
-        public FileUpload(IWebHostEnvironment env)
+        public FileUpload(MyDbContext context, IWebHostEnvironment env)
         {
+            _context = context;
             _env = env;
         }
 
-        [HttpPost("UploadService")]
-        public async Task<ActionResult<List<UploadResult>>> UploadService(List<IFormFile> files, [FromQuery] bool? isImage)
+        private static Random random = new Random();
+
+        public static string RandomString(int length)
         {
-            List<UploadResult> uploadResults = new List<UploadResult>();
-            try
-            {
-                if (files.Count != 0)
-                {
-                    foreach (var file in files)
-                    {
-                        var uploadResult = new UploadResult();
-                        var fileName = file.FileName;
+            const string chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+            return new string(Enumerable.Repeat(chars, length)
+                .Select(s => s[random.Next(s.Length)]).ToArray());
+        }
 
-                        uploadResult.FileName = fileName;
-                        var uploadpath = Path.Combine(_env.ContentRootPath, "Files", fileName);
-                        uploadResult.ContentType = file.ContentType;
-                        uploadResult.IsPrimaryImage = true;
-                        uploadResult.Path = uploadpath;
-
-                        var stream = new FileStream(uploadpath, FileMode.Create);
-                        await file.CopyToAsync(stream);
-                        uploadResults.Add(uploadResult);
-
-                        return Ok(uploadResults);
-                    }
-                }
+        [HttpPost("UploadService")]
+        public async Task<ActionResult<List<ResourceDTO>>> UploadService(List<IFormFile> files, [FromQuery] bool isImage = false)
+        {
+            if (files.Count == 0)
                 return Ok("out");
-            }
-            catch (Exception ex)
+
+            var resources = new List<Resource>();
+
+            foreach (var file in files)
             {
-                return BadRequest(ex.ToString());
+                var fileName = $"{RandomString(5)}_${file.FileName}";
+
+                string baseDir = AppContext.BaseDirectory;
+
+                var fullPath = Path.Combine(baseDir, "Files", fileName);
+
+                using var stream = new FileStream(fullPath, FileMode.Create);
+                await file.CopyToAsync(stream);
+
+                var resource = new Resource
+                {
+                    Name = fileName,
+                    ContentType = file.ContentType,
+                    FilePath = fullPath,
+                    Type = isImage ? Common.ResourceType.Image : Common.ResourceType.Document,
+                    ContentDisposition = file.ContentDisposition
+                };
+
+                _context.Add(resource);
+
+                resources.Add(resource);
             }
+
+            await _context.SaveChangesAsync();
+
+            return resources.Select(r => new ResourceDTO
+            {
+                Id = r.Id,
+                Url = $"https://localhost:5001/api/resources/getResource?id={r.Id}",
+                FileName = r.Name,
+                ContentType = r.ContentType,
+                ContentDisposition = r.ContentDisposition,
+            }).ToList();
         }
     }
 }
