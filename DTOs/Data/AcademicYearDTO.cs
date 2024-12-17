@@ -1,6 +1,6 @@
 ﻿namespace DTOs.Data
 {
-    public class AcademicYearDTO
+    public record AcademicYearDTO
     {
         public int Id { get; set; }
         public int Year { get; set; }

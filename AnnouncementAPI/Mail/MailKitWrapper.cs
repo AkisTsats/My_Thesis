@@ -7,15 +7,15 @@ using MailKit.Security;
 
 namespace AnnouncementAPI.Mail
 {
-    public class MailKit
+    public class MailKitWrapper
     {
-        public async Task MailKitSender(string receiverName, string subject, string mailBody, string type, string receiverMail)
+        public async Task SendMail(string receiverName, string subject, string mailBody, string receiverMail)
         {
             MimeMessage message = new MimeMessage();
 
-            message.From.Add(new MailboxAddress("test", "test@test.com"));
+            message.From.Add(new MailboxAddress("CEID Announcement System", "tsatsoulis@ceid.upatras.gr"));
 
-            message.To.Add(MailboxAddress.Parse(receiverMail));
+            message.To.Add(new MailboxAddress(receiverName, receiverMail));
 
             message.Subject = subject;
 
@@ -29,8 +29,8 @@ namespace AnnouncementAPI.Mail
 
             try
             {
-                client.Connect("smtp.ethereal.email", 587, SecureSocketOptions.StartTls);
-                client.Authenticate("mohamed.bednar82@ethereal.email", "xSTCXBbj2G6U4hq4Fn");
+                client.Connect("mail.ceid.upatras.gr", 587, SecureSocketOptions.StartTls);
+                client.Authenticate("tsatsoulis@ceid.upatras.gr", "Th3Tr0l1;;;");
                 client.Send(message);
             }
             catch (Exception ex)

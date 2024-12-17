@@ -13,5 +13,6 @@ namespace DTOs.Common
         public string? FileName { get; set; }
         public string? ContentType { get; set; }
         public string? ContentDisposition { get; set; }
+        public bool isImage => ContentType?.StartsWith("image") ?? false;
     }
 }

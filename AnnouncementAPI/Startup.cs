@@ -85,9 +85,9 @@ namespace AnnouncementAPI
             });
 
             services.AddHostedService<ConsumerSingletonProcessorSendEmail>();
-            services.AddScoped<ProducerOfMyObjectsEndpoint>();
+            services.AddScoped<ChannelWrapper>();
             services.AddSingleton(Channel.CreateUnbounded<AnnouncementDTO>());
-            services.AddScoped<SendAnnouncement>();
+            //services.AddScoped<SendAnnouncement>();
             services.AddScoped<UserProvider>();
             services.AddScoped<AnnouncementService>();
             services.AddControllers();

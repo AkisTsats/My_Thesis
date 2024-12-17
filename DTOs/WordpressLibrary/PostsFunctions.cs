@@ -5,13 +5,21 @@ using System.Net.Http.Headers;
 using System.Text;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
+using static System.Net.WebRequestMethods;
 
 namespace DTOs.WordpressLibrary
 {
     public class PostsFunctions
     {
-        public async Task<Post> CreatePost(Post post, HttpClient client)
+        public class CreatePostDTO
         {
+            public string title { get; set; }
+            public string status { get; set; }
+            public string excerpt { get; set; }
+            public string content { get; set; }
+        }
+        public async Task<Post> CreatePost(CreatePostDTO post, HttpClient client)
+        {   
             var jsonContent = JsonConvert.SerializeObject(post);
             var response = await client.PostAsync("wp-json/wp/v2/posts", new StringContent(jsonContent, Encoding.UTF8, "application/json"));
 
@@ -46,12 +54,12 @@ namespace DTOs.WordpressLibrary
         }
 
 
-        private HttpClient CreateHttpClient(string baseUrl, string username, string password)
+        public HttpClient CreateHttpClient(string baseUrl, string username, string password)
         {
             var client = new HttpClient();
             client.BaseAddress = new Uri(baseUrl);
             var authToken = Convert.ToBase64String(Encoding.ASCII.GetBytes($"{username}:{password}"));
-            client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Basic", authToken);
+            client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Basic", "YWRtaW46cU1pMCBvMUpuIElOSE4gOTBHNSB2V3VNIG9hMTA=");
             client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
             return client;
         }

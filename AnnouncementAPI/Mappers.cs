@@ -16,6 +16,7 @@ namespace AnnouncementAPI
             Author = entry.Creator?.ToUserPublicDTO(),
             Categories = entry.RelatedToCategories.Select(ToCategoryDTO),
             Subjects = entry.RelatedToSubjects.Select(ToSubjectDTO),
+            //AcademicYears = entry?.RelatesToAcademicYears.Select(ToAcademicYearDTO),
         };
 
         public static UserPublicDTO ToUserPublicDTO(this User entry) => new()
@@ -28,11 +29,11 @@ namespace AnnouncementAPI
 
         public static CategoryDTO ToCategoryDTO(this Category entry) => new(entry.Id, entry.Name);
         public static SubjectDTO ToSubjectDTO(this Subject entry) => new(entry.Id, entry.Name);
-        public static AcademicYearDTO ToAcademicYearDTO(this AcademicYears entry) => new()
-        {
-            Id = entry.Id,
-            Year = entry.Year
-        };
+        //public static AcademicYearDTO ToAcademicYearDTO(this AcademicYears entry) => new()
+        //{
+        //    Id = (int)entry?.Id,
+        //    Year = (int)entry?.Year
+        //};
 
         public static UserDTO ToUserDTO(this User entry) => new()
         {
@@ -43,7 +44,7 @@ namespace AnnouncementAPI
             CreatedTs = entry.CreatedTs,
             Email = entry.Email,
             Role = entry.Role,
-            //EnrollmentYear = entry?.EnrollmentYear,
+            EnrollmentYear = entry.EnrollmentYear,
             //NotifyByEmail = entry?.NotificationSettingsDeserialized?.NotifyByEmail
             //TODO: Add other properties
         };

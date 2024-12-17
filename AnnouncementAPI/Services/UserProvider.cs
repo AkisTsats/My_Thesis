@@ -30,6 +30,11 @@ namespace AnnouncementAPI.Services
                 _context.Users
                 .Where(u => u.Email == GetUserEmail());
 
+            if (!await query.AnyAsync())
+            {
+                var newUser = await UserAutoCreate();
+            }
+
             if (includeSubjectsAndCategories)
             {
                 query = query.Include(u => u.SelectedSubjects);
@@ -49,5 +54,27 @@ namespace AnnouncementAPI.Services
                 .FirstOrDefaultAsync();
         }
 
+        public async Task<User> UserAutoCreate()
+        {
+            var userEmail = _httpContextAccessor.HttpContext.User.FindFirst("http://schemas.xmlsoap.org/ws/2005/05/identity/claims/emailaddress").Value;
+            var userFirstName = _httpContextAccessor.HttpContext.User.FindFirst("http://schemas.xmlsoap.org/ws/2005/05/identity/claims/givenname").Value;
+            var userLastName = _httpContextAccessor.HttpContext.User.FindFirst("http://schemas.xmlsoap.org/ws/2005/05/identity/claims/surname").Value;
+            var userFullName = _httpContextAccessor.HttpContext.User.FindFirst("name").Value;
+            var userRoles = _httpContextAccessor.HttpContext.User.FindAll("http://schemas.xmlsoap.org/ws/2005/05/identity/claims/role");
+
+            var userRole = userRoles.Any(e => e.Value == "personel") ? Common.UserRole.Staff : Common.UserRole.Student;
+
+            var newUser = new User
+            {
+                Email = userEmail,
+                FullName = userFullName,
+                FirstName = userFirstName,
+                LastName = userLastName,
+                Role = userRole
+            };
+            _context.Users.Add(newUser);
+            await _context.SaveChangesAsync();
+            return newUser;
+        }
     }
 }

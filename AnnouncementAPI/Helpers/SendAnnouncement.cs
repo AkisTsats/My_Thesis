@@ -1,66 +1,66 @@
 ﻿using DTOs.Data;
 using EFDataAccessLibrary.Data;
-using MailKit;
-using Microsoft.CodeAnalysis.CSharp.Syntax;
-using System.Collections.Generic;
-using DTOs.API.Responses;
-using EFDataAccessLibrary.Data;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using DTOs.Data;
-using Microsoft.AspNetCore.Authorization;
-using System.Collections;
 
 namespace AnnouncementAPI.Helpers
 {
-    public class SendAnnouncement
-    {
-        private readonly MyDbContext _context;
+    //public class SendAnnouncement
+    //{
+    //    private readonly MyDbContext _context;
 
-        public SendAnnouncement(MyDbContext context)
-        {
-            _context = context;
-        }
+    //    public SendAnnouncement(MyDbContext context)
+    //    {
+    //        _context = context;
+    //    }
 
-        public async Task<List<string>> SendToMail(AnnouncementDTO announcement)
-        {
-            //TODO what the ... is going on here
-            //var announcementCategoriesIds = await _context.Categories
-            //    .Where(a => a.Id == announcement.AnnID)
-            //    .Select(b => b.Id)
-            //    .ToListAsync();
+    //    public async Task<List<string>> GetUsersToInform(AnnouncementDTO announcement)
+    //    {
+    //        var announcementCategoriesIds = await _context.Categories
+    //            .Where(a => announcement.Categories.Select(b => b.Id)
+    //            .Contains(a.Id))
+    //            .ToListAsync();
 
-            //var usersWithSelectedCategories = await _context.Subjects
-            //    .Where(a => announcementCategoriesIds.Contains(a.Id))
-            //    .Select(b => b.Id)
-            //    .ToListAsync();
+    //        var announcementSubjectsIds = await _context.Subjects
+    //            .Where(a => announcement.Subjects.Select(b => b.Id)
+    //            .Contains(a.Id))
+    //            .ToListAsync();
 
-            //var emailsFromCategories = await _context.Users
-            //    .Where(a => usersWithSelectedCategories.Contains(a.Id))
-            //    .Select(b => b.PrimaryEmail)
-            //    .ToListAsync();
+    //        var announcementAcademicYearsIds = await _context.AcademicYears
+    //            .Where(a => announcement.AcademicYears.Select(b => b.Id)
+    //            .Contains(a.Id))
+    //            .ToListAsync();
 
-            //Console.WriteLine($"fetched mail categories{emailsFromCategories}");
+    //        var usersWithSelectedCategories = await _context.Users
+    //            .Where(a => announcementCategoriesIds.Select(b => b.Id)
+    //            .Contains(a.Id))
+    //            .ToListAsync();
 
-            throw new NotImplementedException();
-            //return emailsFromCategories;
-        }
+    //        var usersWithSelectedSubjects = await _context.Users
+    //            .Where(a => announcementSubjectsIds.Select(b => b.Id)
+    //            .Contains(a.Id))
+    //            .ToListAsync();
 
+    //        var usersWithSelectedAcademicYears = await _context.Users
+    //            .Where(a => announcementAcademicYearsIds.Select(b => b.Id)
+    //            .Contains(a.Id))
+    //            .ToListAsync();
 
-        //public async Task<List<string>> SendToWordpress
-        //{
+    //        var commonUserIds = usersWithSelectedCategories.Select(u => u.Id)
+    //            .Intersect(usersWithSelectedSubjects.Select(u => u.Id))
+    //            .Intersect(usersWithSelectedAcademicYears.Select(u => u.Id));
 
-        //}
+    //        var userEmailsToInform = await _context.Users
+    //            .Where(a => commonUserIds.Contains(a.Id))
+    //            .Select(a => a.Email)
+    //            .ToListAsync();
 
-        //public async Task<List<string>> SendToMqtt
-        //{
+    //        Console.WriteLine($"fetched mail categories{userEmailsToInform}");
 
-        //}
-
-    }
+    //        return userEmailsToInform;
+    //    }
+    //}
 }

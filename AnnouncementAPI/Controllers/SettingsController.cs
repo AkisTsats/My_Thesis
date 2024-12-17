@@ -29,7 +29,7 @@ namespace AnnouncementAPI.Controllers
                 ReceiveNotificationsInPhones = user.NotificationSettingsDeserialized?.NotifyPhoneNumbers ?? [],
                 Categories = user.SelectedCategories.Select(e => e.ToCategoryDTO()),
                 Subjects = user.SelectedSubjects.Select(e => e.ToSubjectDTO()),
-                AcademicYears = user.SelectedAcademicYears.Select(e => e.ToAcademicYearDTO())
+                //AcademicYears = user.SelectedAcademicYears.Select(e => e.ToAcademicYearDTO())
             });
         }
 
@@ -69,7 +69,7 @@ namespace AnnouncementAPI.Controllers
                 ReceiveNotificationsInPhones = user.NotificationSettingsDeserialized.NotifyPhoneNumbers,
                 Categories = user.SelectedCategories.Select(e => e.ToCategoryDTO()),
                 Subjects = user.SelectedSubjects.Select(e => e.ToSubjectDTO()),
-                AcademicYears = user.SelectedAcademicYears.Select(e => e.ToAcademicYearDTO())
+                //AcademicYears = user.SelectedAcademicYears.Select(e => e.ToAcademicYearDTO())
             });
         }
     }

@@ -1,6 +1,7 @@
 ﻿@page "/createannouncement"
 @inject HttpClient Http
-@inject SettingsRepository _settingsRepository;
+@inject PublicRepository _publicRepository;
+@inject UsersRepository _userRepository;
 @inject NavigationManager UriHelper
 @using System.Net.Http
 @using System.Net.Http.Json
@@ -22,10 +23,10 @@
                 <MudTextField Class="mt-10" T="string" Label="Τίτλος" Required="true" @bind-Value="announcement.Title" />
                 <MudTextField Class="mt-10" T="string" Label="Περίληψη" Lines="4" @bind-Value="announcement.Abstract" Required="false" />
                 <MudExRichTextEdit @ref="@Editor"
-                                   ReadOnly="false"
-                                   Height="444"
-                                   Class="mt-10"
-                                   Placeholder="Κείμενο">
+                ReadOnly="false"
+                Height="444"
+                Class="mt-10"
+                Placeholder="Κείμενο">
                     <ToolbarContent>
                         <select class="ql-header">
                             <option selected=""></option>
@@ -54,7 +55,13 @@
                         </span>
                     </ToolbarContent>
                 </MudExRichTextEdit>
-                @* <MudTextField T="string" Label="Κείμενο" @bind-Value="announcement.Body" Lines="30" Required="true" /> *@
+                <br/>
+                <br/>
+                <InputFile OnChange="OnImageUpload" style="display: none;" id="fileInput" />
+                <label for="fileInput" style="cursor: pointer; padding: 6px 16px; background-color: var(--mud-palette-primary); color: white; border: none; border-radius: 4px; font-size: 0.875rem; font-weight: 500; box-shadow: 0px 3px 1px -2px rgba(0,0,0,0.2), 0px 2px 2px 0px rgba(0,0,0,0.14), 0px 1px 5px 0px rgba(0,0,0,0.12); text-transform: uppercase;">
+                    Προσθηκη αρχειων
+                </label>
+
                 <MudSelect Class="mt-10" T="CategoryDTO" Label="Επιλέξτε κατηγορίες" MultiSelection="true" ToStringFunc="@CategoryConverter" @bind-Value="CategoryDTO.DEFAULT_NO_CATEGORY_CHOOSEN" @bind-SelectedValues="SelectedCategories" MultiSelectionTextFunc="@(new Func<List<string>, string>(GetMultiselectionTextForCategories))">
                     @foreach (var category in AllCategories)
                     {
@@ -73,10 +80,7 @@
                         <MudSelectItem T="AcademicYearDTO" Value="@year">@year.Year</MudSelectItem>
                     }
                 </MudSelect>
-                @* <MudButton Variant="Variant.Filled" Color="Color.Secondary" Class="mt-10 mb-auto" onchange="imageInput"> Ανέβασμα Αρχείου</MudButton> *@
-                <InputFile OnChange="OnImageUpload" Ανέβασμα Αρχείου />
-                <MudSpacer />
-                <MudButton Variant="Variant.Filled" Color="Color.Primary" Class="mt-10 mb-auto" OnClick="OnAnnouncementSubmit">Προσθήκη Ανακοίνωσης</MudButton>
+                <MudButton Variant="Variant.Filled" Color="Color.Primary" Class="mt-10 mb-auto" OnClick="OnAnnouncementSubmit">Προσθηκη Ανακοινωσης</MudButton>
             </MudForm>
         </MudPaper>
     </MudItem>
@@ -104,7 +108,7 @@
     #region Academic years picker
     private IEnumerable<AcademicYearDTO> AllAcademicYears { get; set; } = [];
     private IEnumerable<AcademicYearDTO> SelectedAcademicYears { get; set; } = [];
-
+    private UserPublicDTO user = new();
     private string GetMultiselectionTextForAcademicYears(List<string> selectedValues) => selectedValues.Count == 0 ? "Δεν έχουν επιλεχθεί έτη" : $"{string.Join(", ", selectedValues.Select(x => x))}";
 
     Func<AcademicYearDTO, string> AcademicYearConverter = p => $"{p?.Year}";
@@ -117,40 +121,18 @@
     {
         try
         {
-            var settings = await _settingsRepository.FetchSettingsForCreateAnnouncement();
+            user = await _userRepository.GetMe();
+            var settings = await _publicRepository.FetchFilteringSettings();
 
             AllCategories = settings.Categories;
             AllSubjects = settings.Subjects;
+            AllAcademicYears = settings.AcademicYears;
         }
         catch (Exception ex)
         {
             Console.WriteLine($"Error fetching categories: {ex}");
         }
     }
-    // async Task Upload(MultipartFormDataContent content)
-    // {
-    //     var fileToUpload = content;
-    //     var response = await Http.PostAsync("https://localhost:5001/api/FileUpload/UploadService", content);
-
-    //     var result = await response.Content.ReadFromJsonAsync<List<UploadResult>>();
-
-    //     if (result is not null)
-    //     {
-    //         uploadResults = uploadResults.Concat(result).ToList();
-    //     }
-    // }
-    // async Task UploadImage(MultipartFormDataContent content)
-    // {
-    //     var response = await Http.PostAsync("https://localhost:5001/api/FileUpload/UploadService?isImage=true", new MultipartFormDataContent()
-    //     { });
-
-    //     var result = await response.Content.ReadFromJsonAsync<List<UploadResult>>();
-
-    //     if (result is not null)
-    //     {
-    //         uploadResults = uploadResults.Concat(result).ToList();
-    //     }
-    // }
 
     [Inject] private IDialogService DialogService { get; set; }
 
@@ -163,40 +145,50 @@
         bool? result = await DialogService.ShowMessageBox(
             "Οριστική υποβολή ανακοίνωσης?",
             "",
-            yesText: "Προσθήκη ανακοίνωσης", cancelText: "Επιστροφή στην ανακοίνωση");
+            yesText: "Προσθηκη ανακοινωσης", cancelText: "Επιστροφη στην ανακοινωση");
         StateHasChanged();
         if (result == true)
         {
             await PostOnAPI();
-            UriHelper.NavigateTo("myannouncements");
+            UriHelper.NavigateTo("AnnouncementsCreatedByMe");
         }
         StateHasChanged();
     }
 
     public async Task PostOnAPI()
     {
-        announcement.CreationDate = DateTime.Now;
         announcement.Files = uploadResults;
 
         announcement.Body = await this.Editor.GetHtml();
+
+        announcement.Subjects = SelectedSubjects;
+        announcement.Categories = SelectedCategories;
+        announcement.AcademicYears = SelectedAcademicYears;
 
         var post = announcement.SerializeMethod<AnnouncementDTO>();
 
         //Console.WriteLine(post);
 
-        await Http.PostAsJsonAsync("https://localhost:5001/api/Announcement/CreateAnnouncement", announcement);
+        await Http.PostAsJsonAsync("https://localhost:5001/api/Announcement/CreateAnnouncement", new DTOs.API.Announcements.CreateAnnouncement.Request{Announcement = announcement});
     }
 
     public async Task OnImageUpload(InputFileChangeEventArgs e)
     {
         var content = await UploadFiles(e);
         var fileToUpload = content;
+        
         var response = await Http.PostAsync("https://localhost:5001/api/FileUpload/UploadService", content);
-
+        
         var result = await response.Content.ReadFromJsonAsync<List<ResourceDTO>>();
-
-        var imageUrl = result.FirstOrDefault()?.Url;
-        await this.Editor.InsertImage(imageUrl);
+        var firstResult = result.FirstOrDefault();
+        if (firstResult.isImage)
+        {
+            await this.Editor.InsertImage(firstResult.Url);
+        }
+        else
+        {
+            await this.Editor.InsertHtmlAsync($"<a href='{firstResult.Url}'>{firstResult.FileName.Remove(0,6)}</a>");
+        }
         StateHasChanged();
     }
 

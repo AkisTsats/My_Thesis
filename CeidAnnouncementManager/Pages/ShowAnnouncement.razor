@@ -1,43 +1,40 @@
-﻿@* @page "/showannouncement/{id:int}"
+﻿@page "/showannouncement/{id:int}"
+@using CeidAnnouncementManager.Services
 @using DTOs.API.Responses;
 @using DTOs.Data;
 @inject HttpClient Http
+@inject AnnouncementsRepository _announcementsRepository;
+@inject PublicRepository _publicRepository;
 @using static DTOs.Common.Helpers;
 
-@if (_myDTO is not null)
+@if (_announcementDTO is not null)
 {
-    @foreach (var myVar in _myDTO)
-    {
-        var annID = myVar.AnnID;
+        var annID = _announcementDTO.Id;
         //<MudText Typo="Typo.h3">Show Announcement</MudText>
         <MudGrid Justify="Justify.Center" Class="d-flex" Spacing="2" Style="align-items: center">
             <MudItem xs="10">
                 <MudCard>
                     <MudCardHeader>
                         <CardHeaderContent>
-                            <MudText Typo="Typo.h5">@myVar.Title</MudText>
-                            <MudText >Δημιουργήθηκε στις: @myVar.Date</MudText>
+                            <MudText Typo="Typo.h5">@_announcementDTO.Title</MudText>
+                            <MudText>Δημιουργήθηκε στις: @_announcementDTO.CreationDate</MudText>
                         </CardHeaderContent>
                     </MudCardHeader>
                     <MudCardContent>
-                        <MudText>@myVar.Body</MudText>
-                        @if (myVar.ImageData != null && myVar.ImageData.Length > 0)
+                        <MudText>@((MarkupString)_announcementDTO.Body)</MudText>
+                        @if (_announcementDTO.Files != null)
                         {
-                            var base64Image = Convert.ToBase64String(myVar.ImageData);
-                            <img src="data:image/png;base64,@base64Image" alt="Announcement Image" class="announcement-image" />
+                            //var base64Image = Convert.ToBase64String(_announcementDTO.Files.);
+                            //<img src="data:image/png;base64,@base64Image" alt="Announcement Image" class="announcement-image" />
                         }
-                    </MudCardContent>
-                    <MudCardContent>
-                        <MudText>@myVar.Body</MudText>
                     </MudCardContent>
                 </MudCard>
             </MudItem>
         </MudGrid>
         <MudGrid Justify="Justify.Center" Class="d-flex" Spacing="2" Style="align-items: center;">
-            <MudButton OnClick="() => OnButtonClickedEdit(annID)" Variant="Variant.Filled" Color="Color.Info">Edit announcement</MudButton>
-            <MudButton OnClick="() => OnButtonClickedDelete(annID)" Variant="Variant.Filled" Color="Color.Secondary">Delete announcement</MudButton>
+            <MudButton OnClick="() => OnButtonClickedEdit((int)annID)" Variant="Variant.Filled" Color="Color.Info">Edit announcement</MudButton>
+            <MudButton OnClick="() => OnButtonClickedDelete((int)annID)" Variant="Variant.Filled" Color="Color.Secondary">Delete announcement</MudButton>
         </MudGrid>
-    }
 }
 
 @code {
@@ -48,26 +45,17 @@
     [Parameter]
     public int id { get; set; }
 
-    private IEnumerable<AnnouncementDTO> _myDTO;
-
-    public async Task<IEnumerable<AnnouncementDTO>> FetchAnnouncementsResponse()
-    {
-        var response = await Http.GetStringAsync($"https://localhost:5001/api/Announcement/GetAnnouncementByObj?id={id}");
-        //string serializedString = System.Text.Json.JsonSerializer.Serialize(response);
-
-        Console.WriteLine(response);
-
-        var apiResponse = response.DeserializeMethod<GetAnnouncementsByResponse>();
-
-        var annResponse = apiResponse.Announcements;
-        
-        return annResponse;
-
-    }
+    private AnnouncementDTO _announcementDTO;
 
     protected override async Task OnInitializedAsync()
     {
-        _myDTO = await FetchAnnouncementsResponse();
+        var request = new DTOs.API.Public.GetAnnouncement.Request
+            {
+                Id = id
+            };
+        var response = await _publicRepository.FetchSingle(request);
+
+        _announcementDTO = response.Announcement;
     }
 
 
@@ -115,4 +103,3 @@
     }
 
 }
- *@

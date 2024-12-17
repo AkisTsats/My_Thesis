@@ -14,9 +14,9 @@ namespace AnnouncementAPI.Controllers
     public class PublicController : ControllerBase
     {
         private readonly MyDbContext _context;
-        private readonly ProducerOfMyObjectsEndpoint _producer;
+        private readonly ChannelWrapper _producer;
         private readonly AnnouncementService _announcementService;
-        public PublicController(MyDbContext? context, ProducerOfMyObjectsEndpoint? producer, AnnouncementService announcementService)
+        public PublicController(MyDbContext? context, ChannelWrapper? producer, AnnouncementService announcementService)
         {
             _context = context;
             _producer = producer;
@@ -35,7 +35,7 @@ namespace AnnouncementAPI.Controllers
             {
                 Categories = categories.Select(e => e.ToCategoryDTO()),
                 Subjects = subjects.Select(e => e.ToSubjectDTO()),
-                AcademicYears = academicYears.Select(e => e.ToAcademicYearDTO())
+                //AcademicYears = academicYears.Select(e => e.ToAcademicYearDTO())
             });
         }
 
@@ -68,14 +68,14 @@ namespace AnnouncementAPI.Controllers
         }
 
         [HttpPost("GetAnnouncement")]
-        public async Task<ActionResult<DTOs.API.Public.GetAnnouncement.Response>> GetAnnouncement([FromBody] DTOs.API.Public.GetAnnouncement.Request id)
+        public async Task<ActionResult<DTOs.API.Public.GetAnnouncement.Response>> GetAnnouncement([FromBody] DTOs.API.Public.GetAnnouncement.Request request)
         {
             var announcement =
                 await _context.Announcements
                     .Include(e => e.Creator)
                     .Include(e => e.RelatedToSubjects)
                     .Include(e => e.RelatedToCategories)
-                    //.Where(e => e.Id == id) //TODO 
+                    .Where(e => e.Id == request.Id) 
                     .Select(e => e.ToAnnouncementDTO())
                     .FirstOrDefaultAsync();
 

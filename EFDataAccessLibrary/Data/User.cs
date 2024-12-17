@@ -26,7 +26,7 @@ namespace EFDataAccessLibrary.Data
         public string FirstName { get; set; }
         public string LastName { get; set; }
         public string Email { get; set; }
-        public int? EnrollmentYear { get; set; }
+        public int EnrollmentYear { get; set; }
         public UserType Type { get; set; }
         public UserRole Role { get; set; }
         public DateTime? PauseNotificationsUntil { get; set; }

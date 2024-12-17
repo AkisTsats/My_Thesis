@@ -61,7 +61,7 @@
                             <MudChip T="string" Size="Size.Small">@category.CategoryName</MudChip>
                         }
                         <br />
-                        <MudButton OnClick="() => ShowAnnouncementInDetail(announcement.Id)" Variant="Variant.Text" Style="text-transform:none">...περισσότερα</MudButton>
+                        <MudButton OnClick="() => ShowAnnouncementInDetail(announcement.Id.Value)" Variant="Variant.Text" Style="text-transform:none">...περισσότερα</MudButton>
                     </MudPaper>
                 }
                 <MudPagination SelectedChanged="PageChanged" Count="@_totalNumOfPages" />

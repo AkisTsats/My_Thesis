@@ -19,14 +19,14 @@ namespace AnnouncementAPI.Controllers
     public class AnnouncementController : ControllerBase
     {
         private readonly MyDbContext _context;
-        private readonly ProducerOfMyObjectsEndpoint _producer;
+        private readonly ChannelWrapper _channelWrapper;
         private readonly AnnouncementService _announcementService;
         private readonly UserProvider _userProvider;
 
-        public AnnouncementController(MyDbContext? context, ProducerOfMyObjectsEndpoint? producer, AnnouncementService announcementService, UserProvider userProvider)
+        public AnnouncementController(MyDbContext? context, ChannelWrapper? producer, AnnouncementService announcementService, UserProvider userProvider)
         {
             _context = context;
-            _producer = producer;
+            _channelWrapper = producer;
             _announcementService = announcementService;
             _userProvider = userProvider;
         }
@@ -102,6 +102,25 @@ namespace AnnouncementAPI.Controllers
             });
         }
 
+        [HttpPost("GetAnnouncement")]
+        public async Task<ActionResult<DTOs.API.Announcements.GetAnnouncement.Response>> GetAnnouncement([FromBody] DTOs.API.Announcements.GetAnnouncement.Request request)
+        {
+            var user = await _userProvider.GetUser(includeSubjectsAndCategories: true);
+
+            var announcementsIdsSelectedFromCategories = user.SelectedCategories.SelectMany(c => c.RelatesToAnnouncements.Select(a => a.Id)).ToList();
+            var announcementsIdsSelectedFromSubjects = user.SelectedSubjects.SelectMany(c => c.RelatesToAnnouncements.Select(a => a.Id)).ToList();
+            var announcementsIdsSelectedFromAcademicYears = user.SelectedAcademicYears.SelectMany(c => c.RelatesToAnnouncements.Select(a => a.Id)).ToList();
+
+            var announcement = await _announcementService.GetAnnouncementById(id: request.Id);
+
+            var toRet = announcement.ToAnnouncementDTO();
+
+            return Ok(new DTOs.API.Public.GetAnnouncement.Response()
+            {
+                Announcement = toRet
+            });
+        }
+
         // POST: api/CreateAnnouncement
         [HttpPost("CreateAnnouncement")]
         public async Task<ActionResult<DTOs.API.Announcements.CreateAnnouncement.Response>> CreateAnnouncement([FromBody] DTOs.API.Announcements.CreateAnnouncement.Request request)
@@ -127,7 +146,7 @@ namespace AnnouncementAPI.Controllers
                 Title = providedAnnouncement.Title,
                 Abstract = providedAnnouncement.Abstract,
                 Body = providedAnnouncement.Body,
-                IsPublished = providedAnnouncement.IsPublished,
+                IsPublished = true,//providedAnnouncement.IsPublished,
                 Creator = user,
 
                 //TODO resources
@@ -141,9 +160,13 @@ namespace AnnouncementAPI.Controllers
 
             await _context.SaveChangesAsync();
 
+            var announcementDTO = announcement.ToAnnouncementDTO();
+
+            await _channelWrapper.InformChannel(announcementDTO);
+
             return Ok(new DTOs.API.Announcements.CreateAnnouncement.Response()
             {
-                Announcement = announcement.ToAnnouncementDTO()
+                Announcement = announcementDTO
             });
         }
 

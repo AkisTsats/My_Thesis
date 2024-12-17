@@ -16,10 +16,19 @@ namespace CeidAnnouncementManager.Services
 
         public async Task<UserDTO> GetMe()
         {
-            var response = await _http.GetStringAsync(BaseUrl + "/api/user/getme");
-            var deserializedResponse = response.DeserializeMethod<UserDTO>();
+            try
+            {
+                var response = await _http.GetStringAsync(BaseUrl + "/api/user/getme");
+                var deserializedResponse = response.DeserializeMethod<UserDTO>();
 
-            return deserializedResponse;
+                return deserializedResponse;
+            }
+            catch
+            {
+                return new()
+                {
+                };
+            }
         }
     }
 }

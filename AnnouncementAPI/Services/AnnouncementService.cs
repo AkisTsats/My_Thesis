@@ -14,6 +14,14 @@ namespace AnnouncementAPI.Services
         {
             _context = context;
         }
+        public async Task<Announcement> GetAnnouncementById(int id)
+        {
+            return await _context.Announcements
+                .Include(e => e.Creator)
+                .Include(e => e.RelatedToSubjects)
+                .Include(e => e.RelatedToCategories)
+                .FirstOrDefaultAsync(e => e.Id == id);
+        }
 
         public IQueryable<Announcement> GetAnnouncementsQuery(
             string? textContains,
@@ -65,7 +73,7 @@ namespace AnnouncementAPI.Services
                 query = query
                     .Include(e => e.Creator)
                     .Include(e => e.RelatedToSubjects)
-                    .Include(e => e.RelatedToCategories)
+                    .Include(e => e.RelatedToCategories).AsSplitQuery()
                     ;
             }
 

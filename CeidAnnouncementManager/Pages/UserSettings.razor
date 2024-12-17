@@ -15,41 +15,52 @@
 
 <PageTitle>Οι Ρυθμίσεις μου</PageTitle>
 
-<MudText Typo="Typo.h3">Ρυθμίσεις</MudText>
+<MudCard Class="mx-auto my-6 p-6" Style="max-width: 1000px;" Elevation="4">
+    <MudCardContent>
+        <MudText Typo="Typo.h3" Color="Color.Primary" Class="mb-2">Ρυθμίσεις</MudText>
 
-<MudForm Class="pa-md-6 mx-lg-auto">
-    <MudTextField Label="Όνομα" @bind-Value="@_user.FirstName" Disabled></MudTextField>
-    <MudTextField Label="Επώνυμο" @bind-Value="_user.LastName" Disabled></MudTextField>
-    <MudTextField Label="Έτος εισαγωγής" @bind-Value="_user.EnrollmentYear" Disabled></MudTextField>
-    <MudTextField Label="Διέυθυνση email" @bind-Value="_user.Email" Disabled></MudTextField>
-    <MudCheckBox Label="Ενημέρωση μέσω email" @bind-Value="ReceiveNotificationsByEmail"></MudCheckBox>
-    <MudTextField Label="Εναλακτικό email 1" @bind-Value="AlternativeEmail1" Required="false"></MudTextField>
-    <MudTextField Label="Εναλακτικό email 2" @bind-Value="AlternativeEmail2" Required="false"></MudTextField>
-    <MudCheckBox Label="Ενημέρωση μέσω τηλεφώνου" @bind-Value="ReceiveNotificationsByPhone"></MudCheckBox>
-    <MudTextField Label="Τηλέφωνο επικοινωνίας" @bind-Value="AlternativePhone1" Required="false"></MudTextField>
-    <MudTextField Label="Εναλακτικό τηλεφωνο επικοινωνίας" @bind-Value="AlternativePhone2" Required="false"></MudTextField>
-    <MudDatePicker Label="Παύση ειδοποιήσεων μέχρι" Editable="true" @bind-Date="PauseNotificationUntilDate" Placeholder="Επιλέξτε ημερομηνία" />
-    <MudSelect Class="mt-10" T="CategoryDTO" Label="Κατηγορίες ενδιαφέροντος" MultiSelection="true" ToStringFunc="@CategoryConverter" @bind-Value="CategoryDTO.DEFAULT_NO_CATEGORY_CHOOSEN" @bind-SelectedValues="SelectedCategories" MultiSelectionTextFunc="@(new Func<List<string>, string>(GetMultiselectionTextForCategories))">
-        @foreach (var category in AllCategories)
-        {
-            <MudSelectItem T="CategoryDTO" Value="@category">@category.CategoryName</MudSelectItem>
-        }
-    </MudSelect>
-    <MudSelect Class="mt-10" T="SubjectDTO" Label="Μαθήματα ενδιαφέροντος" MultiSelection="true" ToStringFunc="@SubjectConverter" @bind-Value="SubjectDTO.DEFAULT_NO_SUBJECT_CHOOSEN" @bind-SelectedValues="SelectedSubjects" MultiSelectionTextFunc="@(new Func<List<string>, string>(GetMultiselectionTextForSubjects))">
-        @foreach (var subject in AllSubjects)
-        {
-            <MudSelectItem T="SubjectDTO" Value="@subject">@subject.SubjectName</MudSelectItem>
-        }
-    </MudSelect>
-    <MudSelect Class="mt-10" T="AcademicYearDTO" Label="Ακαδημαικά έτη ενδιαφέροντος" MultiSelection="true" ToStringFunc="@AcademicYearConverter" @bind-SelectedValues="SelectedAcademicYears" MultiSelectionTextFunc="@(new Func<List<string>, string>(GetMultiselectionTextForAcademicYears))">
-        @foreach (var year in AllAcademicYears)
-        {
-            <MudSelectItem T="AcademicYearDTO" Value="@year">@year.Year</MudSelectItem>
-        }
-    </MudSelect>
+        <MudText Typo="Typo.h5" Color="Color.Secondary" Class="mt-4 mb-2">Προσωπικές Πληροφορίες</MudText>
+        <MudForm Class="pa-4" Style="display: grid; gap: 1rem;">
+             <MudTextField Label="Όνομα" @bind-Value="FirstName" Disabled Color="Color.GrayLight"></MudTextField>
+            <MudTextField Label="Επώνυμο" @bind-Value="LastName" Disabled Color="Color.GrayLight"></MudTextField>
+            <MudTextField Label="Έτος εισαγωγής" @bind-Value="EnrollmentYear" Disabled Color="Color.GrayLight"></MudTextField>
+            <MudTextField Label="Διέυθυνση email" @bind-Value="Email" Disabled Color="Color.GrayLight"></MudTextField>
 
-    <MudButton Variant="Variant.Filled" Color="Color.Primary" OnClick="Update">ΑΠΟΘΗΚΕΥΣΗ</MudButton>
-</MudForm>
+            <MudText Typo="Typo.h5" Color="Color.Secondary" Class="mt-4 mb-2">Ειδοποιήσεις</MudText>
+            <MudCheckBox Label="Ενημέρωση μέσω email" @bind-Value="ReceiveNotificationsByEmail"></MudCheckBox>
+            <MudTextField Label="Εναλακτικό email 1" @bind-Value="AlternativeEmail1" Required="false"></MudTextField>
+            <MudTextField Label="Εναλακτικό email 2" @bind-Value="AlternativeEmail2" Required="false"></MudTextField>
+            <MudCheckBox Label="Ενημέρωση μέσω τηλεφώνου" @bind-Value="ReceiveNotificationsByPhone"></MudCheckBox>
+            <MudTextField Label="Τηλέφωνο επικοινωνίας" @bind-Value="AlternativePhone1" Required="false"></MudTextField>
+            <MudTextField Label="Εναλακτικό τηλεφωνο επικοινωνίας" @bind-Value="AlternativePhone2" Required="false"></MudTextField>
+
+            <MudText Typo="Typo.h5" Color="Color.Secondary" Class="mt-4 mb-2">Προτιμήσεις</MudText>
+            <MudDatePicker Label="Παύση ειδοποιήσεων μέχρι" Editable="true" @bind-Date="PauseNotificationUntilDate" Placeholder="Επιλέξτε ημερομηνία" />
+            <MudSelect T="CategoryDTO" Label="Κατηγορίες ενδιαφέροντος" MultiSelection="true" Class="mt-2" ToStringFunc="@CategoryConverter" @bind-SelectedValues="SelectedCategories" MultiSelectionTextFunc="@(new Func<List<string>, string>(GetMultiselectionTextForCategories))">
+                @foreach (var category in AllCategories)
+                {
+                    <MudSelectItem T="CategoryDTO" Value="@category">@category.CategoryName</MudSelectItem>
+                }
+            </MudSelect>
+            <MudSelect T="SubjectDTO" Label="Μαθήματα ενδιαφέροντος" MultiSelection="true" Class="mt-2" ToStringFunc="@SubjectConverter" @bind-SelectedValues="SelectedSubjects" MultiSelectionTextFunc="@(new Func<List<string>, string>(GetMultiselectionTextForSubjects))">
+                @foreach (var subject in AllSubjects)
+                {
+                    <MudSelectItem T="SubjectDTO" Value="@subject">@subject.SubjectName</MudSelectItem>
+                }
+            </MudSelect>
+            @* <MudSelect T="AcademicYearDTO" Label="Ακαδημαικά έτη ενδιαφέροντος" MultiSelection="true" Class="mt-2" ToStringFunc="@AcademicYearConverter" @bind-SelectedValues="SelectedAcademicYears" MultiSelectionTextFunc="@(new Func<List<string>, string>(GetMultiselectionTextForAcademicYears))">
+                @foreach (var year in AllAcademicYears)
+                {
+                    <MudSelectItem T="AcademicYearDTO" Value="@year">@year.Year</MudSelectItem>
+                }
+            </MudSelect> *@
+
+            <MudButton Variant="Variant.Filled" Color="Color.Primary" OnClick="Update" StartIcon="@Icons.Material.Filled.Save" Class="mt-4">
+                ΑΠΟΘΗΚΕΥΣΗ
+            </MudButton>
+        </MudForm>
+    </MudCardContent>
+</MudCard>
 
 @code {
     [Inject] private IDialogService DialogService { get; set; }
@@ -73,15 +84,20 @@
     #endregion
 
     #region Academic years picker
-    private IEnumerable<AcademicYearDTO> AllAcademicYears { get; set; } = [];
-    private IEnumerable<AcademicYearDTO> SelectedAcademicYears { get; set; } = [];
+    // private IEnumerable<AcademicYearDTO> AllAcademicYears { get; set; } = [];
+    // private IEnumerable<AcademicYearDTO> SelectedAcademicYears { get; set; } = [];
 
-    private string GetMultiselectionTextForAcademicYears(List<string> selectedValues) => selectedValues.Count == 0 ? "Δεν έχουν επιλεχθεί έτη" : $"{string.Join(", ", selectedValues.Select(x => x))}";
+    // private string GetMultiselectionTextForAcademicYears(List<string> selectedValues) => selectedValues.Count == 0 ? "Δεν έχουν επιλεχθεί έτη" : $"{string.Join(", ", selectedValues.Select(x => x))}";
 
-    Func<AcademicYearDTO, string> AcademicYearConverter = p => $"{p?.Year}";
+    // Func<AcademicYearDTO, string> AcademicYearConverter = p => $"{p?.Year}";
     #endregion
 
-    private UserDTO _user { get; set; }
+    //private UserDTO _user { get; set; }
+
+    private string FirstName { get; set; } 
+    private string LastName { get; set; }
+    private int EnrollmentYear { get; set; }
+    private string Email { get; set; }
 
     private DateTime? PauseNotificationUntilDate { get; set; }
     private bool ReceiveNotificationsByEmail { get; set; }
@@ -90,58 +106,85 @@
     private bool ReceiveNotificationsByPhone { get; set; }
     private string AlternativePhone1 { get; set; }
     private string AlternativePhone2 { get; set; }
+    
 
     protected override async Task OnInitializedAsync()
     {
-        await ReloadSettings();
+        try
+        {
+            await ReloadSettings();
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine(e.Message);
+        }
     }
 
     async Task ReloadSettings()
     {
-        var systemSettings = await _publicRepository.FetchFilteringSettings();
+        try
+        {
+            var systemSettings = await _publicRepository.FetchFilteringSettings();
 
-        _user = await _userRepository.GetMe();
+            var _user = await _userRepository.GetMe();
 
-        var settings = await _settingsRepository.FetchMySettings();
+            FirstName = _user.FirstName;
+            LastName = _user.LastName;
+            EnrollmentYear = _user.EnrollmentYear;
+            Email = _user.Email;
 
-        AllCategories = systemSettings.Categories;
-        SelectedCategories = settings.Categories;
+            var settings = await _settingsRepository.FetchMySettings();
 
-        AllSubjects = systemSettings.Subjects;
-        SelectedSubjects = settings.Subjects;
+            AllCategories = systemSettings.Categories;
+            SelectedCategories = settings.Categories;
 
-        AllAcademicYears = systemSettings.AcademicYears;
-        SelectedAcademicYears = settings.AcademicYears;
+            AllSubjects = systemSettings.Subjects;
+            SelectedSubjects = settings.Subjects;
 
-        PauseNotificationUntilDate = settings.PauseNotificationUntilDate;
+            //AllAcademicYears = systemSettings.AcademicYears;
+            //SelectedAcademicYears = settings.AcademicYears;
 
-        ReceiveNotificationsByEmail = settings.ReceiveNotificationsByEmail;
-        AlternativeEmail1 = settings.ReceiveNotificationsInEmails?.FirstOrDefault() ?? "";
-        AlternativeEmail2 = settings.ReceiveNotificationsInEmails?.Skip(1).FirstOrDefault() ?? "";
+            PauseNotificationUntilDate = settings.PauseNotificationUntilDate;
 
-        ReceiveNotificationsByPhone = settings.ReceiveNotificationsByPhone;
-        AlternativePhone1 = settings.ReceiveNotificationsInPhones?.FirstOrDefault() ?? "";
-        AlternativePhone2 = settings.ReceiveNotificationsInPhones?.Skip(1).FirstOrDefault() ?? "";
+            ReceiveNotificationsByEmail = settings.ReceiveNotificationsByEmail;
+            AlternativeEmail1 = settings.ReceiveNotificationsInEmails?.FirstOrDefault() ?? "";
+            AlternativeEmail2 = settings.ReceiveNotificationsInEmails?.Skip(1).FirstOrDefault() ?? "";
+
+            ReceiveNotificationsByPhone = settings.ReceiveNotificationsByPhone;
+            AlternativePhone1 = settings.ReceiveNotificationsInPhones?.FirstOrDefault() ?? "";
+            AlternativePhone2 = settings.ReceiveNotificationsInPhones?.Skip(1).FirstOrDefault() ?? "";
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine(e.Message);
+        }
     }
 
     async Task Update()
     {
-        var request = new DTOs.API.Settings.UpdateMySettings.Request
-            {
-                Subjects = SelectedSubjects,
-                Categories = SelectedCategories,
-                AcademicYears = SelectedAcademicYears,
+        try
+        {
+            var request = new DTOs.API.Settings.UpdateMySettings.Request
+                {
+                    Subjects = SelectedSubjects,
+                    Categories = SelectedCategories,
+                    //AcademicYears = SelectedAcademicYears,
 
-                PauseNotificationUntilDate = PauseNotificationUntilDate,
+                    PauseNotificationUntilDate = PauseNotificationUntilDate,
 
-                ReceiveNotificationsByEmail = ReceiveNotificationsByEmail,
-                ReceiveNotificationsInEmails = [AlternativeEmail1, AlternativeEmail2],
-                ReceiveNotificationsByPhone = ReceiveNotificationsByPhone,
-                ReceiveNotificationsInPhones = [AlternativePhone1, AlternativePhone2],
-            };
+                    ReceiveNotificationsByEmail = ReceiveNotificationsByEmail,
+                    ReceiveNotificationsInEmails = [AlternativeEmail1, AlternativeEmail2],
+                    ReceiveNotificationsByPhone = ReceiveNotificationsByPhone,
+                    ReceiveNotificationsInPhones = [AlternativePhone1, AlternativePhone2],
+                };
 
-        var response = await _settingsRepository.UpdateMySettings(request);
+            var response = await _settingsRepository.UpdateMySettings(request);
 
-        await ReloadSettings();
+            await ReloadSettings();
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine(e.Message);
+        }
     }
 }

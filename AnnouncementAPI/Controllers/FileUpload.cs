@@ -43,7 +43,7 @@ namespace AnnouncementAPI.Controllers
 
             foreach (var file in files)
             {
-                var fileName = $"{RandomString(5)}_${file.FileName}";
+                var fileName = $"{RandomString(5)}_{file.FileName}";
 
                 string baseDir = AppContext.BaseDirectory;
 
