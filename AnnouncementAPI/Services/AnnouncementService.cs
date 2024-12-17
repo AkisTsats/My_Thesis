@@ -73,7 +73,7 @@ namespace AnnouncementAPI.Services
                 query = query
                     .Include(e => e.Creator)
                     .Include(e => e.RelatedToSubjects)
-                    .Include(e => e.RelatedToCategories).AsSplitQuery()
+                    .Include(e => e.RelatedToCategories)
                     ;
             }
 

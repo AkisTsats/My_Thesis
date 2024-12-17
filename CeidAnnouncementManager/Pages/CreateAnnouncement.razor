@@ -1,5 +1,6 @@
 ﻿@page "/createannouncement"
 @inject HttpClient Http
+@inject SettingsRepository _settingsRepository;
 @inject PublicRepository _publicRepository;
 @inject UsersRepository _userRepository;
 @inject NavigationManager UriHelper
@@ -23,10 +24,10 @@
                 <MudTextField Class="mt-10" T="string" Label="Τίτλος" Required="true" @bind-Value="announcement.Title" />
                 <MudTextField Class="mt-10" T="string" Label="Περίληψη" Lines="4" @bind-Value="announcement.Abstract" Required="false" />
                 <MudExRichTextEdit @ref="@Editor"
-                ReadOnly="false"
-                Height="444"
-                Class="mt-10"
-                Placeholder="Κείμενο">
+                                   ReadOnly="false"
+                                   Height="444"
+                                   Class="mt-10"
+                                   Placeholder="Κείμενο">
                     <ToolbarContent>
                         <select class="ql-header">
                             <option selected=""></option>
