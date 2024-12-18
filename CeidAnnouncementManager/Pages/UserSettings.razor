@@ -21,18 +21,18 @@
 
         <MudText Typo="Typo.h5" Color="Color.Secondary" Class="mt-4 mb-2">Προσωπικές Πληροφορίες</MudText>
         <MudForm Class="pa-4" Style="display: grid; gap: 1rem;">
-             <MudTextField Label="Όνομα" @bind-Value="FirstName" Disabled Color="Color.GrayLight"></MudTextField>
+            <MudTextField Label="Όνομα" @bind-Value="FirstName" Disabled Color="Color.GrayLight"></MudTextField>
             <MudTextField Label="Επώνυμο" @bind-Value="LastName" Disabled Color="Color.GrayLight"></MudTextField>
             <MudTextField Label="Έτος εισαγωγής" @bind-Value="EnrollmentYear" Disabled Color="Color.GrayLight"></MudTextField>
-            <MudTextField Label="Διέυθυνση email" @bind-Value="Email" Disabled Color="Color.GrayLight"></MudTextField>
+            <MudTextField Label="Διεύθυνση email" @bind-Value="Email" Disabled Color="Color.GrayLight"></MudTextField>
 
             <MudText Typo="Typo.h5" Color="Color.Secondary" Class="mt-4 mb-2">Ειδοποιήσεις</MudText>
             <MudCheckBox Label="Ενημέρωση μέσω email" @bind-Value="ReceiveNotificationsByEmail"></MudCheckBox>
-            <MudTextField Label="Εναλακτικό email 1" @bind-Value="AlternativeEmail1" Required="false"></MudTextField>
-            <MudTextField Label="Εναλακτικό email 2" @bind-Value="AlternativeEmail2" Required="false"></MudTextField>
+            <MudTextField Label="Εναλλακτικό email 1" @bind-Value="AlternativeEmail1" Required="false"></MudTextField>
+            <MudTextField Label="Εναλλακτικό email 2" @bind-Value="AlternativeEmail2" Required="false"></MudTextField>
             <MudCheckBox Label="Ενημέρωση μέσω τηλεφώνου" @bind-Value="ReceiveNotificationsByPhone"></MudCheckBox>
             <MudTextField Label="Τηλέφωνο επικοινωνίας" @bind-Value="AlternativePhone1" Required="false"></MudTextField>
-            <MudTextField Label="Εναλακτικό τηλεφωνο επικοινωνίας" @bind-Value="AlternativePhone2" Required="false"></MudTextField>
+            <MudTextField Label="Εναλλακτικό τηλεφωνο επικοινωνίας" @bind-Value="AlternativePhone2" Required="false"></MudTextField>
 
             <MudText Typo="Typo.h5" Color="Color.Secondary" Class="mt-4 mb-2">Προτιμήσεις</MudText>
             <MudDatePicker Label="Παύση ειδοποιήσεων μέχρι" Editable="true" @bind-Date="PauseNotificationUntilDate" Placeholder="Επιλέξτε ημερομηνία" />
@@ -92,9 +92,9 @@
     // Func<AcademicYearDTO, string> AcademicYearConverter = p => $"{p?.Year}";
     #endregion
 
-    //private UserDTO _user { get; set; }
+    private UserDTO _user { get; set; }
 
-    private string FirstName { get; set; } 
+    private string FirstName { get; set; }
     private string LastName { get; set; }
     private int EnrollmentYear { get; set; }
     private string Email { get; set; }
@@ -106,7 +106,7 @@
     private bool ReceiveNotificationsByPhone { get; set; }
     private string AlternativePhone1 { get; set; }
     private string AlternativePhone2 { get; set; }
-    
+
 
     protected override async Task OnInitializedAsync()
     {
@@ -126,7 +126,7 @@
         {
             var systemSettings = await _publicRepository.FetchFilteringSettings();
 
-            var _user = await _userRepository.GetMe();
+            _user = await _userRepository.GetMe();
 
             FirstName = _user.FirstName;
             LastName = _user.LastName;
@@ -162,29 +162,23 @@
 
     async Task Update()
     {
-        try
-        {
-            var request = new DTOs.API.Settings.UpdateMySettings.Request
-                {
-                    Subjects = SelectedSubjects,
-                    Categories = SelectedCategories,
-                    //AcademicYears = SelectedAcademicYears,
+        var request = new DTOs.API.Settings.UpdateMySettings.Request
+            {
+                Subjects = SelectedSubjects,
+                Categories = SelectedCategories,
+                //AcademicYears = SelectedAcademicYears,
 
-                    PauseNotificationUntilDate = PauseNotificationUntilDate,
+                PauseNotificationUntilDate = PauseNotificationUntilDate,
 
-                    ReceiveNotificationsByEmail = ReceiveNotificationsByEmail,
-                    ReceiveNotificationsInEmails = [AlternativeEmail1, AlternativeEmail2],
-                    ReceiveNotificationsByPhone = ReceiveNotificationsByPhone,
-                    ReceiveNotificationsInPhones = [AlternativePhone1, AlternativePhone2],
-                };
+                ReceiveNotificationsByEmail = ReceiveNotificationsByEmail,
+                ReceiveNotificationsInEmails = [AlternativeEmail1, AlternativeEmail2],
+                ReceiveNotificationsByPhone = ReceiveNotificationsByPhone,
+                ReceiveNotificationsInPhones = [AlternativePhone1, AlternativePhone2],
+            };
 
-            var response = await _settingsRepository.UpdateMySettings(request);
+        var response = await _settingsRepository.UpdateMySettings(request);
 
-            await ReloadSettings();
-        }
-        catch (Exception e)
-        {
-            Console.WriteLine(e.Message);
-        }
+        await ReloadSettings();
+
     }
 }

@@ -40,11 +40,11 @@ namespace AnnouncementAPI.Controllers
 
             var categories = await _context.Categories.Where(e => request.Categories.Select(e => e.Id).Contains(e.Id)).ToListAsync();
             var subjects = await _context.Subjects.Where(e => request.Subjects.Select(e => e.Id).Contains(e.Id)).ToListAsync();
-            var academicYears = await _context.AcademicYears.Where(e => request.AcademicYears.Select(e => e.Id).Contains(e.Id)).ToListAsync();
+            //var academicYears = await _context.AcademicYears.Where(e => request.AcademicYears.Select(e => e.Id).Contains(e.Id)).ToListAsync();
 
             user.SelectedCategories = categories;
             user.SelectedSubjects = subjects;
-            user.SelectedAcademicYears = academicYears;
+            //user.SelectedAcademicYears = academicYears;
 
             var notificationSettings = user.NotificationSettingsDeserialized;
             notificationSettings = notificationSettings with

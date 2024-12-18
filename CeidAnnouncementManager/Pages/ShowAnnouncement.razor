@@ -1,7 +1,9 @@
 ﻿@page "/showannouncement/{id:int}"
 @using CeidAnnouncementManager.Services
+@using Common
 @using DTOs.API.Responses;
 @using DTOs.Data;
+@inject UsersRepository _usersRepository
 @inject HttpClient Http
 @inject AnnouncementsRepository _announcementsRepository;
 @inject PublicRepository _publicRepository;
@@ -9,32 +11,35 @@
 
 @if (_announcementDTO is not null)
 {
-        var annID = _announcementDTO.Id;
-        //<MudText Typo="Typo.h3">Show Announcement</MudText>
-        <MudGrid Justify="Justify.Center" Class="d-flex" Spacing="2" Style="align-items: center">
-            <MudItem xs="10">
-                <MudCard>
-                    <MudCardHeader>
-                        <CardHeaderContent>
-                            <MudText Typo="Typo.h5">@_announcementDTO.Title</MudText>
-                            <MudText>Δημιουργήθηκε στις: @_announcementDTO.CreationDate</MudText>
-                        </CardHeaderContent>
-                    </MudCardHeader>
-                    <MudCardContent>
-                        <MudText>@((MarkupString)_announcementDTO.Body)</MudText>
-                        @if (_announcementDTO.Files != null)
-                        {
-                            //var base64Image = Convert.ToBase64String(_announcementDTO.Files.);
-                            //<img src="data:image/png;base64,@base64Image" alt="Announcement Image" class="announcement-image" />
-                        }
-                    </MudCardContent>
-                </MudCard>
-            </MudItem>
-        </MudGrid>
-        <MudGrid Justify="Justify.Center" Class="d-flex" Spacing="2" Style="align-items: center;">
+    var annID = _announcementDTO.Id;
+    //<MudText Typo="Typo.h3">Show Announcement</MudText>
+    <MudGrid Justify="Justify.Center" Class="d-flex" Spacing="2" Style="align-items: center">
+        <MudItem xs="10">
+            <MudCard>
+                <MudCardHeader>
+                    <CardHeaderContent>
+                        <MudText Typo="Typo.h5">@_announcementDTO.Title</MudText>
+                        <MudText>Δημιουργήθηκε στις: @_announcementDTO.CreationDate</MudText>
+                    </CardHeaderContent>
+                </MudCardHeader>
+                <MudCardContent>
+                    <MudText>@((MarkupString)_announcementDTO.Body)</MudText>
+                    @if (_announcementDTO.Files != null)
+                    {
+                        //var base64Image = Convert.ToBase64String(_announcementDTO.Files.);
+                        //<img src="data:image/png;base64,@base64Image" alt="Announcement Image" class="announcement-image" />
+                    }
+                </MudCardContent>
+            </MudCard>
+        </MudItem>
+    </MudGrid>
+    <MudGrid Justify="Justify.Center" Class="d-flex" Spacing="2" Style="align-items: center;">
+        @if (_permissions.HasFlag(Permissions.ManageAnnouncements))
+        {
             <MudButton OnClick="() => OnButtonClickedEdit((int)annID)" Variant="Variant.Filled" Color="Color.Info">Edit announcement</MudButton>
             <MudButton OnClick="() => OnButtonClickedDelete((int)annID)" Variant="Variant.Filled" Color="Color.Secondary">Delete announcement</MudButton>
-        </MudGrid>
+        }
+    </MudGrid>
 }
 
 @code {
@@ -46,9 +51,16 @@
     public int id { get; set; }
 
     private AnnouncementDTO _announcementDTO;
+    private Permissions _permissions = Permissions.NoPermissions;
 
     protected override async Task OnInitializedAsync()
     {
+        var user = await _usersRepository.GetMe();
+
+        if (!Common.RoleToPermissionMapping.TryGetValue(user.Role, out _permissions))
+        {
+            _permissions = Permissions.NoPermissions;
+        }
         var request = new DTOs.API.Public.GetAnnouncement.Request
             {
                 Id = id
@@ -57,7 +69,6 @@
 
         _announcementDTO = response.Announcement;
     }
-
 
     private async void DeleteAnnouncement(int annID)
     {

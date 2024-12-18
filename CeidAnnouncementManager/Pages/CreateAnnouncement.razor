@@ -75,12 +75,12 @@
                         <MudSelectItem T="SubjectDTO" Value="@subject">@subject.SubjectName</MudSelectItem>
                     }
                 </MudSelect>
-                <MudSelect Class="mt-10" T="AcademicYearDTO" Label="Ακαδημαικά έτη" MultiSelection="true" ToStringFunc="@AcademicYearConverter" @bind-SelectedValues="SelectedAcademicYears" MultiSelectionTextFunc="@(new Func<List<string>, string>(GetMultiselectionTextForAcademicYears))">
+                @* <MudSelect Class="mt-10" T="AcademicYearDTO" Label="Ακαδημαικά έτη" MultiSelection="true" ToStringFunc="@AcademicYearConverter" @bind-SelectedValues="SelectedAcademicYears" MultiSelectionTextFunc="@(new Func<List<string>, string>(GetMultiselectionTextForAcademicYears))">
                     @foreach (var year in AllAcademicYears)
                     {
                         <MudSelectItem T="AcademicYearDTO" Value="@year">@year.Year</MudSelectItem>
                     }
-                </MudSelect>
+                </MudSelect> *@
                 <MudButton Variant="Variant.Filled" Color="Color.Primary" Class="mt-10 mb-auto" OnClick="OnAnnouncementSubmit">Προσθηκη Ανακοινωσης</MudButton>
             </MudForm>
         </MudPaper>
@@ -106,14 +106,14 @@
     Func<SubjectDTO, string> SubjectConverter = p => p?.SubjectName;
     #endregion
 
-    #region Academic years picker
-    private IEnumerable<AcademicYearDTO> AllAcademicYears { get; set; } = [];
-    private IEnumerable<AcademicYearDTO> SelectedAcademicYears { get; set; } = [];
+    // #region Academic years picker
+    // private IEnumerable<AcademicYearDTO> AllAcademicYears { get; set; } = [];
+    // private IEnumerable<AcademicYearDTO> SelectedAcademicYears { get; set; } = [];
     private UserPublicDTO user = new();
-    private string GetMultiselectionTextForAcademicYears(List<string> selectedValues) => selectedValues.Count == 0 ? "Δεν έχουν επιλεχθεί έτη" : $"{string.Join(", ", selectedValues.Select(x => x))}";
+    // private string GetMultiselectionTextForAcademicYears(List<string> selectedValues) => selectedValues.Count == 0 ? "Δεν έχουν επιλεχθεί έτη" : $"{string.Join(", ", selectedValues.Select(x => x))}";
 
-    Func<AcademicYearDTO, string> AcademicYearConverter = p => $"{p?.Year}";
-    #endregion
+    // Func<AcademicYearDTO, string> AcademicYearConverter = p => $"{p?.Year}";
+    // #endregion
 
     private List<ResourceDTO> uploadResults = new();
 
@@ -127,7 +127,7 @@
 
             AllCategories = settings.Categories;
             AllSubjects = settings.Subjects;
-            AllAcademicYears = settings.AcademicYears;
+            //AllAcademicYears = settings.AcademicYears;
         }
         catch (Exception ex)
         {
@@ -164,7 +164,7 @@
 
         announcement.Subjects = SelectedSubjects;
         announcement.Categories = SelectedCategories;
-        announcement.AcademicYears = SelectedAcademicYears;
+        //announcement.AcademicYears = SelectedAcademicYears;
 
         var post = announcement.SerializeMethod<AnnouncementDTO>();
 
